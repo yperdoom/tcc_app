@@ -77,7 +77,7 @@ class _LoginPage extends State<LoginPage> {
                     Form(
                       child: Column(
                         children: <Widget>[
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           TextField(
                             decoration: const InputDecoration(
                               label: Text('Email'),
@@ -114,7 +114,7 @@ class _LoginPage extends State<LoginPage> {
                             ),
                             onChanged: setPassword,
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                         ],
                       ),
                     ),

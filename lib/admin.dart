@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -23,7 +22,9 @@ class _AdminPage extends State<AdminPage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text('asdadkjash')],
+          children: const [
+            Text('asdadkjash'),
+          ],
         ),
       ),
     );

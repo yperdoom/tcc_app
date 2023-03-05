@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
+import 'views/user_home.dart';
 import 'admin.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'APP TCC',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: const MainPage(),
+      home: const UserHomePage(),
     );
   }
 }
@@ -36,7 +37,6 @@ class _MainPage extends State<MainPage> {
   void verificationToken() async {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
-    print(token);
 
     loading = true;
     await Future.delayed(const Duration(seconds: 2));
