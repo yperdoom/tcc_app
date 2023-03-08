@@ -1,8 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login.dart';
-import 'views/user_home.dart';
-import 'admin.dart';
+import 'views/login.dart';
+import 'views/client_page.dart';
+import 'views/admin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'APP TCC',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: const UserHomePage(),
+      home: const MainPage(),
     );
   }
 }
@@ -43,7 +45,7 @@ class _MainPage extends State<MainPage> {
 
     if (token == null || token.isEmpty) {
       loading = false;
-      // ignore: use_build_context_synchronously
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -53,7 +55,7 @@ class _MainPage extends State<MainPage> {
 
     if (scope == null || scope.isEmpty) {
       loading = false;
-      // ignore: use_build_context_synchronously
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -62,10 +64,22 @@ class _MainPage extends State<MainPage> {
 
     if (scope == 'admin') {
       loading = false;
-      // ignore: use_build_context_synchronously
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const AdminPage()),
+      );
+    }
+
+    if (scope == 'manager') {
+      loading = false;
+    }
+
+    if (scope == 'client') {
+      loading = false;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ClientPage()),
       );
     }
   }

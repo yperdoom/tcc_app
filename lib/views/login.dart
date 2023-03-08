@@ -1,5 +1,4 @@
-import 'dart:ui';
-import 'main.dart';
+import 'package:app_tcc/views/client_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'admin.dart';
@@ -216,7 +215,7 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void login(BuildContext context) async {
-    if (emailTemporary == 'asd' && passwordTemporary == '123') {
+    if (emailTemporary == 'admin' && passwordTemporary == 'admin') {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', 'j12hd9128djh12id3i2h923');
       await prefs.setString('scope', 'admin');
@@ -225,6 +224,19 @@ class _LoginPage extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AdminPage()),
+        );
+      });
+    }
+
+    if (emailTemporary == 'client' && passwordTemporary == 'client') {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', 'j12hd9128djh12id3i2h923');
+      await prefs.setString('scope', 'client');
+      // final success = await prefs.remove('token');
+      setState(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientPage()),
         );
       });
     }
