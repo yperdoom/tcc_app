@@ -70,44 +70,53 @@ class _UserHomePage extends State<UserHomePage> {
                   ),
                   const SizedBox(height: 20),
                   Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color(0xff1E2429),
-                          width: 80.0,
-                          style: BorderStyle.solid,
-                        ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(30))),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xff1E2429),
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Receita 1, receita 2...',
-                            hintStyle: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
+                        const Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              prefixIcon: Icon(Icons.search_rounded),
+                              hintText: 'Pesquise suas receitas',
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ),
                         TextButton(
-                          style: ButtonStyle(
-                            backgroundColor: Color(0xff1E4CFF),
-                            textStyle: MaterialStateProperty.all(
-                              const TextStyle(
-                                backgroundColor: Colors,
-                                fontSize: 16,
+                          style: TextButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            backgroundColor: const Color(0xff1E4CFF),
+                          ),
+                          onPressed: () => {},
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 15.0,
+                              vertical: 3,
+                            ),
+                            child: Text(
+                              'Buscar',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
-                            ),
-                          ),
-                          onPressed: null,
-                          child: const Text(
-                            'Buscar',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
@@ -119,6 +128,7 @@ class _UserHomePage extends State<UserHomePage> {
               ),
             ),
           ),
+          ListView()
         ],
       ),
     );
