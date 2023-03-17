@@ -34,18 +34,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPage extends State<MainPage> {
   bool knoowToken = false;
-  bool loading = false;
 
   void verificationToken() async {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
 
-    loading = true;
     await Future.delayed(const Duration(seconds: 2));
 
     if (token == null || token.isEmpty) {
-      loading = false;
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -54,8 +50,6 @@ class _MainPage extends State<MainPage> {
     final String? scope = prefs.getString('scope');
 
     if (scope == null || scope.isEmpty) {
-      loading = false;
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -63,20 +57,15 @@ class _MainPage extends State<MainPage> {
     }
 
     if (scope == 'admin') {
-      loading = false;
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const AdminPage()),
       );
     }
 
-    if (scope == 'manager') {
-      loading = false;
-    }
+    if (scope == 'manager') {}
 
     if (scope == 'client') {
-      loading = false;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ClientPage()),
@@ -94,16 +83,13 @@ class _MainPage extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('loading'),
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.black,
-      body: Center(
-        child: loading
-            ? const CircularProgressIndicator()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
+      body: const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xff1E4CFF),
+        ),
       ),
     );
   }
