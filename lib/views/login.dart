@@ -1,7 +1,9 @@
 import 'package:app_tcc/views/client_page.dart';
+import 'package:app_tcc/views/ip_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'admin.dart';
+import 'client/info_user.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -50,10 +52,24 @@ class _LoginPage extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          'assets/images/branco.png',
-                          width: 200,
-                          height: 80,
+                        GestureDetector(
+                          onLongPress: () {
+                            setState(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const IpSelectPage(),
+                                ),
+                              );
+                            });
+                          },
+                          child: Card(
+                            child: Image.asset(
+                              'assets/images/branco.png',
+                              width: 200,
+                              height: 80,
+                            ),
+                          ),
                         ),
                       ],
                     ),
