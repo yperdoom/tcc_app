@@ -3,7 +3,12 @@ import 'package:app_tcc/views/ip_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'admin.dart';
-import 'client/info_user.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+String? url;
+String? env;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +20,18 @@ class LoginPage extends StatefulWidget {
 class _LoginPage extends State<LoginPage> {
   String emailTemporary = '';
   String passwordTemporary = '';
+
+  void _syncUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    url = prefs.getString('url');
+    env = prefs.getString('env');
+  }
+
+  @override
+  void initState() {
+    _syncUrl();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +80,10 @@ class _LoginPage extends State<LoginPage> {
                               );
                             });
                           },
-                          child: Card(
-                            child: Image.asset(
-                              'assets/images/branco.png',
-                              width: 200,
-                              height: 80,
-                            ),
+                          child: Image.asset(
+                            'assets/images/branco.png',
+                            width: 200,
+                            height: 80,
                           ),
                         ),
                       ],
@@ -108,7 +123,7 @@ class _LoginPage extends State<LoginPage> {
                                 fontSize: 14,
                               ),
                             ),
-                            onChanged: setEmail,
+                            onChanged: _setEmail,
                           ),
                           const SizedBox(height: 15),
                           TextField(
@@ -127,13 +142,13 @@ class _LoginPage extends State<LoginPage> {
                                 fontSize: 14,
                               ),
                             ),
-                            onChanged: setPassword,
+                            onChanged: _setPassword,
                           ),
                           const SizedBox(height: 15),
                         ],
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -162,7 +177,7 @@ class _LoginPage extends State<LoginPage> {
                             width: 130,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () => login(context),
+                              onPressed: () => _login(context),
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
@@ -222,20 +237,22 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  void setEmail(String email) {
+  void _setEmail(String email) {
     emailTemporary = email;
   }
 
-  void setPassword(String password) {
+  void _setPassword(String password) {
     passwordTemporary = password;
   }
 
-  void login(BuildContext context) async {
+  void _login(BuildContext context) async {
+    if (env == 'prod') {
+
+    }
     if (emailTemporary == 'admin' && passwordTemporary == 'admin') {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', 'j12hd9128djh12id3i2h923');
       await prefs.setString('scope', 'admin');
-      // final success = await prefs.remove('token');
       setState(() {
         Navigator.pushReplacement(
           context,
@@ -243,7 +260,6 @@ class _LoginPage extends State<LoginPage> {
         );
       });
     }
-
     if (emailTemporary == 'client' && passwordTemporary == 'client') {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', 'j12hd9128djh12id3i2h923');

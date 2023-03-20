@@ -6,6 +6,8 @@ import 'views/login.dart';
 import 'views/client_page.dart';
 import 'views/admin.dart';
 
+// String? url;
+
 void main() {
   runApp(const MyApp());
 }
@@ -38,8 +40,9 @@ class _MainPage extends State<MainPage> {
   void verificationToken() async {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
+    // url = prefs.getString('url');
 
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
 
     if (token == null || token.isEmpty) {
       Navigator.pushReplacement(
