@@ -1,16 +1,7 @@
 # app_tcc
 
-A new Flutter project.
+Olá, este é um projeto em flutter para a contrução de um aplicativo para adaptação de dietas.
 
-## Getting Started
+## Resumo detalhado
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Este projeto consiste em um aplicativo que é capaz de adaptar uma dieta com alimentos selecionados pelo usuário, pode ser configurado para usar uma api externa (*recomendado*), ou utilizar apenas dados locais.
