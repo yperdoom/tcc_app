@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:app_tcc/views/ip_select.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'views/login.dart';
 import 'views/client_page.dart';
 import 'views/admin.dart';
-
-// String? url;
+import 'configs/session.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,7 +40,16 @@ class _MainPage extends State<MainPage> {
   void verificationToken() async {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
-    // url = prefs.getString('url');
+    String? url = prefs.getString('url');
+    String? env = prefs.getString('env');
+
+    if (url != null) {
+      Session.baseUrl = url.toString();
+    }
+
+    if (env != null) {
+      Session.env = env.toString();
+    }
 
     // await Future.delayed(const Duration(seconds: 2));
 

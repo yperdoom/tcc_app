@@ -2,13 +2,14 @@ import 'package:app_tcc/views/client_page.dart';
 import 'package:app_tcc/views/ip_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import '../configs/session.dart';
 import 'admin.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-String? url;
-String? env;
+String baseUrl = Session.baseUrl;
+String env = Session.env;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,15 +22,8 @@ class _LoginPage extends State<LoginPage> {
   String emailTemporary = '';
   String passwordTemporary = '';
 
-  void _syncUrl() async {
-    final prefs = await SharedPreferences.getInstance();
-    url = prefs.getString('url');
-    env = prefs.getString('env');
-  }
-
   @override
   void initState() {
-    _syncUrl();
     super.initState();
   }
 
@@ -64,6 +58,7 @@ class _LoginPage extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    // Imagem da unoesc
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -89,6 +84,7 @@ class _LoginPage extends State<LoginPage> {
                       ],
                     ),
                     const SizedBox(height: 10),
+                    // Mensagem de boas vindas
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -108,6 +104,7 @@ class _LoginPage extends State<LoginPage> {
                       child: Column(
                         children: <Widget>[
                           const SizedBox(height: 15),
+                          // Email set field
                           TextField(
                             decoration: const InputDecoration(
                               label: Text('Email'),
@@ -126,6 +123,7 @@ class _LoginPage extends State<LoginPage> {
                             onChanged: _setEmail,
                           ),
                           const SizedBox(height: 15),
+                          // Senha set field
                           TextField(
                             obscureText: true,
                             decoration: const InputDecoration(
@@ -246,31 +244,53 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void _login(BuildContext context) async {
-    if (env == 'prod') {
+    if (env == 'dev') {
+      if (emailTemporary == 'admin' && passwordTemporary == 'admin') {
+        _toAdminLogin();
+      }
+      if (emailTemporary == 'client' && passwordTemporary == 'client') {
+        _toClientLogin();
+      }
+    }
+    print(baseUrl);
 
-    }
-    if (emailTemporary == 'admin' && passwordTemporary == 'admin') {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', 'j12hd9128djh12id3i2h923');
-      await prefs.setString('scope', 'admin');
-      setState(() {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminPage()),
-        );
-      });
-    }
-    if (emailTemporary == 'client' && passwordTemporary == 'client') {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', 'j12hd9128djh12id3i2h923');
-      await prefs.setString('scope', 'client');
-      // final success = await prefs.remove('token');
-      setState(() {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ClientPage()),
-        );
-      });
-    }
+    http.Response response = await http.post(
+      Uri.parse('$baseUrl/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'email': emailTemporary,
+          'password': passwordTemporary,
+        },
+      ),
+    );
+
+    print(response.body);
+  }
+
+  void _toAdminLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', 'j12hd9128djh12id3i2h923');
+    await prefs.setString('scope', 'admin');
+    setState(() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminPage()),
+      );
+    });
+  }
+
+  void _toClientLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', 'j12hd9128djh12id3i2h923');
+    await prefs.setString('scope', 'client');
+    setState(() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ClientPage()),
+      );
+    });
   }
 }

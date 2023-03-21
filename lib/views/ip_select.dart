@@ -43,7 +43,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                 width: 200,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () => setUrl(urlProduction),
+                  onPressed: () => setUrl(urlProduction, false),
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
@@ -77,7 +77,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                 width: 200,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () => setUrl(urlLocal),
+                  onPressed: () => setUrl(urlLocal, true),
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
@@ -111,7 +111,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                 width: 200,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () => setUrl(urlLocalAmo),
+                  onPressed: () => setUrl(urlLocalAmo, true),
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
@@ -254,7 +254,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                 width: 200,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () => setUrl(urlDigitada),
+                  onPressed: () => setUrl(urlDigitada, true),
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
@@ -332,13 +332,18 @@ class _IpSelectPage extends State<IpSelectPage> {
 
   void setIpAsUrl() async {
     String url = 'http://$ipSelect:$portSelect';
-    setUrl(url);
+    setUrl(url, true);
   }
 
-  void setUrl(String url) async {
+  void setUrl(String url, bool env) async {
     if (url.isNotEmpty) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('url', url);
+      if (env == true) {
+        await prefs.setString('env', 'dev');
+      } else {
+        await prefs.setString('env', 'prod');
+      }
     }
     setState(() {});
     getUrl();

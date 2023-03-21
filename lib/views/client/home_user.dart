@@ -1,4 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+String? uri = '';
+var url;
 
 class HomeUser extends StatefulWidget {
   const HomeUser({super.key});
@@ -8,6 +14,20 @@ class HomeUser extends StatefulWidget {
 }
 
 class _HomeUserState extends State<HomeUser> {
+  var mealReceived = [];
+
+  @override
+  void initState() {
+    // final prefs = await SharedPreferences.getInstance();
+    // uri = prefs.getString('url');
+    // url = Uri.parse(uri.toString());
+
+    // ignore: await_only_futures
+    // await _getPrescriptions();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,5 +162,14 @@ class _HomeUserState extends State<HomeUser> {
         ],
       ),
     );
+  }
+
+  void _getPrescriptions() async {
+    http.Response response = await http.get(url);
+    print(url);
+    print(response);
+    if (response.body.isNotEmpty) {
+      // mealReceived = response;
+    }
   }
 }
