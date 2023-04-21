@@ -49,9 +49,9 @@ class _ClientPage extends State<ClientPage> {
             label: 'Persona',
           )
         ],
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(0xff1E4CFF),
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.white,
         onTap: (index) {
           _navigationWithNavBar(context, index);
         },

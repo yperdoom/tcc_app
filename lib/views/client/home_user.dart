@@ -1,10 +1,10 @@
-import 'dart:async';
+import 'package:auto_size_text/auto_size_text.dart';
+
+import '../../configs/session.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
-String? uri = '';
-var url;
+String baseUrl = Session.baseUrl;
 
 class HomeUser extends StatefulWidget {
   const HomeUser({super.key});
@@ -18,13 +18,6 @@ class _HomeUserState extends State<HomeUser> {
 
   @override
   void initState() {
-    // final prefs = await SharedPreferences.getInstance();
-    // uri = prefs.getString('url');
-    // url = Uri.parse(uri.toString());
-
-    // ignore: await_only_futures
-    // await _getPrescriptions();
-
     super.initState();
   }
 
@@ -90,11 +83,15 @@ class _HomeUserState extends State<HomeUser> {
                   ),
                   const SizedBox(height: 20),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
                     decoration: const BoxDecoration(
                       color: Color(0xff1E2429),
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(30),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -148,28 +145,212 @@ class _HomeUserState extends State<HomeUser> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 8000,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: const EdgeInsets.only(left: 100, bottom: 5),
-                  child: Text('jesus $index'),
-                );
-              },
-            ),
-          )
+          _FindList(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addMeal,
+        backgroundColor: const Color(0xff1E4CFF),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _getPrescriptions() async {
-    http.Response response = await http.get(url);
-    print(url);
-    print(response);
-    if (response.body.isNotEmpty) {
-      // mealReceived = response;
+  Widget _FindList() {
+    _getPrescriptions();
+
+    if (mealReceived.isNotEmpty) {
+      // retorna os cartões
+      return Expanded(
+        child: ListView.builder(
+          itemCount: mealReceived.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: _editPrescription,
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 12,
+                  bottom: 10,
+                  right: 12,
+                ),
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  top: 5,
+                  bottom: 8,
+                  right: 10,
+                ),
+                decoration: const BoxDecoration(
+                    color: Color(0xff1E2429),
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: AutoSizeText(
+                            '${mealReceived[index]['name']}',
+                            style: const TextStyle(fontSize: 24),
+                            maxLines: 1,
+                            minFontSize: 18,
+                          ),
+                        ),
+                        Text('${mealReceived[index]['type']}'),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${mealReceived[index]['calorie']} Kcal'),
+                        Text(
+                            'Atualizado em: ${mealReceived[index]['updated_at']}'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
     }
+
+    // retorna mensagem que não tem nada
+    return const Expanded(
+      child: Text(
+        'Não temos nada aqui no momento :(',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  void _editPrescription() async {
+    print('pq nom trabaia?');
+  }
+
+  void _getPrescriptions() async {
+    if (Session.env == 'local') {
+      const meals = [
+        {
+          'name': 'teste 1',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 2',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 3',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 4',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 5',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 6',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 7',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 8',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 9',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+        {
+          'name': 'teste 10',
+          'type': 'almoço',
+          'calorie': 480,
+          'protein': 50.2,
+          'lipid': 20,
+          'carbohydrate': 56,
+          'created_at': '08/09/2000',
+          'updated_at': '05/10/2020'
+        },
+      ];
+
+      mealReceived = meals;
+    } else {
+      http.Response response = await http.get(
+        Uri.parse('$baseUrl/prescriptions'),
+      );
+      print(response);
+      if (response.body.isNotEmpty) {
+        // mealReceived = response;
+      }
+    }
+  }
+
+  void _addMeal() async {
+    print('test buttom');
   }
 }

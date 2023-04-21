@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app_tcc/views/ip_select.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'views/login.dart';
@@ -77,7 +76,7 @@ class _MainPage extends State<MainPage> {
 
     if (scope == 'manager') {}
 
-    if (scope == 'client') {
+    if (scope == 'client' || scope == 'trying') {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ClientPage()),
@@ -106,30 +105,3 @@ class _MainPage extends State<MainPage> {
     );
   }
 }
-
-// class DarkThemePreference {
-//   static const themeStatus = "THEMESTATUS";
-
-//   setDarkTheme(bool value) async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     prefs.setBool(themeStatus, value);
-//   }
-
-//   Future<bool> getTheme() async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     return prefs.getBool(themeStatus) ?? false;
-//   }
-// }
-
-// class DarkThemeProvider with ChangeNotifier {
-//   DarkThemePreference darkThemePreference = DarkThemePreference();
-//   bool _darkTheme = false;
-
-//   bool get darkTheme => _darkTheme;
-
-//   set darkTheme(bool value) {
-//     _darkTheme = value;
-//     darkThemePreference.setDarkTheme(value);
-//     notifyListeners();
-//   }
-// }

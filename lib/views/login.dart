@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../configs/session.dart';
 import 'admin.dart';
-import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -161,9 +160,9 @@ class _LoginPage extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            onPressed: null,
+                            onPressed: _tryApp,
                             child: const Text(
-                              'Recuperar senha',
+                              'Try',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -235,6 +234,20 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
+  void _tryApp() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', 'j12hd9128djh12id3i2h923');
+    await prefs.setString('scope', 'trying');
+    await prefs.setString('env', 'local');
+    Session.env = 'local';
+    setState(() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ClientPage()),
+      );
+    });
+  }
+
   void _setEmail(String email) {
     emailTemporary = email;
   }
@@ -252,7 +265,6 @@ class _LoginPage extends State<LoginPage> {
         _toClientLogin();
       }
     }
-    print(baseUrl);
 
     http.Response response = await http.post(
       Uri.parse('$baseUrl/login'),
@@ -266,7 +278,7 @@ class _LoginPage extends State<LoginPage> {
         },
       ),
     );
-
+    print(response);
     print(response.body);
   }
 

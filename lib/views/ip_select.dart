@@ -11,7 +11,7 @@ class IpSelectPage extends StatefulWidget {
 }
 
 class _IpSelectPage extends State<IpSelectPage> {
-  final String urlProduction = 'https://tcc2.pedro/api';
+  final String urlProduction = 'https://18.228.138.78:4030';
   final String urlLocal = 'http://10.1.1.7:4030';
   final String urlLocalAmo = 'http://10.1.1.8:4030';
   String urlActualy = '';
