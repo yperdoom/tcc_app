@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../configs/colors.dart';
 import '../main.dart';
 
 class AdminPage extends StatefulWidget {
@@ -21,9 +22,9 @@ class _AdminPage extends State<AdminPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Page'),
-        backgroundColor: Colors.black,
+        backgroundColor: Cores.dark_black,
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Cores.dark_black,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -66,7 +67,7 @@ class _AdminPage extends State<AdminPage> {
             MaterialPageRoute(builder: (context) => const MainPage()),
           );
         },
-        backgroundColor: Colors.green,
+        backgroundColor: Cores.dark_blue,
         child: const Icon(Icons.navigation),
       ),
     );

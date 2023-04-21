@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:app_tcc/configs/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'views/login.dart';
@@ -94,12 +95,12 @@ class _MainPage extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Cores.dark_black,
       ),
-      backgroundColor: Colors.black,
-      body: const Center(
+      backgroundColor: Cores.dark_black,
+      body: Center(
         child: CircularProgressIndicator(
-          color: Color(0xff1E4CFF),
+          color: Cores.dark_blue_heavy,
         ),
       ),
     );

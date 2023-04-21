@@ -1,3 +1,4 @@
+import 'package:app_tcc/configs/colors.dart';
 import 'package:app_tcc/views/client/food_user.dart';
 import 'package:app_tcc/views/client/home_user.dart';
 import 'package:app_tcc/views/client/info_user.dart';
@@ -49,9 +50,9 @@ class _ClientPage extends State<ClientPage> {
             label: 'Persona',
           )
         ],
-        backgroundColor: const Color(0xff1E4CFF),
+        backgroundColor: Cores.dark_blue_heavy,
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
+        selectedItemColor: Cores.dark_white,
         onTap: (index) {
           _navigationWithNavBar(context, index);
         },

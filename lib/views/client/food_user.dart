@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,13 +30,13 @@ class _FoodUserState extends State<FoodUser> {
             tag: 'dash',
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomRight,
                   end: Alignment.bottomLeft,
                   colors: <Color>[
-                    Color(0xff1E4CFF),
-                    Color(0xff517AFF),
+                    Cores.dark_blue_heavy,
+                    Cores.dark_blue_light,
                   ],
                   tileMode: TileMode.mirror,
                 ),
@@ -50,11 +51,11 @@ class _FoodUserState extends State<FoodUser> {
                     children: [
                       Container(
                         padding: const EdgeInsets.only(top: 12, bottom: 8),
-                        child: const Text(
+                        child: Text(
                           'Alimentos',
                           style: TextStyle(
                             fontFamily: 'Urbanist',
-                            color: Colors.white,
+                            color: Cores.dark_white,
                             fontWeight: FontWeight.w600,
                             fontSize: 24,
                           ),
@@ -66,13 +67,13 @@ class _FoodUserState extends State<FoodUser> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
+                    children: [
                       Expanded(
                         child: Text(
                           'Aqui voce encontra os alimentos cadastrados.',
                           style: TextStyle(
                             fontFamily: 'Urbanist',
-                            color: Color(0xffBDD6D8),
+                            color: Cores.dark_blue_clear,
                             fontWeight: FontWeight.w300,
                             fontSize: 18,
                           ),
@@ -86,24 +87,24 @@ class _FoodUserState extends State<FoodUser> {
                       horizontal: 10,
                       vertical: 8,
                     ),
-                    decoration: const BoxDecoration(
-                      color: Color(0xff1E2429),
-                      borderRadius: BorderRadius.all(
+                    decoration: BoxDecoration(
+                      color: Cores.dark_blue_dark,
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(30),
                       ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: TextField(
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(Icons.search_rounded),
+                              prefixIcon: const Icon(Icons.search_rounded),
                               hintText: 'Pesquise por alimentos',
                               hintStyle: TextStyle(
-                                color: Colors.white,
+                                color: Cores.dark_white,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
                               ),
@@ -118,18 +119,18 @@ class _FoodUserState extends State<FoodUser> {
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
-                            backgroundColor: const Color(0xff1E4CFF),
+                            backgroundColor: Cores.dark_blue_heavy,
                           ),
                           onPressed: () => {},
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 15.0,
                               vertical: 3,
                             ),
                             child: Text(
                               'Buscar',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Cores.dark_white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -149,7 +150,7 @@ class _FoodUserState extends State<FoodUser> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addFood,
-        backgroundColor: const Color(0xff1E4CFF),
+        backgroundColor: Cores.dark_blue_heavy,
         child: const Icon(Icons.add),
       ),
     );
@@ -178,9 +179,9 @@ class _FoodUserState extends State<FoodUser> {
                   bottom: 8,
                   right: 10,
                 ),
-                decoration: const BoxDecoration(
-                    color: Color(0xff1E2429),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                decoration: BoxDecoration(
+                    color: Cores.dark_blue_dark,
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
                     Row(
@@ -230,11 +231,11 @@ class _FoodUserState extends State<FoodUser> {
     }
 
     // retorna mensagem que não tem nada
-    return const Expanded(
+    return Expanded(
       child: Text(
         'Não temos nada aqui no momento :(',
         style: TextStyle(
-          color: Colors.white,
+          color: Cores.dark_white,
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),

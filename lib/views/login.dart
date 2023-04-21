@@ -2,6 +2,7 @@ import 'package:app_tcc/views/client_page.dart';
 import 'package:app_tcc/views/ip_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import '../configs/colors.dart';
 import '../configs/session.dart';
 import 'admin.dart';
 import 'dart:convert';
@@ -31,17 +32,17 @@ class _LoginPage extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        backgroundColor: Colors.black,
+        backgroundColor: Cores.dark_black,
       ),
       body: Container(
         height: double.maxFinite,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.bottomRight,
             end: Alignment.bottomLeft,
             colors: <Color>[
-              Color(0xff1E4CFF),
-              Color(0xff517AFF),
+              Cores.dark_blue_heavy,
+              Cores.dark_blue_light,
             ],
             tileMode: TileMode.mirror,
           ),
@@ -51,7 +52,7 @@ class _LoginPage extends State<LoginPage> {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                color: Colors.black,
+                color: Cores.dark_black,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -88,11 +89,11 @@ class _LoginPage extends State<LoginPage> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
                           'Oi, bem vindo :)',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Cores.dark_white,
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
                           ),
@@ -105,16 +106,16 @@ class _LoginPage extends State<LoginPage> {
                           const SizedBox(height: 15),
                           // Email set field
                           TextField(
-                            decoration: const InputDecoration(
-                              label: Text('Email'),
+                            decoration: InputDecoration(
+                              label: const Text('Email'),
                               labelStyle: TextStyle(
-                                color: Colors.white,
+                                color: Cores.dark_white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               hintText: 'Digite teu e-mail aqui...',
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
                               ),
@@ -125,16 +126,16 @@ class _LoginPage extends State<LoginPage> {
                           // Senha set field
                           TextField(
                             obscureText: true,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Senha',
                               labelStyle: TextStyle(
-                                color: Colors.white,
+                                color: Cores.dark_white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               hintText: 'Digite tua senha aqui...',
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
                               ),
@@ -161,10 +162,10 @@ class _LoginPage extends State<LoginPage> {
                               ),
                             ),
                             onPressed: _tryApp,
-                            child: const Text(
+                            child: Text(
                               'Try',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Cores.dark_white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -182,20 +183,20 @@ class _LoginPage extends State<LoginPage> {
                                   ),
                                 ),
                                 backgroundColor: MaterialStateProperty.all(
-                                  const Color(0xFF3A62FF),
+                                  Cores.dark_blue,
                                 ),
                                 textStyle: MaterialStateProperty.all(
-                                  const TextStyle(
-                                    color: Colors.white,
+                                  TextStyle(
+                                    color: Cores.dark_white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Entrar',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Cores.dark_white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -214,13 +215,13 @@ class _LoginPage extends State<LoginPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'Desenvolvido por Pedro Henrique Antunes Pinto',
                     style: TextStyle(
                       fontFamily: 'Urbanist',
                       fontSize: 16,
-                      color: Colors.white,
+                      color: Cores.dark_white,
                       fontWeight: FontWeight.w400,
                     ),
                     maxLines: 2,
