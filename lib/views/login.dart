@@ -32,7 +32,7 @@ class _LoginPage extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        backgroundColor: Cores.dark_black,
+        backgroundColor: Cores.black,
       ),
       body: Container(
         height: double.maxFinite,
@@ -41,8 +41,8 @@ class _LoginPage extends State<LoginPage> {
             begin: Alignment.bottomRight,
             end: Alignment.bottomLeft,
             colors: <Color>[
-              Cores.dark_blue_heavy,
-              Cores.dark_blue_light,
+              Cores.blueHeavy,
+              Cores.blueLight,
             ],
             tileMode: TileMode.mirror,
           ),
@@ -52,7 +52,7 @@ class _LoginPage extends State<LoginPage> {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                color: Cores.dark_black,
+                color: Cores.black,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -93,7 +93,7 @@ class _LoginPage extends State<LoginPage> {
                         Text(
                           'Oi, bem vindo :)',
                           style: TextStyle(
-                            color: Cores.dark_white,
+                            color: Cores.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
                           ),
@@ -109,7 +109,7 @@ class _LoginPage extends State<LoginPage> {
                             decoration: InputDecoration(
                               label: const Text('Email'),
                               labelStyle: TextStyle(
-                                color: Cores.dark_white,
+                                color: Cores.white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -129,7 +129,7 @@ class _LoginPage extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Senha',
                               labelStyle: TextStyle(
-                                color: Cores.dark_white,
+                                color: Cores.white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -165,7 +165,7 @@ class _LoginPage extends State<LoginPage> {
                             child: Text(
                               'Try',
                               style: TextStyle(
-                                color: Cores.dark_white,
+                                color: Cores.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -183,11 +183,11 @@ class _LoginPage extends State<LoginPage> {
                                   ),
                                 ),
                                 backgroundColor: MaterialStateProperty.all(
-                                  Cores.dark_blue,
+                                  Cores.blue,
                                 ),
                                 textStyle: MaterialStateProperty.all(
                                   TextStyle(
-                                    color: Cores.dark_white,
+                                    color: Cores.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -196,7 +196,7 @@ class _LoginPage extends State<LoginPage> {
                               child: Text(
                                 'Entrar',
                                 style: TextStyle(
-                                  color: Cores.dark_white,
+                                  color: Cores.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -221,7 +221,7 @@ class _LoginPage extends State<LoginPage> {
                     style: TextStyle(
                       fontFamily: 'Urbanist',
                       fontSize: 16,
-                      color: Cores.dark_white,
+                      color: Cores.white,
                       fontWeight: FontWeight.w400,
                     ),
                     maxLines: 2,

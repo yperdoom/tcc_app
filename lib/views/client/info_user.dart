@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:http/http.dart' as http;
 
@@ -160,7 +161,8 @@ class _InfoUserState extends State<InfoUser> {
           itemCount: infoReceived.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onLongPress: showInfoDetails,
+              onTap: () => showInfoDetails(index),
+              // onLongPress: showInfoDetails(index),
               child: Container(
                 margin: const EdgeInsets.only(
                   left: 12,
@@ -189,19 +191,15 @@ class _InfoUserState extends State<InfoUser> {
                             minFontSize: 18,
                           ),
                         ),
-                          Text('Atualizado em: ${infoReceived[index]['updated_at']}'),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Expanded(
-                          child: AutoSizeText(
-                            '${infoReceived[index]['description']}',
-                            style: const TextStyle(fontSize: 18),
-                            maxLines: 3,
-                            minFontSize: 14,
-                          ),
+                          child: Text(
+                              'Atualizado em: ${infoReceived[index]['updated_at']}'),
                         ),
                       ],
                     ),
@@ -215,11 +213,11 @@ class _InfoUserState extends State<InfoUser> {
     }
 
     // retorna mensagem que não tem nada
-    return const Expanded(
+    return Expanded(
       child: Text(
         'Não temos nada aqui no momento :(',
         style: TextStyle(
-          color: Colors.white,
+          color: Cores.white,
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
@@ -234,7 +232,7 @@ class _InfoUserState extends State<InfoUser> {
           "food_id": 1,
           "name": "Caloria",
           "description":
-              "arroz branco cozido em temperatura média para testar o tamanho de palavras porque pode caber muitas palavras aqui e ainda ter espaço para mais palavras meu deus como tem muitas palavras",
+              "arroz branco cozido em temperatura média para testar o tamanho de palavras porque pode caber muitas palavras aqui e ainda ter espaço para mais palavras meu deus como tem muitas palavras, ainda estou escrevendo palavras, minha nossa são muitas palavras quantas palavras cabe? iremos descobrir. São muitas palavras, estou ficando louco de tantas palavras que já estão aqui, meu jesusinho quantas palavras. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir.",
           "updated_at": '05/10/2020'
         },
         {
@@ -269,12 +267,60 @@ class _InfoUserState extends State<InfoUser> {
     }
   }
 
-  void showInfoDetails() async {
-    return showDialog(context: context, builder: (context) => Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18)
-      ),
-      child: Scaffold()
+  Future<dynamic> showInfoDetails(var index) {
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          '${infoReceived[index]['name']}',
+                          style: const TextStyle(fontSize: 28),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          '${infoReceived[index]['description']}',
+                          style: const TextStyle(fontSize: 18),
+                          // maxLines: 10,
+                          minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Última vez atualizado em: ${infoReceived[index]['updated_at']}',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

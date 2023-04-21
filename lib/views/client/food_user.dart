@@ -35,8 +35,8 @@ class _FoodUserState extends State<FoodUser> {
                   begin: Alignment.bottomRight,
                   end: Alignment.bottomLeft,
                   colors: <Color>[
-                    Cores.dark_blue_heavy,
-                    Cores.dark_blue_light,
+                    Cores.blueHeavy,
+                    Cores.blueLight,
                   ],
                   tileMode: TileMode.mirror,
                 ),
@@ -55,7 +55,7 @@ class _FoodUserState extends State<FoodUser> {
                           'Alimentos',
                           style: TextStyle(
                             fontFamily: 'Urbanist',
-                            color: Cores.dark_white,
+                            color: Cores.white,
                             fontWeight: FontWeight.w600,
                             fontSize: 24,
                           ),
@@ -73,7 +73,7 @@ class _FoodUserState extends State<FoodUser> {
                           'Aqui voce encontra os alimentos cadastrados.',
                           style: TextStyle(
                             fontFamily: 'Urbanist',
-                            color: Cores.dark_blue_clear,
+                            color: Cores.blueClear,
                             fontWeight: FontWeight.w300,
                             fontSize: 18,
                           ),
@@ -88,7 +88,7 @@ class _FoodUserState extends State<FoodUser> {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: Cores.dark_blue_dark,
+                      color: Cores.blueDark,
                       borderRadius: const BorderRadius.all(
                         Radius.circular(30),
                       ),
@@ -104,7 +104,7 @@ class _FoodUserState extends State<FoodUser> {
                               prefixIcon: const Icon(Icons.search_rounded),
                               hintText: 'Pesquise por alimentos',
                               hintStyle: TextStyle(
-                                color: Cores.dark_white,
+                                color: Cores.white,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
                               ),
@@ -119,7 +119,7 @@ class _FoodUserState extends State<FoodUser> {
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
-                            backgroundColor: Cores.dark_blue_heavy,
+                            backgroundColor: Cores.blueHeavy,
                           ),
                           onPressed: () => {},
                           child: Padding(
@@ -130,7 +130,7 @@ class _FoodUserState extends State<FoodUser> {
                             child: Text(
                               'Buscar',
                               style: TextStyle(
-                                color: Cores.dark_white,
+                                color: Cores.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -150,7 +150,7 @@ class _FoodUserState extends State<FoodUser> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addFood,
-        backgroundColor: Cores.dark_blue_heavy,
+        backgroundColor: Cores.blueHeavy,
         child: const Icon(Icons.add),
       ),
     );
@@ -180,7 +180,7 @@ class _FoodUserState extends State<FoodUser> {
                   right: 10,
                 ),
                 decoration: BoxDecoration(
-                    color: Cores.dark_blue_dark,
+                    color: Cores.blueDark,
                     borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
@@ -235,7 +235,7 @@ class _FoodUserState extends State<FoodUser> {
       child: Text(
         'Não temos nada aqui no momento :(',
         style: TextStyle(
-          color: Cores.dark_white,
+          color: Cores.white,
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),

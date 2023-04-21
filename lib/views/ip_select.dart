@@ -31,9 +31,9 @@ class _IpSelectPage extends State<IpSelectPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('IP select Page'),
-        backgroundColor: Cores.dark_black,
+        backgroundColor: Cores.black,
       ),
-      backgroundColor: Cores.dark_black,
+      backgroundColor: Cores.black,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -51,10 +51,10 @@ class _IpSelectPage extends State<IpSelectPage> {
                         borderRadius: BorderRadius.circular(40),
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.all(Cores.dark_blue),
+                    backgroundColor: MaterialStateProperty.all(Cores.blue),
                     textStyle: MaterialStateProperty.all(
                       TextStyle(
-                        color: Cores.dark_white,
+                        color: Cores.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -63,7 +63,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                   child: Text(
                     'Set to production',
                     style: TextStyle(
-                      color: Cores.dark_white,
+                      color: Cores.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -84,11 +84,11 @@ class _IpSelectPage extends State<IpSelectPage> {
                       ),
                     ),
                     backgroundColor: MaterialStateProperty.all(
-                      Cores.dark_blue,
+                      Cores.blue,
                     ),
                     textStyle: MaterialStateProperty.all(
                       TextStyle(
-                        color: Cores.dark_white,
+                        color: Cores.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -97,7 +97,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                   child: Text(
                     'Set to local',
                     style: TextStyle(
-                      color: Cores.dark_white,
+                      color: Cores.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -118,11 +118,11 @@ class _IpSelectPage extends State<IpSelectPage> {
                       ),
                     ),
                     backgroundColor: MaterialStateProperty.all(
-                      Cores.dark_blue,
+                      Cores.blue,
                     ),
                     textStyle: MaterialStateProperty.all(
                       TextStyle(
-                        color: Cores.dark_white,
+                        color: Cores.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -131,7 +131,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                   child: Text(
                     'Set to amo local',
                     style: TextStyle(
-                      color: Cores.dark_white,
+                      color: Cores.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -151,7 +151,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                         decoration: InputDecoration(
                           label: const Text('IP'),
                           labelStyle: TextStyle(
-                            color: Cores.dark_white,
+                            color: Cores.white,
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                           ),
@@ -174,7 +174,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                       decoration: InputDecoration(
                         label: const Text('Port'),
                         labelStyle: TextStyle(
-                          color: Cores.dark_white,
+                          color: Cores.white,
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                         ),
@@ -205,11 +205,11 @@ class _IpSelectPage extends State<IpSelectPage> {
                       ),
                     ),
                     backgroundColor: MaterialStateProperty.all(
-                      Cores.dark_blue,
+                      Cores.blue,
                     ),
                     textStyle: MaterialStateProperty.all(
                       TextStyle(
-                        color: Cores.dark_white,
+                        color: Cores.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -218,7 +218,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                   child: Text(
                     'Set typed ip as url',
                     style: TextStyle(
-                      color: Cores.dark_white,
+                      color: Cores.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -233,7 +233,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                   decoration: InputDecoration(
                     label: const Text('Url'),
                     labelStyle: TextStyle(
-                      color: Cores.dark_white,
+                      color: Cores.white,
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                     ),
@@ -261,11 +261,11 @@ class _IpSelectPage extends State<IpSelectPage> {
                       ),
                     ),
                     backgroundColor: MaterialStateProperty.all(
-                      Cores.dark_blue,
+                      Cores.blue,
                     ),
                     textStyle: MaterialStateProperty.all(
                       TextStyle(
-                        color: Cores.dark_white,
+                        color: Cores.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -274,7 +274,7 @@ class _IpSelectPage extends State<IpSelectPage> {
                   child: Text(
                     'Set typed url as url',
                     style: TextStyle(
-                      color: Cores.dark_white,
+                      color: Cores.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -286,7 +286,7 @@ class _IpSelectPage extends State<IpSelectPage> {
               Text(
                 'Url atualmente em uso: ',
                 style: TextStyle(
-                  color: Cores.dark_white,
+                  color: Cores.white,
                   fontWeight: FontWeight.normal,
                   fontSize: 24,
                 ),
@@ -294,7 +294,7 @@ class _IpSelectPage extends State<IpSelectPage> {
               Text(
                 urlActualy,
                 style: TextStyle(
-                  color: Cores.dark_white,
+                  color: Cores.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
@@ -311,7 +311,7 @@ class _IpSelectPage extends State<IpSelectPage> {
             MaterialPageRoute(builder: (context) => const MainPage()),
           );
         },
-        backgroundColor: Cores.dark_blue_opaque,
+        backgroundColor: Cores.blueOpaque,
         child: const Icon(Icons.login_outlined),
       ),
     );

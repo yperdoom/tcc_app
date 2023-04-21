@@ -22,9 +22,9 @@ class _AdminPage extends State<AdminPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Page'),
-        backgroundColor: Cores.dark_black,
+        backgroundColor: Cores.black,
       ),
-      backgroundColor: Cores.dark_black,
+      backgroundColor: Cores.black,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -67,7 +67,7 @@ class _AdminPage extends State<AdminPage> {
             MaterialPageRoute(builder: (context) => const MainPage()),
           );
         },
-        backgroundColor: Cores.dark_blue,
+        backgroundColor: Cores.blue,
         child: const Icon(Icons.navigation),
       ),
     );

@@ -20,8 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'APP TCC',
-      theme: ThemeData.dark(),
-      darkTheme: ThemeData.dark(),
+      theme: Session.darkMode ? ThemeData.dark() : ThemeData.light(),
       home: const MainPage(),
     );
   }
@@ -40,8 +39,18 @@ class _MainPage extends State<MainPage> {
   void verificationToken() async {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
+    String? firstAcess = prefs.getString('firstAcess');
+    bool? darkMode = prefs.getBool('darkMode');
     String? url = prefs.getString('url');
     String? env = prefs.getString('env');
+
+    if (firstAcess == null) {
+      await switchLigthTheme();
+    }
+
+    if (darkMode == false) {
+      Session.darkMode = false;
+    }
 
     if (url != null) {
       Session.baseUrl = url.toString();
@@ -95,12 +104,111 @@ class _MainPage extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Cores.dark_black,
+        backgroundColor: Cores.black,
       ),
-      backgroundColor: Cores.dark_black,
+      backgroundColor: Cores.black,
       body: Center(
         child: CircularProgressIndicator(
-          color: Cores.dark_blue_heavy,
+          color: Cores.blueHeavy,
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> switchLigthTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(40),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Bem vindo ao app nutricional, neste momento pedimos que informe com qual tema deseja utilizar nosso APP, mas lembre-se que essa configuração pode ser alterada mais tarde.',
+                        style: TextStyle(fontSize: 28),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async => {
+                        await prefs.setString('firstAcess', 'não'),
+                        await prefs.setBool('darkMode', false),
+                        Navigator.pop(context)
+                      },
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        textStyle: MaterialStateProperty.all(
+                          TextStyle(
+                            color: Cores.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Light',
+                        style: TextStyle(
+                          color: Cores.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async => {
+                        await prefs.setString('firstAcess', 'não'),
+                        await prefs.setBool('darkMode', true),
+                        Navigator.pop(context)
+                      },
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.black),
+                        textStyle: MaterialStateProperty.all(
+                          TextStyle(
+                            color: Cores.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Dark',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
