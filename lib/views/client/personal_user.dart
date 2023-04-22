@@ -354,7 +354,25 @@ class _PersonalUserState extends State<PersonalUser> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: TextField(
+                        child: errorPhone ? TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.phone_iphone_outlined),
+                            label: const Text('Telefone'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            errorText: 'Tamanho mínimo não atingido',
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['phone'] = value;
+                          },
+                          maxLength: 11,
+                          controller: TextEditingController(text: userReceived['phone']),
+                          keyboardType: TextInputType.phone,
+                        ) : TextField(
                           decoration: InputDecoration(
                             icon: const Icon(Icons.phone_iphone_outlined),
                             label: const Text('Telefone'),
