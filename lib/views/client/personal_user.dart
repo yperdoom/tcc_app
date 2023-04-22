@@ -25,33 +25,33 @@ class _PersonalUserState extends State<PersonalUser> {
   bool errorPhone = false;
   bool errorDocument = false;
   var statesReceived = [
-    {"state": "Acre", "acronym": "AC"},
-    {"state": "Alagoas", "acronym": "AL"},
-    {"state": "Amapá", "acronym": "AP"},
-    {"state": "Amazonas", "acronym": "AM"},
-    {"state": "Bahia", "acronym": "BA"},
-    {"state": "Ceará", "acronym": "CE"},
-    {"state": "Distrito Federal", "acronym": "DF"},
-    {"state": "Espírito Santo", "acronym": "ES"},
-    {"state": "Goiás", "acronym": "GO"},
-    {"state": "Maranhão", "acronym": "MA"},
-    {"state": "Mato Grosso", "acronym": "MT"},
-    {"state": "Mato Grosso do Sul", "acronym": "MS"},
-    {"state": "Minas Gerais", "acronym": "MG"},
-    {"state": "Pará", "acronym": "PA"},
-    {"state": "Paraíba", "acronym": "PB"},
-    {"state": "Paraná", "acronym": "PR"},
-    {"state": "Pernambuco", "acronym": "PE"},
-    {"state": "Piauí", "acronym": "PI"},
-    {"state": "Rio de Janeiro", "acronym": "RJ"},
-    {"state": "Rio Grande do Norte", "acronym": "RN"},
-    {"state": "Rio Grande do Sul", "acronym": "RS"},
-    {"state": "Rondônia", "acronym": "RO"},
-    {"state": "Roraima", "acronym": "RR"},
-    {"state": "Santa Catarina", "acronym": "SC"},
-    {"state": "São Paulo", "acronym": "SP"},
-    {"state": "Sergipe", "acronym": "SE"},
-    {"state": "Tocantins", "acronym": "TO"},
+    {"code": 1, "value": "AC", "name": "Acre"},
+    {"code": 2, "value": "AL", "name": "Alagoas"},
+    {"code": 3, "value": "AP", "name": "Amapá"},
+    {"code": 4, "value": "AM", "name": "Amazonas"},
+    {"code": 5, "value": "BA", "name": "Bahia"},
+    {"code": 6, "value": "CE", "name": "Ceará"},
+    {"code": 7, "value": "DF", "name": "Distrito Federal"},
+    {"code": 8, "value": "ES", "name": "Espírito Santo"},
+    {"code": 9, "value": "GO", "name": "Goiás"},
+    {"code": 10, "value": "MA", "name": "Maranhão"},
+    {"code": 11, "value": "MT", "name": "Mato Grosso"},
+    {"code": 12, "value": "MS", "name": "Mato Grosso do Sul"},
+    {"code": 13, "value": "MG", "name": "Minas Gerais"},
+    {"code": 14, "value": "PA", "name": "Pará"},
+    {"code": 15, "value": "PB", "name": "Paraíba"},
+    {"code": 16, "value": "PR", "name": "Paraná"},
+    {"code": 17, "value": "PE", "name": "Pernambuco"},
+    {"code": 18, "value": "PI", "name": "Piauí"},
+    {"code": 19, "value": "RJ", "name": "Rio de Janeiro"},
+    {"code": 20, "value": "RN", "name": "Rio Grande do Norte"},
+    {"code": 21, "value": "RS", "name": "Rio Grande do Sul"},
+    {"code": 22, "value": "RO", "name": "Rondônia"},
+    {"code": 23, "value": "RR", "name": "Roraima"},
+    {"code": 24, "value": "SC", "name": "Santa Catarina"},
+    {"code": 25, "value": "SP", "name": "São Paulo"},
+    {"code": 26, "value": "SE", "name": "Sergipe"},
+    {"code": 27, "value": "TO", "name": "Tocantins"},
   ];
 
   @override
@@ -226,7 +226,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                     borderRadius: BorderRadius.circular(40),
                                   ),
                                 ),
-                                backgroundColor: MaterialStateProperty.all(Cores. blue),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Cores.blue),
                                 textStyle: MaterialStateProperty.all(
                                   TextStyle(
                                     color: Cores.white,
@@ -247,6 +248,53 @@ class _PersonalUserState extends State<PersonalUser> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.remove('token');
+                                await prefs.remove('scope');
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainPage()),
+                                );
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                ),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Cores.redExit),
+                                textStyle: MaterialStateProperty.all(
+                                  TextStyle(
+                                    color: Cores.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Sair',
+                                style: TextStyle(
+                                  color: Cores.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 );
@@ -255,24 +303,10 @@ class _PersonalUserState extends State<PersonalUser> {
           )
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     final prefs = await SharedPreferences.getInstance();
-      //     await prefs.remove('token');
-      //     await prefs.remove('scope');
-      //     Navigator.pushReplacement(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => const MainPage()),
-      //     );
-      //   },
-      //   backgroundColor: Cores.blue,
-      //   child: const Icon(Icons.navigation),
-      // ),
     );
   }
 
   void _editFood() async {
-
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -317,7 +351,8 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['name'] = value;
                           },
                           maxLength: 30,
-                          controller: TextEditingController(text: userReceived['name']),
+                          controller:
+                              TextEditingController(text: userReceived['name']),
                           keyboardType: TextInputType.name,
                         ),
                       ),
@@ -343,7 +378,8 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['email'] = value;
                           },
                           maxLength: 30,
-                          controller: TextEditingController(text: userReceived['email']),
+                          controller: TextEditingController(
+                              text: userReceived['email']),
                           keyboardType: TextInputType.emailAddress,
                         ),
                       ),
@@ -354,52 +390,56 @@ class _PersonalUserState extends State<PersonalUser> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: errorPhone ? TextField(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.phone_iphone_outlined),
-                            label: const Text('Telefone'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            errorText: 'Tamanho mínimo não atingido',
-                            border: const OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            userUpdate['phone'] = value;
-                            if (value.length == 11) {
-                              errorPhone = false;
-                              Navigator.pop(context);
-                              _editFood();
-                            }
-                          },
-                          maxLength: 11,
-                          controller: TextEditingController(text: userReceived['phone']),
-                          keyboardType: TextInputType.phone,
-                        ) : TextField(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.phone_iphone_outlined),
-                            label: const Text('Telefone'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            userUpdate['phone'] = value;
-                            if (value.length == 11) {
-                              errorPhone = false;
-                              Navigator.pop(context);
-                              _editFood();
-                            }
-                          },
-                          maxLength: 11,
-                          controller: TextEditingController(text: userReceived['phone']),
-                          keyboardType: TextInputType.phone,
-                        ),
+                        child: errorPhone
+                            ? TextField(
+                                decoration: InputDecoration(
+                                  icon: const Icon(Icons.phone_iphone_outlined),
+                                  label: const Text('Telefone'),
+                                  labelStyle: TextStyle(
+                                    color: Cores.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                  errorText: 'Tamanho mínimo não atingido',
+                                  border: const OutlineInputBorder(),
+                                ),
+                                onChanged: (value) {
+                                  userUpdate['phone'] = value;
+                                  if (value.length == 11) {
+                                    errorPhone = false;
+                                    Navigator.pop(context);
+                                    _editFood();
+                                  }
+                                },
+                                maxLength: 11,
+                                controller: TextEditingController(
+                                    text: userReceived['phone']),
+                                keyboardType: TextInputType.phone,
+                              )
+                            : TextField(
+                                decoration: InputDecoration(
+                                  icon: const Icon(Icons.phone_iphone_outlined),
+                                  label: const Text('Telefone'),
+                                  labelStyle: TextStyle(
+                                    color: Cores.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                onChanged: (value) {
+                                  userUpdate['phone'] = value;
+                                  if (value.length == 11) {
+                                    errorPhone = false;
+                                    Navigator.pop(context);
+                                    _editFood();
+                                  }
+                                },
+                                maxLength: 11,
+                                controller: TextEditingController(
+                                    text: userReceived['phone']),
+                                keyboardType: TextInputType.phone,
+                              ),
                       ),
                     ],
                   ),
@@ -408,52 +448,56 @@ class _PersonalUserState extends State<PersonalUser> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: errorDocument ? TextField(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.contacts_outlined),
-                            label: const Text('Documento'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            errorText: 'Tamanho mínimo não atingido',
-                            border: const OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            userUpdate['document'] = value;
-                            if (value.length == 11) {
-                              errorDocument = false;
-                              Navigator.pop(context);
-                              _editFood();
-                            }
-                          },
-                          maxLength: 11,
-                          controller: TextEditingController(text: userReceived['document']),
-                          keyboardType: TextInputType.number,
-                        ) : TextField(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.contacts_outlined),
-                            label: const Text('Documento'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            userUpdate['document'] = value;
-                            if (value.length == 11) {
-                              errorDocument = false;
-                              Navigator.pop(context);
-                              _editFood();
-                            }
-                          },
-                          maxLength: 11,
-                          controller: TextEditingController(text: userReceived['document']),
-                          keyboardType: TextInputType.number,
-                        ),
+                        child: errorDocument
+                            ? TextField(
+                                decoration: InputDecoration(
+                                  icon: const Icon(Icons.contacts_outlined),
+                                  label: const Text('Documento'),
+                                  labelStyle: TextStyle(
+                                    color: Cores.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                  errorText: 'Tamanho mínimo não atingido',
+                                  border: const OutlineInputBorder(),
+                                ),
+                                onChanged: (value) {
+                                  userUpdate['document'] = value;
+                                  if (value.length == 11) {
+                                    errorDocument = false;
+                                    Navigator.pop(context);
+                                    _editFood();
+                                  }
+                                },
+                                maxLength: 11,
+                                controller: TextEditingController(
+                                    text: userReceived['document']),
+                                keyboardType: TextInputType.number,
+                              )
+                            : TextField(
+                                decoration: InputDecoration(
+                                  icon: const Icon(Icons.contacts_outlined),
+                                  label: const Text('Documento'),
+                                  labelStyle: TextStyle(
+                                    color: Cores.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                onChanged: (value) {
+                                  userUpdate['document'] = value;
+                                  if (value.length == 11) {
+                                    errorDocument = false;
+                                    Navigator.pop(context);
+                                    _editFood();
+                                  }
+                                },
+                                maxLength: 11,
+                                controller: TextEditingController(
+                                    text: userReceived['document']),
+                                keyboardType: TextInputType.number,
+                              ),
                       ),
                     ],
                   ),
@@ -478,12 +522,14 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['city'] = value;
                           },
                           maxLength: 30,
-                          controller: TextEditingController(text: userReceived['city']),
+                          controller:
+                              TextEditingController(text: userReceived['city']),
                           keyboardType: TextInputType.text,
                         ),
                       ),
+                      const SizedBox(width: 10),
                       Expanded(
-                        child: TextField(
+                        child: DropdownButtonFormField<Object>(
                           decoration: InputDecoration(
                             label: const Text('Estado'),
                             labelStyle: TextStyle(
@@ -493,14 +539,19 @@ class _PersonalUserState extends State<PersonalUser> {
                             ),
                             border: const OutlineInputBorder(),
                           ),
-                          onChanged: (value) {
-                            userUpdate['state'] = value;
+                          isExpanded: true,
+                          value: userReceived['state'],
+                          items: statesReceived
+                              .map<DropdownMenuItem<Object>>((estado) {
+                            return DropdownMenuItem(
+                              value: estado['value'],
+                              child: Text('${estado['value']}'),
+                            );
+                          }).toList(),
+                          hint: const Text('Selecione uma marca'),
+                          onChanged: (newValue) {
+                            userUpdate['state'] = newValue;
                           },
-                          onTap: () => {},
-                          readOnly: true,
-                          maxLength: 2,
-                          controller: TextEditingController(text: userReceived['state']),
-                          keyboardType: TextInputType.none,
                         ),
                       ),
                     ],
@@ -522,7 +573,6 @@ class _PersonalUserState extends State<PersonalUser> {
                           },
                         ),
                       ),
-                      
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -540,7 +590,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                 borderRadius: BorderRadius.circular(40),
                               ),
                             ),
-                            backgroundColor: MaterialStateProperty.all(Cores.blue),
+                            backgroundColor:
+                                MaterialStateProperty.all(Cores.blue),
                             textStyle: MaterialStateProperty.all(
                               TextStyle(
                                 color: Cores.white,
@@ -570,7 +621,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                 borderRadius: BorderRadius.circular(40),
                               ),
                             ),
-                            backgroundColor: MaterialStateProperty.all(Cores. blue),
+                            backgroundColor:
+                                MaterialStateProperty.all(Cores.blue),
                             textStyle: MaterialStateProperty.all(
                               TextStyle(
                                 color: Cores.white,
@@ -614,7 +666,8 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedPhone = '';
 
     if (phone.length == 11) {
-      formattedPhone = '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+      formattedPhone =
+          '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
     }
 
     return formattedPhone;
@@ -625,20 +678,21 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedDocument = '';
 
     if (document.length == 11) {
-      formattedDocument = '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
+      formattedDocument =
+          '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
     }
-    
+
     return formattedDocument;
   }
 
   void _saveUser() async {
-    if(userUpdate['phone'].length < 11){
+    if (userUpdate['phone'].length < 11) {
       errorPhone = true;
     }
-    if(userUpdate['document'].length < 11){
+    if (userUpdate['document'].length < 11) {
       errorDocument = true;
     }
-    if(errorDocument == true || errorPhone == true){
+    if (errorDocument == true || errorPhone == true) {
       Navigator.pop(context);
       _editFood();
       showDialog(
@@ -653,14 +707,13 @@ class _PersonalUserState extends State<PersonalUser> {
                 width: double.infinity,
                 height: 150,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Cores.redError
-                ),
+                    borderRadius: BorderRadius.circular(15),
+                    color: Cores.redError),
                 padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-                child: const Text('Confira as informações inseridas e tente novamente',
-                  style: TextStyle(fontSize: 24, color: Colors.white),
-                  textAlign: TextAlign.center
-                ),
+                child: const Text(
+                    'Confira as informações inseridas e tente novamente',
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                    textAlign: TextAlign.center),
               ),
             ],
           ),
@@ -668,7 +721,6 @@ class _PersonalUserState extends State<PersonalUser> {
       );
     } else {
       if (Session.env == 'local') {
-
         userReceived = userUpdate;
         Navigator.pop(context);
         setState(() {});

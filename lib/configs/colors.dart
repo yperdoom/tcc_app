@@ -13,5 +13,6 @@ class Cores {
   static Color blueOpaque = const Color.fromARGB(255, 33, 149, 243);
   static Color blueClear =
       Session.darkMode ? const Color(0xffBDD6D8) : const Color(0xff1E2429);
-  static Color redError = Color.fromARGB(255, 141, 9, 0);
+  static Color redError = const Color.fromARGB(255, 141, 9, 0);
+  static Color redExit = const Color.fromARGB(255, 201, 13, 0);
 }
