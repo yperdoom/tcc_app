@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
@@ -19,10 +21,43 @@ class PersonalUser extends StatefulWidget {
 
 class _PersonalUserState extends State<PersonalUser> {
   var userReceived = {};
-  var statesReceived = [];
+  var userUpdate = {};
+  bool errorPhone = false;
+  bool errorDocument = false;
+  var statesReceived = [
+    {"state": "Acre", "acronym": "AC"},
+    {"state": "Alagoas", "acronym": "AL"},
+    {"state": "Amapá", "acronym": "AP"},
+    {"state": "Amazonas", "acronym": "AM"},
+    {"state": "Bahia", "acronym": "BA"},
+    {"state": "Ceará", "acronym": "CE"},
+    {"state": "Distrito Federal", "acronym": "DF"},
+    {"state": "Espírito Santo", "acronym": "ES"},
+    {"state": "Goiás", "acronym": "GO"},
+    {"state": "Maranhão", "acronym": "MA"},
+    {"state": "Mato Grosso", "acronym": "MT"},
+    {"state": "Mato Grosso do Sul", "acronym": "MS"},
+    {"state": "Minas Gerais", "acronym": "MG"},
+    {"state": "Pará", "acronym": "PA"},
+    {"state": "Paraíba", "acronym": "PB"},
+    {"state": "Paraná", "acronym": "PR"},
+    {"state": "Pernambuco", "acronym": "PE"},
+    {"state": "Piauí", "acronym": "PI"},
+    {"state": "Rio de Janeiro", "acronym": "RJ"},
+    {"state": "Rio Grande do Norte", "acronym": "RN"},
+    {"state": "Rio Grande do Sul", "acronym": "RS"},
+    {"state": "Rondônia", "acronym": "RO"},
+    {"state": "Roraima", "acronym": "RR"},
+    {"state": "Santa Catarina", "acronym": "SC"},
+    {"state": "São Paulo", "acronym": "SP"},
+    {"state": "Sergipe", "acronym": "SE"},
+    {"state": "Tocantins", "acronym": "TO"},
+  ];
 
   @override
   void initState() {
+    _getUser();
+    userUpdate = userReceived;
     super.initState();
   }
 
@@ -71,195 +106,573 @@ class _PersonalUserState extends State<PersonalUser> {
               ),
             ),
           ),
-          _EditUser(),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                    top: 5,
+                    bottom: 8,
+                    right: 10,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: AutoSizeText(
+                              'Bem vindo ${userReceived['name']}, nesta tela você poderá controlar todas as informações referente a sua conta.',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Expanded(
+                            child: AutoSizeText(
+                              'Informações cadastradas: ',
+                              style: TextStyle(fontSize: 18),
+                              maxLines: 1,
+                              minFontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: AutoSizeText(
+                              'E-mail cadastrado: ${userReceived['email']}',
+                              style: const TextStyle(fontSize: 18),
+                              maxLines: 1,
+                              minFontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: AutoSizeText(
+                              'Telefone cadastrado: ${_regexPhone()}',
+                              style: const TextStyle(fontSize: 18),
+                              maxLines: 1,
+                              minFontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AutoSizeText(
+                              'Documento cadastrado: ${_regexDocument()}',
+                              style: const TextStyle(fontSize: 18),
+                              maxLines: 1,
+                              minFontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AutoSizeText(
+                              'Cidade cadastrada: ${userReceived['city']} - ${userReceived['state']}',
+                              style: const TextStyle(fontSize: 18),
+                              maxLines: 1,
+                              minFontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AutoSizeText(
+                              'Aniversário cadastrado: ${_regexBirthday()}',
+                              style: const TextStyle(fontSize: 18),
+                              maxLines: 1,
+                              minFontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () => _editFood(),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                ),
+                                backgroundColor: MaterialStateProperty.all(Cores. blue),
+                                textStyle: MaterialStateProperty.all(
+                                  TextStyle(
+                                    color: Cores.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Editar cadastro',
+                                style: TextStyle(
+                                  color: Cores.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.remove('token');
-          await prefs.remove('scope');
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainPage()),
-          );
-        },
-        backgroundColor: Cores.blue,
-        child: const Icon(Icons.navigation),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     final prefs = await SharedPreferences.getInstance();
+      //     await prefs.remove('token');
+      //     await prefs.remove('scope');
+      //     Navigator.pushReplacement(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const MainPage()),
+      //     );
+      //   },
+      //   backgroundColor: Cores.blue,
+      //   child: const Icon(Icons.navigation),
+      // ),
     );
   }
 
-  Widget _EditUser() {
-    _getUser();
+  void _editFood() async {
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                label: const Text('Nome'),
-                labelStyle: TextStyle(
-                  color: Cores.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-                border: const OutlineInputBorder(),
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Editar informações: ',
+                          style: TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.person_outlined),
+                            label: const Text('Nome'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['name'] = value;
+                          },
+                          maxLength: 30,
+                          controller: TextEditingController(text: userReceived['name']),
+                          keyboardType: TextInputType.name,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.mail_outlined),
+                            label: const Text('E-mail'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['email'] = value;
+                          },
+                          maxLength: 30,
+                          controller: TextEditingController(text: userReceived['email']),
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.phone_iphone_outlined),
+                            label: const Text('Telefone'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['phone'] = value;
+                          },
+                          maxLength: 11,
+                          controller: TextEditingController(text: userReceived['phone']),
+                          keyboardType: TextInputType.phone,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: errorDocument ? TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.contacts_outlined),
+                            label: const Text('Documento'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            errorText: 'Tamanho mínimo não atingido',
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['document'] = value;
+                            if (value.length == 11) {
+                              errorDocument = false;
+                            }
+                            setState(() {});
+                          },
+                          maxLength: 11,
+                          controller: TextEditingController(text: userReceived['document']),
+                          keyboardType: TextInputType.number,
+                        ) : TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.contacts_outlined),
+                            label: const Text('Documento'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['document'] = value;
+                            if (value.length == 11) {
+                              errorDocument = false;
+                            }
+                            setState(() {});
+                          },
+                          maxLength: 11,
+                          controller: TextEditingController(text: userReceived['document']),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.home_outlined),
+                            label: const Text('Cidade'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['city'] = value;
+                          },
+                          maxLength: 30,
+                          controller: TextEditingController(text: userReceived['city']),
+                          keyboardType: TextInputType.text,
+                        ),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            label: const Text('Estado'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            userUpdate['state'] = value;
+                          },
+                          onTap: () => {},
+                          readOnly: true,
+                          maxLength: 2,
+                          controller: TextEditingController(text: userReceived['state']),
+                          keyboardType: TextInputType.none,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 80,
+                        width: 300,
+                        child: CupertinoDatePicker(
+                          mode: CupertinoDatePickerMode.date,
+                          initialDateTime: userReceived['birthday'],
+                          onDateTimeChanged: (newBirthdayDate) {
+                            setState(() {
+                              userUpdate['birthday'] = newBirthdayDate;
+                            });
+                          },
+                        ),
+                      ),
+                      
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 120,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all(Cores.blue),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                color: Cores.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Cancelar',
+                            style: TextStyle(
+                              color: Cores.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 120,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () => _saveUser(),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all(Cores. blue),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                color: Cores.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Salvar',
+                            style: TextStyle(
+                              color: Cores.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              controller: TextEditingController(text: userReceived['name']),
-              keyboardType: TextInputType.number,
-              readOnly: true,
             ),
-            const SizedBox(height: 15),
-            TextField(
-              decoration: InputDecoration(
-                label: const Text('E-mail'),
-                labelStyle: TextStyle(
-                  color: Cores.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: userReceived['email']),
-              keyboardType: TextInputType.number,
-              readOnly: true,
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              decoration: InputDecoration(
-                label: const Text('Telefone'),
-                labelStyle: TextStyle(
-                  color: Cores.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: userReceived['phone']),
-              keyboardType: TextInputType.number,
-              readOnly: true,
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              decoration: InputDecoration(
-                label: const Text('Documento'),
-                labelStyle: TextStyle(
-                  color: Cores.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: userReceived['document']),
-              keyboardType: TextInputType.number,
-              readOnly: true,
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              decoration: InputDecoration(
-                label: const Text('Cidade'),
-                labelStyle: TextStyle(
-                  color: Cores.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: userReceived['city']),
-              keyboardType: TextInputType.number,
-              readOnly: true,
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              decoration: InputDecoration(
-                label: const Text('Estado'),
-                labelStyle: TextStyle(
-                  color: Cores.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: userReceived['state']),
-              keyboardType: TextInputType.number,
-              readOnly: true,
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              decoration: InputDecoration(
-                label: const Text('Aniversário'),
-                labelStyle: TextStyle(
-                  color: Cores.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: userReceived['birthday']),
-              keyboardType: TextInputType.number,
-              readOnly: true,
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  void _editFood() async {
-    print('pq nom trabaia?');
+  String _regexBirthday() {
+    DateTime birthday = userReceived['birthday'];
+    String formattedBirthday = '';
+
+    formattedBirthday = '${birthday.day}/${birthday.month}/${birthday.year}';
+
+    return formattedBirthday;
+  }
+
+  String _regexPhone() {
+    String phone = userReceived['phone'];
+    String formattedPhone = '';
+
+    if (phone.length == 11) {
+      formattedPhone = '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+    }
+
+    return formattedPhone;
+  }
+
+  String _regexDocument() {
+    String document = userReceived['document'];
+    String formattedDocument = '';
+
+    if (document.length == 11) {
+      formattedDocument = '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
+    }
+    
+    return formattedDocument;
+  }
+
+  void _saveUser() async {
+    if(userUpdate['phone'].length < 11){
+      errorPhone = true;
+    }
+    if(userUpdate['document'].length < 11){
+      errorDocument = true;
+    }
+    if(errorDocument == true || errorPhone == true){
+      Navigator.pop(context);
+      _editFood();
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(10),
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Cores.redError
+                ),
+                padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+                child: const Text('Confira as informações inseridas e tente novamente',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                  textAlign: TextAlign.center
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      if (Session.env == 'local') {
+
+        userReceived = userUpdate;
+        Navigator.pop(context);
+        setState(() {});
+      } else {
+        http.Response response = await http.get(
+          Uri.parse('$baseUrl/prescriptions'),
+        );
+        print(response);
+        if (response.body.isNotEmpty) {
+          // mealReceived = response;
+        }
+      }
+    }
   }
 
   void _getUser() async {
+    errorDocument == false;
+    errorPhone == false;
+
     if (Session.env == 'local') {
-      const user = {
+      var user = {
         "user_id": 2,
         "name": "Pedro",
         "email": "pedro.tepo@mail.com",
         "password": "dasdasad",
         "scope": "client",
-        "phone": "5411111111",
+        "phone": "54211111111",
         "document": "00011122254",
         "city": "Nonoai",
         "state": "RS",
-        "birthday": "08/09/2000",
+        "birthday": DateTime.utc(2000, 09, 08),
         "updated_at": "05/10/2020 05:07"
       };
 
-      const states = [
-        {"state": "Acre", "acronym": "AC"},
-        {"state": "Alagoas", "acronym": "AL"},
-        {"state": "Amapá", "acronym": "AP"},
-        {"state": "Amazonas", "acronym": "AM"},
-        {"state": "Bahia", "acronym": "BA"},
-        {"state": "Ceará", "acronym": "CE"},
-        {"state": "Distrito Federal", "acronym": "DF"},
-        {"state": "Espírito Santo", "acronym": "ES"},
-        {"state": "Goiás", "acronym": "GO"},
-        {"state": "Maranhão", "acronym": "MA"},
-        {"state": "Mato Grosso", "acronym": "MT"},
-        {"state": "Mato Grosso do Sul", "acronym": "MS"},
-        {"state": "Minas Gerais", "acronym": "MG"},
-        {"state": "Pará", "acronym": "PA"},
-        {"state": "Paraíba", "acronym": "PB"},
-        {"state": "Paraná", "acronym": "PR"},
-        {"state": "Pernambuco", "acronym": "PE"},
-        {"state": "Piauí", "acronym": "PI"},
-        {"state": "Rio de Janeiro", "acronym": "RJ"},
-        {"state": "Rio Grande do Norte", "acronym": "RN"},
-        {"state": "Rio Grande do Sul", "acronym": "RS"},
-        {"state": "Rondônia", "acronym": "RO"},
-        {"state": "Roraima", "acronym": "RR"},
-        {"state": "Santa Catarina", "acronym": "SC"},
-        {"state": "São Paulo", "acronym": "SP"},
-        {"state": "Sergipe", "acronym": "SE"},
-        {"state": "Tocantins", "acronym": "TO"},
-      ];
-
-      statesReceived = states;
       userReceived = user;
     } else {
       http.Response response = await http.get(

@@ -64,11 +64,11 @@ class _HomeUserState extends State<HomeUser> {
                       ),
                     ],
                   ),
-                  const Row(
+                  Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                    children: const [
                       Expanded(
                         child: Text(
                           'Aqui voce encontra as receitas criadas por seu profissional e as receitas adaptadas por você.',
