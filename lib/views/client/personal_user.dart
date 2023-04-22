@@ -1,5 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
@@ -19,6 +19,7 @@ class PersonalUser extends StatefulWidget {
 
 class _PersonalUserState extends State<PersonalUser> {
   var userReceived = {};
+  var statesReceived = [];
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _PersonalUserState extends State<PersonalUser> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        padding: const EdgeInsets.only(top: 40, bottom: 12),
+                        padding: const EdgeInsets.only(top: 50, bottom: 12),
                         child: Text(
                           'Informações Pessoais',
                           style: TextStyle(
@@ -92,39 +93,119 @@ class _PersonalUserState extends State<PersonalUser> {
   Widget _EditUser() {
     _getUser();
 
-    return Column(
-      children: [
-        Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              child: Text(
-                'Não temos nada aqui no momento :(',
-                style: TextStyle(
+            TextField(
+              decoration: InputDecoration(
+                label: const Text('Nome'),
+                labelStyle: TextStyle(
                   color: Cores.white,
-                  fontSize: 18,
                   fontWeight: FontWeight.w600,
+                  fontSize: 18,
                 ),
+                border: const OutlineInputBorder(),
               ),
+              controller: TextEditingController(text: userReceived['name']),
+              keyboardType: TextInputType.number,
+              readOnly: true,
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              decoration: InputDecoration(
+                label: const Text('E-mail'),
+                labelStyle: TextStyle(
+                  color: Cores.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+                border: const OutlineInputBorder(),
+              ),
+              controller: TextEditingController(text: userReceived['email']),
+              keyboardType: TextInputType.number,
+              readOnly: true,
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              decoration: InputDecoration(
+                label: const Text('Telefone'),
+                labelStyle: TextStyle(
+                  color: Cores.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+                border: const OutlineInputBorder(),
+              ),
+              controller: TextEditingController(text: userReceived['phone']),
+              keyboardType: TextInputType.number,
+              readOnly: true,
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              decoration: InputDecoration(
+                label: const Text('Documento'),
+                labelStyle: TextStyle(
+                  color: Cores.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+                border: const OutlineInputBorder(),
+              ),
+              controller: TextEditingController(text: userReceived['document']),
+              keyboardType: TextInputType.number,
+              readOnly: true,
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              decoration: InputDecoration(
+                label: const Text('Cidade'),
+                labelStyle: TextStyle(
+                  color: Cores.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+                border: const OutlineInputBorder(),
+              ),
+              controller: TextEditingController(text: userReceived['city']),
+              keyboardType: TextInputType.number,
+              readOnly: true,
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              decoration: InputDecoration(
+                label: const Text('Estado'),
+                labelStyle: TextStyle(
+                  color: Cores.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+                border: const OutlineInputBorder(),
+              ),
+              controller: TextEditingController(text: userReceived['state']),
+              keyboardType: TextInputType.number,
+              readOnly: true,
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              decoration: InputDecoration(
+                label: const Text('Aniversário'),
+                labelStyle: TextStyle(
+                  color: Cores.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+                border: const OutlineInputBorder(),
+              ),
+              controller: TextEditingController(text: userReceived['birthday']),
+              keyboardType: TextInputType.number,
+              readOnly: true,
             ),
           ],
         ),
-        Row(
-          children: [
-            Switch(
-              value: Session.darkMode,
-              activeColor: Cores.blue,
-              onChanged: (bool value) {
-                setState(() async {
-                  Session.darkMode = value;
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.setBool('darkMode', value);
-                });
-                setState(() {});
-              },
-            )
-          ],
-        ),
-      ],
+      ),
     );
   }
 
@@ -136,18 +217,49 @@ class _PersonalUserState extends State<PersonalUser> {
     if (Session.env == 'local') {
       const user = {
         "user_id": 2,
-        "name": "feijão",
-        "description": "feijao branco cozido",
-        "type": "grão",
-        "color": "preto",
-        "weight": 100,
-        "calorie": 103,
-        "protein": 6.6,
-        "lipid": 0.5,
-        "carbohydrate": 14.6,
-        "updated_at": '05/10/2020'
+        "name": "Pedro",
+        "email": "pedro.tepo@mail.com",
+        "password": "dasdasad",
+        "scope": "client",
+        "phone": "5411111111",
+        "document": "00011122254",
+        "city": "Nonoai",
+        "state": "RS",
+        "birthday": "08/09/2000",
+        "updated_at": "05/10/2020 05:07"
       };
 
+      const states = [
+        {"state": "Acre", "acronym": "AC"},
+        {"state": "Alagoas", "acronym": "AL"},
+        {"state": "Amapá", "acronym": "AP"},
+        {"state": "Amazonas", "acronym": "AM"},
+        {"state": "Bahia", "acronym": "BA"},
+        {"state": "Ceará", "acronym": "CE"},
+        {"state": "Distrito Federal", "acronym": "DF"},
+        {"state": "Espírito Santo", "acronym": "ES"},
+        {"state": "Goiás", "acronym": "GO"},
+        {"state": "Maranhão", "acronym": "MA"},
+        {"state": "Mato Grosso", "acronym": "MT"},
+        {"state": "Mato Grosso do Sul", "acronym": "MS"},
+        {"state": "Minas Gerais", "acronym": "MG"},
+        {"state": "Pará", "acronym": "PA"},
+        {"state": "Paraíba", "acronym": "PB"},
+        {"state": "Paraná", "acronym": "PR"},
+        {"state": "Pernambuco", "acronym": "PE"},
+        {"state": "Piauí", "acronym": "PI"},
+        {"state": "Rio de Janeiro", "acronym": "RJ"},
+        {"state": "Rio Grande do Norte", "acronym": "RN"},
+        {"state": "Rio Grande do Sul", "acronym": "RS"},
+        {"state": "Rondônia", "acronym": "RO"},
+        {"state": "Roraima", "acronym": "RR"},
+        {"state": "Santa Catarina", "acronym": "SC"},
+        {"state": "São Paulo", "acronym": "SP"},
+        {"state": "Sergipe", "acronym": "SE"},
+        {"state": "Tocantins", "acronym": "TO"},
+      ];
+
+      statesReceived = states;
       userReceived = user;
     } else {
       http.Response response = await http.get(

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 
+import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -30,13 +31,13 @@ class _HomeUserState extends State<HomeUser> {
             tag: 'dash',
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomRight,
                   end: Alignment.bottomLeft,
                   colors: <Color>[
-                    Color(0xff1E4CFF),
-                    Color(0xff517AFF),
+                    Cores.blueHeavy,
+                    Cores.blueLight,
                   ],
                   tileMode: TileMode.mirror,
                 ),
@@ -63,11 +64,11 @@ class _HomeUserState extends State<HomeUser> {
                       ),
                     ],
                   ),
-                  Row(
+                  const Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
+                    children: [
                       Expanded(
                         child: Text(
                           'Aqui voce encontra as receitas criadas por seu profissional e as receitas adaptadas por você.',
@@ -87,9 +88,9 @@ class _HomeUserState extends State<HomeUser> {
                       horizontal: 10,
                       vertical: 8,
                     ),
-                    decoration: const BoxDecoration(
-                      color: Color(0xff1E2429),
-                      borderRadius: BorderRadius.all(
+                    decoration: BoxDecoration(
+                      color: Cores.blueDark,
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(30),
                       ),
                     ),

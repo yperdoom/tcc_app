@@ -32,27 +32,31 @@ class _ClientPage extends State<ClientPage> {
     return Scaffold(
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.info_outline_rounded),
+            icon: const Icon(Icons.info_outline_rounded),
             label: 'Infos',
+            backgroundColor: Cores.blueHeavy,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
+            icon: const Icon(Icons.home_rounded),
             label: 'Home',
+            backgroundColor: Cores.blueHeavy,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.fastfood_outlined),
+            icon: const Icon(Icons.fastfood_outlined),
             label: 'Food',
+            backgroundColor: Cores.blueHeavy,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined),
+            icon: const Icon(Icons.person_outlined),
             label: 'Persona',
+            backgroundColor: Cores.blueHeavy,
           )
         ],
         backgroundColor: Cores.blueHeavy,
         currentIndex: _selectedIndex,
-        selectedItemColor: Cores.white,
+        selectedItemColor: Cores.selectedIcon,
         onTap: (index) {
           _navigationWithNavBar(context, index);
         },
