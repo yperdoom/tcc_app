@@ -368,6 +368,11 @@ class _PersonalUserState extends State<PersonalUser> {
                           ),
                           onChanged: (value) {
                             userUpdate['phone'] = value;
+                            if (value.length == 11) {
+                              errorPhone = false;
+                              Navigator.pop(context);
+                              _editFood();
+                            }
                           },
                           maxLength: 11,
                           controller: TextEditingController(text: userReceived['phone']),
@@ -385,6 +390,11 @@ class _PersonalUserState extends State<PersonalUser> {
                           ),
                           onChanged: (value) {
                             userUpdate['phone'] = value;
+                            if (value.length == 11) {
+                              errorPhone = false;
+                              Navigator.pop(context);
+                              _editFood();
+                            }
                           },
                           maxLength: 11,
                           controller: TextEditingController(text: userReceived['phone']),
@@ -414,8 +424,9 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['document'] = value;
                             if (value.length == 11) {
                               errorDocument = false;
+                              Navigator.pop(context);
+                              _editFood();
                             }
-                            setState(() {});
                           },
                           maxLength: 11,
                           controller: TextEditingController(text: userReceived['document']),
@@ -435,8 +446,9 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['document'] = value;
                             if (value.length == 11) {
                               errorDocument = false;
+                              Navigator.pop(context);
+                              _editFood();
                             }
-                            setState(() {});
                           },
                           maxLength: 11,
                           controller: TextEditingController(text: userReceived['document']),
