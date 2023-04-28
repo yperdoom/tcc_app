@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +59,6 @@ class _PersonalUserState extends State<PersonalUser> {
   @override
   void initState() {
     _getUser();
-    userUpdate = userReceived;
     super.initState();
   }
 
@@ -565,10 +566,10 @@ class _PersonalUserState extends State<PersonalUser> {
                         width: 300,
                         child: CupertinoDatePicker(
                           mode: CupertinoDatePickerMode.date,
-                          initialDateTime: userReceived['birthday'],
+                          initialDateTime: DateTime.parse(userReceived['birthday'].toString()),
                           onDateTimeChanged: (newBirthdayDate) {
                             setState(() {
-                              userUpdate['birthday'] = newBirthdayDate;
+                              userUpdate['birthday'] = newBirthdayDate.toUtc();
                             });
                           },
                         ),
@@ -653,33 +654,36 @@ class _PersonalUserState extends State<PersonalUser> {
   }
 
   String _regexBirthday() {
-    DateTime birthday = userReceived['birthday'];
-    String formattedBirthday = '';
+    if (userReceived['birthday'] != null) {
+      DateTime birthday = DateTime.parse(userReceived['birthday'].toString());
+      String formattedBirthday = '';
 
-    formattedBirthday = '${birthday.day}/${birthday.month}/${birthday.year}';
+      formattedBirthday = '${birthday.day}/${birthday.month}/${birthday.year}';
 
-    return formattedBirthday;
+      return formattedBirthday;
+
+    } else {
+      return '08/08/2008';
+    }
   }
 
   String _regexPhone() {
-    String phone = userReceived['phone'];
-    String formattedPhone = '';
+    String phone = userReceived['phone'].toString();
+    String formattedPhone = '1234';
 
     if (phone.length == 11) {
-      formattedPhone =
-          '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+      formattedPhone = '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
     }
 
     return formattedPhone;
   }
 
   String _regexDocument() {
-    String document = userReceived['document'];
+    String document = userReceived['document'].toString();
     String formattedDocument = '';
 
     if (document.length == 11) {
-      formattedDocument =
-          '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
+      formattedDocument = '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
     }
 
     return formattedDocument;
@@ -740,6 +744,12 @@ class _PersonalUserState extends State<PersonalUser> {
     errorDocument == false;
     errorPhone == false;
 
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token').toString();
+    if (Session.userId == '') {
+      Session.userId = prefs.getString('userid').toString();
+    }
+
     if (Session.env == 'local') {
       var user = {
         "user_id": 2,
@@ -758,12 +768,48 @@ class _PersonalUserState extends State<PersonalUser> {
       userReceived = user;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescriptions'),
+        Uri.parse('$baseUrl/user/${Session.userId}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token
+        },
       );
-      print(response);
-      if (response.body.isNotEmpty) {
-        // mealReceived = response;
+
+      var body = await jsonDecode(response.body);
+      if (body.isNotEmpty) {
+        userReceived = body['body'];
+
+        // await _stringToDateTime(userReceived['birthday'].toString(), true);
+        setState(() {
+          
+        });
+        print(userReceived);
+        userUpdate = userReceived;
+
+        setState(() {
+          
+        });
       }
     }
   }
+
+  // Future<DateTime> _stringToDateTime(String timeString, bool isBirthday) async {
+  //   DateTime time = DateTime(2023);
+  //   int year = int.parse(timeString[6]+timeString[7]+timeString[8]+timeString[9]);
+  //   int month = int.parse(timeString[3]+timeString[4]);
+  //   int day = int.parse(timeString[0]+timeString[1]);
+
+  //   if(isBirthday == true) {
+  //     birthday = DateTime(year, month, day);
+  //   } else {
+  //     int hour = int.parse(timeString[11]+timeString[12]);
+  //     int minute = int.parse(timeString[14]+timeString[15]);
+  //     int second = int.parse(timeString[17]+timeString[18]);
+
+  //     time = DateTime(year, month, day, hour, minute, second);
+  //   }
+  //   print(birthday);
+
+  //   return time;
+  // }
 }

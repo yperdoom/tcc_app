@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:app_tcc/views/client_page.dart';
 import 'package:app_tcc/views/ip_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,6 +122,7 @@ class _LoginPage extends State<LoginPage> {
                                 fontSize: 14,
                               ),
                             ),
+                            keyboardType: TextInputType.emailAddress,
                             onChanged: _setEmail,
                           ),
                           const SizedBox(height: 15),
@@ -140,6 +143,7 @@ class _LoginPage extends State<LoginPage> {
                                 fontSize: 14,
                               ),
                             ),
+                            keyboardType: TextInputType.text,
                             onChanged: _setPassword,
                           ),
                           const SizedBox(height: 15),
@@ -260,14 +264,27 @@ class _LoginPage extends State<LoginPage> {
   void _login(BuildContext context) async {
     if (env == 'dev') {
       if (emailTemporary == 'admin' && passwordTemporary == 'admin') {
-        _toAdminLogin();
+        _toAdminLogin('j12hd9128djh12id3i2h923', 'admin', '1');
       }
       if (emailTemporary == 'client' && passwordTemporary == 'client') {
-        _toClientLogin();
+        _toClientLogin('j12hd9128djh12id3i2h923', 'client', '1');
       }
     }
 
-    http.Response response = await http.post(
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(10),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Cores.blueHeavy,
+          ),
+        ),
+      ),
+    );
+
+    var response = await http.post(
       Uri.parse('$baseUrl/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -278,15 +295,48 @@ class _LoginPage extends State<LoginPage> {
           'password': passwordTemporary,
         },
       ),
-    );
-    print(response);
-    print(response.body);
+    ).timeout(const Duration(seconds: 4),
+    onTimeout: () {
+      return http.Response('server_error', 400);
+  	});
+
+    if (response.statusCode == 400) {
+      Navigator.pop(context);
+      popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+    }
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    var body = await jsonDecode(response.body);
+
+    if (body['success'] == true) {
+      if (body['scope'] == 'admin') {
+        _toAdminLogin(body['token'], body['scope'], body['userId'].toString());
+      } else if (body['scope'] == 'client') {
+        _toClientLogin(body['token'], body['scope'], body['userId'].toString());
+      } else {
+        popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+      }
+    } else {
+      Navigator.pop(context);
+      if (body['message'] == 'field password not found') {
+        popupError(context, 'Não identificamos nenhuma senha no campo :( \n\n Pode inserir novamente?');
+      } else if (body['message'] == 'field email not found') {
+        popupError(context, 'Não identificamos nenhum e-mail no campo :( \n\n Pode inserir novamente?');
+      } else if (body['message'] == 'user not found' || body['message'] == 'password incorrect') {
+        popupError(context, 'Algum dos dados digitados não está batendo com nossa base de dados :( \n\n Pode conferir e digitar novamente?');
+      } else{
+        popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+      }
+    }
   }
 
-  void _toAdminLogin() async {
+  void _toAdminLogin(String token, String scope, String userId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', 'j12hd9128djh12id3i2h923');
-    await prefs.setString('scope', 'admin');
+    await prefs.setString('token', token);
+    await prefs.setString('scope', scope);
+    await prefs.setString('userid', userId);
+    Session.userId = userId;
     setState(() {
       Navigator.pushReplacement(
         context,
@@ -295,10 +345,11 @@ class _LoginPage extends State<LoginPage> {
     });
   }
 
-  void _toClientLogin() async {
+  void _toClientLogin(String token, String scope, String userId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', 'j12hd9128djh12id3i2h923');
-    await prefs.setString('scope', 'client');
+    await prefs.setString('token', token);
+    await prefs.setString('scope', scope);
+    await prefs.setString('userid', userId);
     setState(() {
       Navigator.pushReplacement(
         context,
@@ -306,4 +357,31 @@ class _LoginPage extends State<LoginPage> {
       );
     });
   }
+}
+
+void popupError(BuildContext context, String message) async {
+  return showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(10),
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            height: 250,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Cores.redError),
+            padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+            child: Text(
+                message,
+                style: const TextStyle(fontSize: 24, color: Colors.white),
+                textAlign: TextAlign.center),
+          ),
+        ],
+      ),
+    ),
+  );
 }
