@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:http/http.dart' as http;
+
+import '../../configs/translate_messages.dart';
 
 String baseUrl = Session.baseUrl;
 
@@ -15,6 +20,7 @@ class InfoUser extends StatefulWidget {
 
 class _InfoUserState extends State<InfoUser> {
   var infoReceived = [];
+  var errorMessage = 'Não temos nada aqui no momento';
 
   @override
   void initState() {
@@ -215,7 +221,7 @@ class _InfoUserState extends State<InfoUser> {
     // retorna mensagem que não tem nada
     return Expanded(
       child: Text(
-        'Não temos nada aqui no momento :(',
+        '$errorMessage :(',
         style: TextStyle(
           color: Cores.white,
           fontSize: 18,
@@ -226,6 +232,12 @@ class _InfoUserState extends State<InfoUser> {
   }
 
   void _getInfos() async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token').toString();
+    if (Session.userId == '') {
+      Session.userId = prefs.getString('userid').toString();
+    }
+
     if (Session.env == 'local') {
       const infos = [
         {
@@ -258,11 +270,21 @@ class _InfoUserState extends State<InfoUser> {
       infoReceived = infos;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescriptions'),
+        Uri.parse('$baseUrl/info'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token
+        },
       );
-      print(response);
-      if (response.body.isNotEmpty) {
-        // infoReceived = response;
+      var body = await jsonDecode(response.body);
+      
+      if (body['success'] == true) {
+        if (body['body']['count_infos_found'] > 0) {
+          infoReceived = body['body']['infos_found'];
+        }
+      } else {
+        infoReceived = [];
+        errorMessage = Translate.messages[body['message']].toString();
       }
     }
   }

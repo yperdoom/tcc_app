@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:app_tcc/configs/translate_messages.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
@@ -16,6 +20,7 @@ class HomeUser extends StatefulWidget {
 
 class _HomeUserState extends State<HomeUser> {
   var mealReceived = [];
+  var errorMessage = 'Não temos nada aqui no momento';
 
   @override
   void initState() {
@@ -218,10 +223,10 @@ class _HomeUserState extends State<HomeUser> {
     }
 
     // retorna mensagem que não tem nada
-    return const Expanded(
+    return Expanded(
       child: Text(
-        'Não temos nada aqui no momento :(',
-        style: TextStyle(
+        '$errorMessage :(',
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 18,
           fontWeight: FontWeight.w600,
@@ -235,6 +240,12 @@ class _HomeUserState extends State<HomeUser> {
   }
 
   void _getPrescriptions() async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token').toString();
+    if (Session.userId == '') {
+      Session.userId = prefs.getString('userid').toString();
+    }
+
     if (Session.env == 'local') {
       const meals = [
         {
@@ -342,11 +353,21 @@ class _HomeUserState extends State<HomeUser> {
       mealReceived = meals;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescriptions'),
+        Uri.parse('$baseUrl/prescription/${Session.userId}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token
+        },
       );
-      print(response);
-      if (response.body.isNotEmpty) {
-        // mealReceived = response;
+      var body = await jsonDecode(response.body);
+
+      if (body['success'] == true) {
+        if (body['body'] > 0) {
+          mealReceived = body['body'];
+        }
+      } else {
+        mealReceived = [];
+        errorMessage = Translate.messages[body['message']].toString();
       }
     }
   }
