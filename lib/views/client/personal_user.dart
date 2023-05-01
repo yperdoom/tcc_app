@@ -730,7 +730,7 @@ class _PersonalUserState extends State<PersonalUser> {
         setState(() {});
       } else {
         http.Response response = await http.get(
-          Uri.parse('$baseUrl/prescriptions'),
+          Uri.parse('$baseUrl/user'),
         );
         print(response);
         if (response.body.isNotEmpty) {
@@ -786,30 +786,8 @@ class _PersonalUserState extends State<PersonalUser> {
         print(userReceived);
         userUpdate = userReceived;
 
-        setState(() {
-          
-        });
+        setState(() {});
       }
     }
   }
-
-  // Future<DateTime> _stringToDateTime(String timeString, bool isBirthday) async {
-  //   DateTime time = DateTime(2023);
-  //   int year = int.parse(timeString[6]+timeString[7]+timeString[8]+timeString[9]);
-  //   int month = int.parse(timeString[3]+timeString[4]);
-  //   int day = int.parse(timeString[0]+timeString[1]);
-
-  //   if(isBirthday == true) {
-  //     birthday = DateTime(year, month, day);
-  //   } else {
-  //     int hour = int.parse(timeString[11]+timeString[12]);
-  //     int minute = int.parse(timeString[14]+timeString[15]);
-  //     int second = int.parse(timeString[17]+timeString[18]);
-
-  //     time = DateTime(year, month, day, hour, minute, second);
-  //   }
-  //   print(birthday);
-
-  //   return time;
-  // }
 }

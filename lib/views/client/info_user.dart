@@ -7,8 +7,6 @@ import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:http/http.dart' as http;
 
-import '../../configs/translate_messages.dart';
-
 String baseUrl = Session.baseUrl;
 
 class InfoUser extends StatefulWidget {
@@ -20,7 +18,6 @@ class InfoUser extends StatefulWidget {
 
 class _InfoUserState extends State<InfoUser> {
   var infoReceived = [];
-  var errorMessage = 'Não temos nada aqui no momento';
 
   @override
   void initState() {
@@ -151,13 +148,13 @@ class _InfoUserState extends State<InfoUser> {
               ),
             ),
           ),
-          _FindList(),
+          _findList(),
         ],
       ),
     );
   }
 
-  Widget _FindList() {
+  Widget _findList() {
     _getInfos();
 
     if (infoReceived.isNotEmpty) {
@@ -221,7 +218,7 @@ class _InfoUserState extends State<InfoUser> {
     // retorna mensagem que não tem nada
     return Expanded(
       child: Text(
-        '$errorMessage :(',
+        'Não temos nada aqui no momento :(',
         style: TextStyle(
           color: Cores.white,
           fontSize: 18,
@@ -284,7 +281,7 @@ class _InfoUserState extends State<InfoUser> {
         }
       } else {
         infoReceived = [];
-        errorMessage = Translate.messages[body['message']].toString();
+        // errorMessage = body['message'];
       }
     }
   }

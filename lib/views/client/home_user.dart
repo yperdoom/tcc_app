@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:app_tcc/configs/translate_messages.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +19,6 @@ class HomeUser extends StatefulWidget {
 
 class _HomeUserState extends State<HomeUser> {
   var mealReceived = [];
-  var errorMessage = 'Não temos nada aqui no momento';
 
   @override
   void initState() {
@@ -151,7 +149,7 @@ class _HomeUserState extends State<HomeUser> {
               ),
             ),
           ),
-          _FindList(),
+          _findList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -162,7 +160,7 @@ class _HomeUserState extends State<HomeUser> {
     );
   }
 
-  Widget _FindList() {
+  Widget _findList() {
     _getPrescriptions();
 
     if (mealReceived.isNotEmpty) {
@@ -225,9 +223,9 @@ class _HomeUserState extends State<HomeUser> {
     // retorna mensagem que não tem nada
     return Expanded(
       child: Text(
-        '$errorMessage :(',
-        style: const TextStyle(
-          color: Colors.white,
+        'Não temos nada aqui no momento :(',
+        style: TextStyle(
+          color: Cores.white,
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
@@ -367,7 +365,7 @@ class _HomeUserState extends State<HomeUser> {
         }
       } else {
         mealReceived = [];
-        errorMessage = Translate.messages[body['message']].toString();
+        // errorMessage = body['message'];
       }
     }
   }

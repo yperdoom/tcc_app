@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:http/http.dart' as http;
@@ -145,7 +148,7 @@ class _FoodUserState extends State<FoodUser> {
               ),
             ),
           ),
-          _FindList(),
+          _findList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -156,7 +159,7 @@ class _FoodUserState extends State<FoodUser> {
     );
   }
 
-  Widget _FindList() {
+  Widget _findList() {
     _getFoods();
 
     if (foodReceived.isNotEmpty) {
@@ -248,6 +251,12 @@ class _FoodUserState extends State<FoodUser> {
   }
 
   void _getFoods() async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token').toString();
+    if (Session.userId == '') {
+      Session.userId = prefs.getString('userid').toString();
+    }
+
     if (Session.env == 'local') {
       const foods = [
         {
@@ -308,11 +317,21 @@ class _FoodUserState extends State<FoodUser> {
       foodReceived = foods;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescriptions'),
+        Uri.parse('$baseUrl/food'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token
+        },
       );
-      print(response);
-      if (response.body.isNotEmpty) {
-        // mealReceived = response;
+      var body = await jsonDecode(response.body);
+
+      if (body['success'] == true) {
+        if (body['body']['count_foods_found'] > 0) {
+          foodReceived = body['body']['foods_found'];
+        }
+      } else {
+        foodReceived = [];
+        // errorMessage = body['message'];
       }
     }
   }
