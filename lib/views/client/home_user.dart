@@ -19,6 +19,7 @@ class HomeUser extends StatefulWidget {
 
 class _HomeUserState extends State<HomeUser> {
   var mealReceived = [];
+  var prescriptionReceived = [];
 
   @override
   void initState() {
@@ -161,7 +162,7 @@ class _HomeUserState extends State<HomeUser> {
   }
 
   Widget _findList() {
-    _getPrescriptions();
+    _getMeals();
 
     if (mealReceived.isNotEmpty) {
       // retorna os cartões
@@ -170,7 +171,7 @@ class _HomeUserState extends State<HomeUser> {
           itemCount: mealReceived.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: _editPrescription,
+              onTap: () => _editMeals(index),
               child: Container(
                 margin: const EdgeInsets.only(
                   left: 12,
@@ -233,11 +234,29 @@ class _HomeUserState extends State<HomeUser> {
     );
   }
 
-  void _editPrescription() async {
-    print('pq nom trabaia?');
+  Future<dynamic> _editMeals(var index) async {
+    var prescriptionUpdated = {};
+
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  void _getPrescriptions() async {
+  void _getMeals() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
     if (Session.userId == '') {
@@ -359,18 +378,228 @@ class _HomeUserState extends State<HomeUser> {
       );
       var body = await jsonDecode(response.body);
 
+      print(body);
+
       if (body['success'] == true) {
         if (body['body'] > 0) {
           mealReceived = body['body'];
         }
       } else {
         mealReceived = [];
-        // errorMessage = body['message'];
       }
     }
   }
 
-  void _addMeal() async {
-    print('test buttom');
+  Future<dynamic> _addMeal() async {
+    var prescriptionUpdated = {};
+
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Adaptar refeição: ',
+                          style: TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<Object>(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.home_outlined),
+                            label: const Text('Prescrição'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          isExpanded: true,
+                          value: prescriptionUpdated['state'],
+                          items: prescriptionReceived.map<DropdownMenuItem<Object>>((estado) {
+                            return DropdownMenuItem(
+                              value: estado['value'],
+                              child: Text('${estado['value']}'),
+                            );
+                          }).toList(),
+                          hint: const Text('Selecione uma prescrição'),
+                          onChanged: (newValue) {
+                            prescriptionUpdated['state'] = newValue;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.person_outlined),
+                            label: const Text('Nome'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            prescriptionUpdated['name'] = value;
+                          },
+                          maxLength: 30,
+                          keyboardType: TextInputType.name,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.mail_outlined),
+                            label: const Text('E-mail'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            prescriptionUpdated['email'] = value;
+                          },
+                          maxLength: 30,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.home_outlined),
+                            label: const Text('Cidade'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            prescriptionUpdated['city'] = value;
+                          },
+                          maxLength: 30,
+                          keyboardType: TextInputType.text,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 120,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                            ),
+                            backgroundColor:
+                                MaterialStateProperty.all(Cores.blue),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                color: Cores.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Cancelar',
+                            style: TextStyle(
+                              color: Cores.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 120,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () => {},
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                            ),
+                            backgroundColor:
+                                MaterialStateProperty.all(Cores.blue),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                color: Cores.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Salvar',
+                            style: TextStyle(
+                              color: Cores.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

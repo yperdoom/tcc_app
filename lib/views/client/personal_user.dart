@@ -779,11 +779,8 @@ class _PersonalUserState extends State<PersonalUser> {
       if (body.isNotEmpty) {
         userReceived = body['body'];
 
-        // await _stringToDateTime(userReceived['birthday'].toString(), true);
-        setState(() {
-          
-        });
-        print(userReceived);
+        setState(() {});
+
         userUpdate = userReceived;
 
         setState(() {});

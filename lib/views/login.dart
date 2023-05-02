@@ -319,15 +319,8 @@ class _LoginPage extends State<LoginPage> {
       }
     } else {
       Navigator.pop(context);
-      if (body['message'] == 'field password not found') {
-        popupError(context, 'Não identificamos nenhuma senha no campo :( \n\n Pode inserir novamente?');
-      } else if (body['message'] == 'field email not found') {
-        popupError(context, 'Não identificamos nenhum e-mail no campo :( \n\n Pode inserir novamente?');
-      } else if (body['message'] == 'user not found' || body['message'] == 'password incorrect') {
-        popupError(context, 'Algum dos dados digitados não está batendo com nossa base de dados :( \n\n Pode conferir e digitar novamente?');
-      } else{
-        popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
-      }
+      popupError(context, body['message']);
+      // popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
     }
   }
 

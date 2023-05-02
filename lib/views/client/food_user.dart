@@ -151,11 +151,6 @@ class _FoodUserState extends State<FoodUser> {
           _findList(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addFood,
-        backgroundColor: Cores.blueHeavy,
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
@@ -169,7 +164,6 @@ class _FoodUserState extends State<FoodUser> {
           itemCount: foodReceived.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: _editFood,
               child: Container(
                 margin: const EdgeInsets.only(
                   left: 12,
@@ -244,10 +238,6 @@ class _FoodUserState extends State<FoodUser> {
         ),
       ),
     );
-  }
-
-  void _editFood() async {
-    print('pq nom trabaia?');
   }
 
   void _getFoods() async {
@@ -334,9 +324,5 @@ class _FoodUserState extends State<FoodUser> {
         // errorMessage = body['message'];
       }
     }
-  }
-
-  void _addFood() async {
-    print('test buttom');
   }
 }
