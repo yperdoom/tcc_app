@@ -18,7 +18,7 @@ class HomeUser extends StatefulWidget {
 }
 
 class _HomeUserState extends State<HomeUser> {
-  var mealReceived = [];
+  var prescriptionsReceived = [];
   var prescriptionReceived = [];
 
   @override
@@ -119,14 +119,17 @@ class _HomeUserState extends State<HomeUser> {
                         TextButton(
                           style: TextButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
                             textStyle: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
                             backgroundColor: const Color(0xff1E4CFF),
                           ),
-                          onPressed: () => {},
+                          onPressed: () => {
+                            _getMeals()
+                          },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -154,7 +157,7 @@ class _HomeUserState extends State<HomeUser> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addMeal,
+        onPressed: () => {},
         backgroundColor: const Color(0xff1E4CFF),
         child: const Icon(Icons.add),
       ),
@@ -162,16 +165,14 @@ class _HomeUserState extends State<HomeUser> {
   }
 
   Widget _findList() {
-    _getMeals();
-
-    if (mealReceived.isNotEmpty) {
+    if (prescriptionsReceived.isNotEmpty) {
       // retorna os cartões
       return Expanded(
         child: ListView.builder(
-          itemCount: mealReceived.length,
+          itemCount: prescriptionsReceived.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: () => _editMeals(index),
+              onTap: () => {},
               child: Container(
                 margin: const EdgeInsets.only(
                   left: 12,
@@ -194,22 +195,22 @@ class _HomeUserState extends State<HomeUser> {
                       children: [
                         Expanded(
                           child: AutoSizeText(
-                            '${mealReceived[index]['name']}',
+                            '${prescriptionsReceived[index]['name']}',
                             style: const TextStyle(fontSize: 24),
                             maxLines: 1,
                             minFontSize: 18,
                           ),
                         ),
-                        Text('${mealReceived[index]['type']}'),
+                        Text('Refeições: ${prescriptionsReceived[index]['meal_amount']}'),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${mealReceived[index]['calorie']} Kcal'),
+                        Text('${prescriptionsReceived[index]['recommended_calorie']} Kcal'),
                         Text(
-                            'Atualizado em: ${mealReceived[index]['updated_at']}'),
+                            'Atualizado em: ${_regexDateTime(index)}'),
                       ],
                     ),
                   ],
@@ -234,28 +235,6 @@ class _HomeUserState extends State<HomeUser> {
     );
   }
 
-  Future<dynamic> _editMeals(var index) async {
-    var prescriptionUpdated = {};
-
-    return showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void _getMeals() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
@@ -264,113 +243,12 @@ class _HomeUserState extends State<HomeUser> {
     }
 
     if (Session.env == 'local') {
-      const meals = [
-        {
-          'name': 'teste 1',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 2',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 3',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 4',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 5',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 6',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 7',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 8',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 9',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-        {
-          'name': 'teste 10',
-          'type': 'almoço',
-          'calorie': 480,
-          'protein': 50.2,
-          'lipid': 20,
-          'carbohydrate': 56,
-          'created_at': '08/09/2000',
-          'updated_at': '05/10/2020'
-        },
-      ];
+      const meals = [];
 
-      mealReceived = meals;
+      prescriptionsReceived = meals;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescription/${Session.userId}'),
+        Uri.parse('$baseUrl/prescriptions/${Session.userId}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
@@ -378,228 +256,29 @@ class _HomeUserState extends State<HomeUser> {
       );
       var body = await jsonDecode(response.body);
 
-      print(body);
-
       if (body['success'] == true) {
-        if (body['body'] > 0) {
-          mealReceived = body['body'];
+        if (body['body']['count'] > 0) {
+          prescriptionsReceived = body['body']['prescriptions'];
         }
       } else {
-        mealReceived = [];
+        prescriptionsReceived = [];
       }
+
+      setState(() {});
     }
   }
 
-  Future<dynamic> _addMeal() async {
-    var prescriptionUpdated = {};
+  String _regexDateTime(int index) {
+    if (prescriptionsReceived[index]['updated_at'] != null) {
+      DateTime dateTime = DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
+      String formattedDateTime = '';
 
-    return showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Expanded(
-                        child: AutoSizeText(
-                          'Adaptar refeição: ',
-                          style: TextStyle(fontSize: 18),
-                          maxLines: 1,
-                          minFontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<Object>(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.home_outlined),
-                            label: const Text('Prescrição'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          isExpanded: true,
-                          value: prescriptionUpdated['state'],
-                          items: prescriptionReceived.map<DropdownMenuItem<Object>>((estado) {
-                            return DropdownMenuItem(
-                              value: estado['value'],
-                              child: Text('${estado['value']}'),
-                            );
-                          }).toList(),
-                          hint: const Text('Selecione uma prescrição'),
-                          onChanged: (newValue) {
-                            prescriptionUpdated['state'] = newValue;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.person_outlined),
-                            label: const Text('Nome'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            prescriptionUpdated['name'] = value;
-                          },
-                          maxLength: 30,
-                          keyboardType: TextInputType.name,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.mail_outlined),
-                            label: const Text('E-mail'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            prescriptionUpdated['email'] = value;
-                          },
-                          maxLength: 30,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.home_outlined),
-                            label: const Text('Cidade'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            prescriptionUpdated['city'] = value;
-                          },
-                          maxLength: 30,
-                          keyboardType: TextInputType.text,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 120,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(40),
-                              ),
-                            ),
-                            backgroundColor:
-                                MaterialStateProperty.all(Cores.blue),
-                            textStyle: MaterialStateProperty.all(
-                              TextStyle(
-                                color: Cores.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'Cancelar',
-                            style: TextStyle(
-                              color: Cores.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 120,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () => {},
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(40),
-                              ),
-                            ),
-                            backgroundColor:
-                                MaterialStateProperty.all(Cores.blue),
-                            textStyle: MaterialStateProperty.all(
-                              TextStyle(
-                                color: Cores.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'Salvar',
-                            style: TextStyle(
-                              color: Cores.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+      formattedDateTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+
+      return formattedDateTime;
+
+    } else {
+      return '00:00:00 de 06/05/2020';
+    }
   }
 }

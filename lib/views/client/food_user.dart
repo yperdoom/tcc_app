@@ -124,7 +124,9 @@ class _FoodUserState extends State<FoodUser> {
                             ),
                             backgroundColor: Cores.blueHeavy,
                           ),
-                          onPressed: () => {},
+                          onPressed: () => {
+                                _getFoods()
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -155,8 +157,6 @@ class _FoodUserState extends State<FoodUser> {
   }
 
   Widget _findList() {
-    _getFoods();
-
     if (foodReceived.isNotEmpty) {
       // retorna os cartões
       return Expanded(
@@ -212,10 +212,8 @@ class _FoodUserState extends State<FoodUser> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                            '${foodReceived[index]['calorie']} Kcal em ${foodReceived[index]['weight']}g'),
-                        Text(
-                            'Atualizado em: ${foodReceived[index]['updated_at']}'),
+                        Text('${foodReceived[index]['calorie']} Kcal em ${foodReceived[index]['weight']}g'),
+                        Text('Atualizado em: ${_regexDateTime(index)}'),
                       ],
                     ),
                   ],
@@ -307,7 +305,7 @@ class _FoodUserState extends State<FoodUser> {
       foodReceived = foods;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/food'),
+        Uri.parse('$baseUrl/foods'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
@@ -316,13 +314,28 @@ class _FoodUserState extends State<FoodUser> {
       var body = await jsonDecode(response.body);
 
       if (body['success'] == true) {
-        if (body['body']['count_foods_found'] > 0) {
-          foodReceived = body['body']['foods_found'];
+        if (body['body']['count'] > 0) {
+          foodReceived = body['body']['foods'];
         }
       } else {
         foodReceived = [];
         // errorMessage = body['message'];
       }
+      setState(() {});
+    }
+  }
+
+  String _regexDateTime(int index) {
+    if (foodReceived[index]['updated_at'] != null) {
+      DateTime dateTime = DateTime.parse(foodReceived[index]['updated_at'].toString());
+      String formattedDateTime = '';
+
+      formattedDateTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+
+      return formattedDateTime;
+
+    } else {
+      return '00:00:00 de 06/05/2020';
     }
   }
 }

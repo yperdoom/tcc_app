@@ -55,6 +55,10 @@ class _PersonalUserState extends State<PersonalUser> {
     {"code": 26, "value": "SE", "name": "Sergipe"},
     {"code": 27, "value": "TO", "name": "Tocantins"},
   ];
+  var sexReceived = [
+    {"code": 1, "value": "male", "name": "Masculino"},
+    {"code": 2, "value": "female", "name": "Feminino"},
+  ];
 
   @override
   void initState() {
@@ -220,7 +224,7 @@ class _PersonalUserState extends State<PersonalUser> {
                             width: 200,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () => _editFood(),
+                              onPressed: () => _editUser(),
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
@@ -262,6 +266,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                     await SharedPreferences.getInstance();
                                 await prefs.remove('token');
                                 await prefs.remove('scope');
+                                await prefs.remove('userid');
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -307,7 +312,14 @@ class _PersonalUserState extends State<PersonalUser> {
     );
   }
 
-  void _editFood() async {
+  void _editUser() async {
+    bool isMale;
+    if (userReceived['client']['sex'] == 'male') {
+      isMale = true;
+    } else {
+      isMale = false;
+    }
+
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -409,7 +421,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                   if (value.length == 11) {
                                     errorPhone = false;
                                     Navigator.pop(context);
-                                    _editFood();
+                                    _editUser();
                                   }
                                 },
                                 maxLength: 11,
@@ -433,7 +445,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                   if (value.length == 11) {
                                     errorPhone = false;
                                     Navigator.pop(context);
-                                    _editFood();
+                                    _editUser();
                                   }
                                 },
                                 maxLength: 11,
@@ -467,7 +479,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                   if (value.length == 11) {
                                     errorDocument = false;
                                     Navigator.pop(context);
-                                    _editFood();
+                                    _editUser();
                                   }
                                 },
                                 maxLength: 11,
@@ -491,7 +503,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                   if (value.length == 11) {
                                     errorDocument = false;
                                     Navigator.pop(context);
-                                    _editFood();
+                                    _editUser();
                                   }
                                 },
                                 maxLength: 11,
@@ -503,6 +515,38 @@ class _PersonalUserState extends State<PersonalUser> {
                     ],
                   ),
                   const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<Object>(
+                          decoration: InputDecoration(
+                            icon: isMale ? const Icon(Icons.male_outlined) : const Icon(Icons.female_outlined),
+                            label: const Text('Sexo'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          isExpanded: true,
+                          value: userReceived['client']['sex'],
+                          items: sexReceived.map<DropdownMenuItem<Object>>((sexo) {
+                            return DropdownMenuItem(
+                              value: sexo['value'],
+                              child: Text('${sexo['name']}'),
+                            );
+                          }).toList(),
+                          hint: const Text('Selecione um sexo'),
+                          onChanged: (newValue) {
+                            userUpdate['client']['sex'] = newValue;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -549,7 +593,7 @@ class _PersonalUserState extends State<PersonalUser> {
                               child: Text('${estado['value']}'),
                             );
                           }).toList(),
-                          hint: const Text('Selecione uma marca'),
+                          hint: const Text('Selecione um estado'),
                           onChanged: (newValue) {
                             userUpdate['state'] = newValue;
                           },
@@ -615,7 +659,7 @@ class _PersonalUserState extends State<PersonalUser> {
                         width: 120,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () => _saveUser(),
+                          onPressed: () => {_saveUser()},
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
@@ -690,15 +734,15 @@ class _PersonalUserState extends State<PersonalUser> {
   }
 
   void _saveUser() async {
-    if (userUpdate['phone'].length < 11) {
+    if (userUpdate['phone'] == null || userUpdate['phone'].length < 11) {
       errorPhone = true;
     }
-    if (userUpdate['document'].length < 11) {
+    if (userUpdate['document'] == null || userUpdate['document'].length < 11) {
       errorDocument = true;
     }
     if (errorDocument == true || errorPhone == true) {
       Navigator.pop(context);
-      _editFood();
+      _editUser();
       showDialog(
         context: context,
         builder: (context) => Dialog(
@@ -724,17 +768,79 @@ class _PersonalUserState extends State<PersonalUser> {
         ),
       );
     } else {
+      final prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token').toString();
+      if (Session.userId == '') {
+        Session.userId = prefs.getString('userid').toString();
+      }
+
       if (Session.env == 'local') {
         userReceived = userUpdate;
         Navigator.pop(context);
         setState(() {});
       } else {
-        http.Response response = await http.get(
-          Uri.parse('$baseUrl/user'),
+        Map<String,String> headers = <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token
+        };
+
+        print(userUpdate['client']);
+        Object userToUpdate = jsonEncode({
+          'client_id': userUpdate['client']['client_id'],
+          'name': userUpdate['name'],
+          'phone': userUpdate['phone'],
+          'document': userUpdate['document'],
+          'sex': userUpdate['client']['sex'],
+          'city': userUpdate['city'],
+          'state': userUpdate['state'],
+          'birthday': _regexBirthday(),
+          'age': userUpdate['client']['age'],
+          'height': userUpdate['client']['height'],
+          'weight': userUpdate['client']['weight'],
+          'fat_percentage': userUpdate['client']['fat_percentage'],
+        });
+        print(userToUpdate);
+
+        http.Response response = await http.put(
+          Uri.parse('$baseUrl/user/client/${Session.userId}'),
+          headers: headers,
+          body: userToUpdate,
         );
-        print(response);
-        if (response.body.isNotEmpty) {
-          // mealReceived = response;
+        var body = await jsonDecode(response.body);
+
+        print(body);
+        if (body['success'] == true) {
+          userReceived = body['body'];
+          Navigator.pop(context);
+          showDialog(
+            context: context,
+            builder: (context) => Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: const EdgeInsets.all(10),
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Cores.blue
+                    ),
+                    padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+                    child: const Text(
+                      'Usuário editado com sucesso!',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
       }
     }
@@ -768,7 +874,7 @@ class _PersonalUserState extends State<PersonalUser> {
       userReceived = user;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/user/${Session.userId}'),
+        Uri.parse('$baseUrl/user/client/${Session.userId}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
@@ -776,15 +882,14 @@ class _PersonalUserState extends State<PersonalUser> {
       );
 
       var body = await jsonDecode(response.body);
+
       if (body.isNotEmpty) {
         userReceived = body['body'];
 
-        setState(() {});
-
         userUpdate = userReceived;
-
-        setState(() {});
       }
+      
+      setState(() {});
     }
   }
 }

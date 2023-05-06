@@ -124,7 +124,9 @@ class _InfoUserState extends State<InfoUser> {
                             ),
                             backgroundColor: const Color(0xff1E4CFF),
                           ),
-                          onPressed: () => {},
+                          onPressed: () => {
+                            _getInfos()
+                          },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -155,8 +157,6 @@ class _InfoUserState extends State<InfoUser> {
   }
 
   Widget _findList() {
-    _getInfos();
-
     if (infoReceived.isNotEmpty) {
       // retorna os cartões
       return Expanded(
@@ -202,7 +202,7 @@ class _InfoUserState extends State<InfoUser> {
                       children: [
                         Expanded(
                           child: Text(
-                              'Atualizado em: ${infoReceived[index]['updated_at']}'),
+                              'Atualizado em: ${_regexDateTime(index)}'),
                         ),
                       ],
                     ),
@@ -236,53 +236,28 @@ class _InfoUserState extends State<InfoUser> {
     }
 
     if (Session.env == 'local') {
-      const infos = [
-        {
-          "food_id": 1,
-          "name": "Caloria",
-          "description":
-              "arroz branco cozido em temperatura média para testar o tamanho de palavras porque pode caber muitas palavras aqui e ainda ter espaço para mais palavras meu deus como tem muitas palavras, ainda estou escrevendo palavras, minha nossa são muitas palavras quantas palavras cabe? iremos descobrir. São muitas palavras, estou ficando louco de tantas palavras que já estão aqui, meu jesusinho quantas palavras. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir. Teste de palavras, estou testando a quantidade máxima de palavras que o app aguenta exibir.",
-          "updated_at": '05/10/2020'
-        },
-        {
-          "food_id": 2,
-          "name": "Proteina",
-          "description": "feijao branco cozido",
-          "updated_at": '05/10/2020'
-        },
-        {
-          "food_id": 3,
-          "name": "Carboidrato",
-          "description": "peito de frango cozido",
-          "updated_at": '05/10/2028'
-        },
-        {
-          "food_id": 4,
-          "name": "Lipídio",
-          "description": "cozido",
-          "updated_at": '05/10/2028'
-        }
-      ];
+      const infos = [];
 
       infoReceived = infos;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/info'),
+        Uri.parse('$baseUrl/infos'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
         },
       );
       var body = await jsonDecode(response.body);
-      
+
       if (body['success'] == true) {
-        if (body['body']['count_infos_found'] > 0) {
-          infoReceived = body['body']['infos_found'];
+        if (body['body']['count'] > 0) {
+          infoReceived = body['body']['infos'];
         }
       } else {
         infoReceived = [];
-        // errorMessage = body['message'];
       }
+
+      setState(() {});
     }
   }
 
@@ -327,7 +302,7 @@ class _InfoUserState extends State<InfoUser> {
                     children: [
                       Expanded(
                         child: AutoSizeText(
-                          'Última vez atualizado em: ${infoReceived[index]['updated_at']}',
+                          'Última vez atualizado em: ${_regexDateTime(index)}',
                           style: const TextStyle(fontSize: 18),
                           maxLines: 1,
                           minFontSize: 12,
@@ -342,5 +317,19 @@ class _InfoUserState extends State<InfoUser> {
         ),
       ),
     );
+  }
+
+  String _regexDateTime(int index) {
+    if (infoReceived[index]['updated_at'] != null) {
+      DateTime dateTime = DateTime.parse(infoReceived[index]['updated_at'].toString());
+      String formattedDateTime = '';
+
+      formattedDateTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+
+      return formattedDateTime;
+
+    } else {
+      return '00:00:00 de 06/05/2020';
+    }
   }
 }
