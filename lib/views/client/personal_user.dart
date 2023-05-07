@@ -799,7 +799,6 @@ class _PersonalUserState extends State<PersonalUser> {
           'weight': userUpdate['client']['weight'],
           'fat_percentage': userUpdate['client']['fat_percentage'],
         });
-        print(userToUpdate);
 
         http.Response response = await http.put(
           Uri.parse('$baseUrl/user/client/${Session.userId}'),

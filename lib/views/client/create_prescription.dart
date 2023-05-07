@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
@@ -16,15 +19,30 @@ class CreatePrescription extends StatefulWidget {
   State<CreatePrescription> createState() => _CreatePrescriptionState();
 }
 
+class Food {
+  final int? food_id;
+  final String? name;
+  final bool? selected;
+
+  Food({
+    required this.food_id,
+    required this.name,
+    this.selected = false,
+  });
+}
+
 class _CreatePrescriptionState extends State<CreatePrescription> {
   var prescriptionsReceived = [];
   var payloadToAdapter = {};
   var mealsReceived = [];
   var foodsReceived = [];
+  List<Food> foodsSelected = [];
+  int foodAmount = 0;
 
   @override
   void initState() {
     _getFoodsOnShared();
+
     super.initState();
   }
 
@@ -33,18 +51,21 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     final arguments = ModalRoute.of(context)?.settings.arguments;
     prescriptionsReceived =
         List<dynamic>.from(jsonDecode(jsonEncode(arguments)));
+    final _foods = foodsSelected
+        .map((food) => MultiSelectItem<Food>(food, food.name.toString()))
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Adaptar refeição', style: TextStyle(fontSize: 18)),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -141,36 +162,41 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: DropdownButtonFormField<Object>(
-                      decoration: InputDecoration(
-                        label: const Text('Sexo'),
-                        labelStyle: TextStyle(
-                          color: Cores.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                        border: const OutlineInputBorder(),
-                      ),
-                      isExpanded: true,
-                      value: payloadToAdapter['food_id'],
-                      items:
-                          foodsReceived.map<DropdownMenuItem<Object>>((food) {
-                        return DropdownMenuItem(
-                          value: food['food_id'],
-                          child: Text('${food['name']}'),
-                        );
-                      }).toList(),
-                      hint: const Text('Selecione um sexo'),
-                      onChanged: (newValue) {
-                        payloadToAdapter['food_id'] = newValue;
-                      },
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: MultiSelectDialogField(
+                  items: _foods,
+                  title: const Text("Alimentos"),
+                  selectedColor: Cores.blue,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    border: Border.all(
+                      color: Cores.grey,
+                      width: 2,
                     ),
                   ),
-                ],
+                  buttonIcon: Icon(
+                    Icons.pets,
+                    color: Cores.grey,
+                  ),
+                  unselectedColor: Cores.grey,
+                  itemsTextStyle: TextStyle(color: Cores.white),
+                  selectedItemsTextStyle: TextStyle(color: Cores.blueOpaque),
+                  buttonText: Text(
+                    "Alimentos selecionados",
+                    style: TextStyle(
+                      color: Cores.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  onConfirm: (results) {
+                    List foods = [];
+                    for (int i = 0; i < results.length; i++) {
+                      foods.add(results[i].food_id);
+                    }
+                    payloadToAdapter['foods'] = foods;
+                  },
+                ),
               ),
               const SizedBox(height: 20),
               Row(
@@ -210,7 +236,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                     width: 120,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () => {},
+                      onPressed: () => _adapter(),
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(
@@ -245,6 +271,51 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     );
   }
 
+  void _adapter() async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token').toString();
+    if (Session.userId == '') {
+      Session.userId = prefs.getString('userid').toString();
+    }
+
+    if (Session.env == 'local') {
+      const meals = [];
+
+      prescriptionsReceived = meals;
+    } else {
+      Map<String, String> headers = <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      };
+
+      Object prescriptionToAdapter = jsonEncode({
+        "foods": payloadToAdapter['foods'],
+        "mealId": payloadToAdapter['meal_id'],
+        "prescriptionId": payloadToAdapter['prescription_id'],
+        "name": payloadToAdapter['name'],
+        "type": payloadToAdapter['type'],
+        "user_id": Session.userId,
+      });
+
+      http.Response response = await http.post(
+          Uri.parse('$baseUrl/prescription/adapter'),
+          headers: headers,
+          body: prescriptionToAdapter);
+      var body = await jsonDecode(response.body);
+
+      if (body['success'] == true) {
+        if (body['body']['count'] > 0) {
+          Navigator.pop(context);
+          popup(context, 'Adaptação feita com sucesso!');
+        }
+      } else {
+        prescriptionsReceived = [];
+      }
+    }
+    Session.firstAcessHome = false;
+    prefs.setString('firstacesshome', 'false');
+  }
+
   void _sendPrescription(newValue) {
     for (int i = 0; i < prescriptionsReceived.length; i++) {
       if (prescriptionsReceived[i]['_id'] == newValue) {
@@ -259,62 +330,12 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     for (int i = 0; i < mealsReceived.length; i++) {
       if (mealsReceived[i]['_id'] == newValue) {
         payloadToAdapter['meal_id'] = mealsReceived[i]['_id'];
+        payloadToAdapter['type'] = mealsReceived[i]['type'];
+        foodAmount = mealsReceived[i]['food_amount'];
       }
     }
     setState(() {});
   }
-
-  // void _selectFood() {
-  //   print(foodsReceived[0]['food_id']);
-
-  //   AlertDialog(
-  //     title: const Text('Select Topics'),
-  //     content: SingleChildScrollView(
-  //       child: DropdownButtonFormField<Object>(
-  //         decoration: InputDecoration(
-  //           label: const Text('Sexo'),
-  //           labelStyle: TextStyle(
-  //             color: Cores.white,
-  //             fontWeight: FontWeight.w600,
-  //             fontSize: 18,
-  //           ),
-  //           border: const OutlineInputBorder(),
-  //         ),
-  //         isExpanded: true,
-  //         value: foodsSelected,
-  //         items: foodsReceived.map<DropdownMenuItem<Object>>((food) {
-  //           return DropdownMenuItem(
-  //             value: food['food_id'],
-  //             child: Text('${food['name']}'),
-  //           );
-  //         }).toList(),
-  //         hint: const Text('Selecione um sexo'),
-  //         onChanged: (newValue) {
-  //           foodsSelected = newValue;
-  //         },
-  //       ),
-  //     ),
-  //     actions: [
-  //       ElevatedButton(
-  //         onPressed: () {
-  //           Navigator.pop(context);
-  //         },
-  //         child: const Text('Ok'),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // void _itemChange(var itemValue, bool isSelected) {
-  //   print('flamengoooooooooooooooooooooooooooooooooo');
-  //   setState(() {
-  //     if (isSelected) {
-  //       foodsSelected.add(itemValue['food_id']);
-  //     } else {
-  //       foodsSelected.remove(itemValue['food_id']);
-  //     }
-  //   });
-  // }
 
   void _getFoodsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
@@ -332,7 +353,45 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
         counter++;
       }
     }
+    _initSelectedFoods();
 
     setState(() {});
+  }
+
+  void _initSelectedFoods() {
+    for (int i = 0; i < foodsReceived.length; i++) {
+      foodsSelected.add(
+        Food(
+          food_id: foodsReceived[i]['food_id'],
+          name: foodsReceived[i]['name'],
+        ),
+      );
+    }
+  }
+
+  void popup(BuildContext context, String message) async {
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(10),
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              height: 250,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Cores.redError),
+              padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+              child: Text(message,
+                  style: const TextStyle(fontSize: 24, color: Colors.white),
+                  textAlign: TextAlign.center),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

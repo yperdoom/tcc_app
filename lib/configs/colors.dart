@@ -15,4 +15,6 @@ class Cores {
       Session.darkMode ? const Color(0xffBDD6D8) : const Color(0xff1E2429);
   static Color redError = const Color.fromARGB(255, 141, 9, 0);
   static Color redExit = const Color.fromARGB(255, 201, 13, 0);
+  static Color greyHeavy = const Color(0xFFD1D1D1);
+  static Color grey = Colors.grey;
 }
