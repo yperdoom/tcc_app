@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_tcc/views/client/create_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,10 +20,11 @@ class HomeUser extends StatefulWidget {
 
 class _HomeUserState extends State<HomeUser> {
   var prescriptionsReceived = [];
-  var prescriptionReceived = [];
 
   @override
   void initState() {
+    Session.firstAcessHome ? _getPrescriptions() : _getPrescriptionsOnShared();
+
     super.initState();
   }
 
@@ -119,17 +121,15 @@ class _HomeUserState extends State<HomeUser> {
                         TextButton(
                           style: TextButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
                             textStyle: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
                             backgroundColor: const Color(0xff1E4CFF),
                           ),
-                          onPressed: () => {
-                            _getMeals()
-                          },
+                          onPressed: () => {_getPrescriptions()},
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -157,7 +157,14 @@ class _HomeUserState extends State<HomeUser> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
+        onPressed: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const CreatePrescription(),
+                settings: RouteSettings(arguments: prescriptionsReceived)),
+          )
+        },
         backgroundColor: const Color(0xff1E4CFF),
         child: const Icon(Icons.add),
       ),
@@ -201,16 +208,17 @@ class _HomeUserState extends State<HomeUser> {
                             minFontSize: 18,
                           ),
                         ),
-                        Text('Refeições: ${prescriptionsReceived[index]['meal_amount']}'),
+                        Text(
+                            'Refeições: ${prescriptionsReceived[index]['meal_amount']}'),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${prescriptionsReceived[index]['recommended_calorie']} Kcal'),
                         Text(
-                            'Atualizado em: ${_regexDateTime(index)}'),
+                            '${prescriptionsReceived[index]['recommended_calorie']} Kcal'),
+                        Text('Atualizado em: ${_regexDateTime(index)}'),
                       ],
                     ),
                   ],
@@ -235,7 +243,7 @@ class _HomeUserState extends State<HomeUser> {
     );
   }
 
-  void _getMeals() async {
+  void _getPrescriptions() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
     if (Session.userId == '') {
@@ -259,6 +267,8 @@ class _HomeUserState extends State<HomeUser> {
       if (body['success'] == true) {
         if (body['body']['count'] > 0) {
           prescriptionsReceived = body['body']['prescriptions'];
+
+          _setPrescriptionsOnShared();
         }
       } else {
         prescriptionsReceived = [];
@@ -266,19 +276,54 @@ class _HomeUserState extends State<HomeUser> {
 
       setState(() {});
     }
+    Session.firstAcessHome = false;
+    prefs.setString('firstacesshome', 'false');
   }
 
   String _regexDateTime(int index) {
     if (prescriptionsReceived[index]['updated_at'] != null) {
-      DateTime dateTime = DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
+      DateTime dateTime =
+          DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      formattedDateTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
 
       return formattedDateTime;
-
     } else {
       return '00:00:00 de 06/05/2020';
+    }
+  }
+
+  void _getPrescriptionsOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    int counter = 0;
+    while (counter >= 0) {
+      String? prescriptionString =
+          prefs.getString('save.prescription.$counter');
+      var prescription = jsonDecode(prescriptionString.toString());
+
+      if (prescription == null) {
+        counter = -1;
+      } else {
+        prescriptionsReceived.add(prescription);
+
+        counter++;
+      }
+    }
+
+    setState(() {});
+  }
+
+  void _setPrescriptionsOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    for (int counter = 0; counter < prescriptionsReceived.length; counter++) {
+      String prescription =
+          jsonEncode(prescriptionsReceived[counter]).toString();
+
+      await prefs.setString('save.prescription.$counter', prescription);
     }
   }
 }

@@ -21,6 +21,8 @@ class _InfoUserState extends State<InfoUser> {
 
   @override
   void initState() {
+    Session.firstAcessInfo ? _getInfos() : _getInfosOnShared();
+
     super.initState();
   }
 
@@ -252,6 +254,8 @@ class _InfoUserState extends State<InfoUser> {
       if (body['success'] == true) {
         if (body['body']['count'] > 0) {
           infoReceived = body['body']['infos'];
+
+          _setInfosOnShared();
         }
       } else {
         infoReceived = [];
@@ -259,6 +263,8 @@ class _InfoUserState extends State<InfoUser> {
 
       setState(() {});
     }
+    Session.firstAcessInfo = false;
+    prefs.setString('firstacessinfo', 'false');
   }
 
   Future<dynamic> showInfoDetails(var index) {
@@ -330,6 +336,36 @@ class _InfoUserState extends State<InfoUser> {
 
     } else {
       return '00:00:00 de 06/05/2020';
+    }
+  }
+
+  void _getInfosOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    int counter = 0;
+    while (counter >= 0) {
+      String? infoString = prefs.getString('save.info.$counter');
+      var info = jsonDecode(infoString.toString());
+
+      if (info == null) {
+        counter = -1;
+      } else {
+        infoReceived.add(info);
+
+        counter ++;
+      }
+    }
+
+    setState(() {});
+  }
+
+  void _setInfosOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    for (int counter=0; counter < infoReceived.length; counter++) {
+      String info = jsonEncode(infoReceived[counter]).toString();
+
+      await prefs.setString('save.info.$counter', info);
     }
   }
 }

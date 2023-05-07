@@ -21,6 +21,8 @@ class _FoodUserState extends State<FoodUser> {
 
   @override
   void initState() {
+    Session.firstAcessFood ? _getFoods() : _getFoodsOnShared();
+
     super.initState();
   }
 
@@ -316,13 +318,15 @@ class _FoodUserState extends State<FoodUser> {
       if (body['success'] == true) {
         if (body['body']['count'] > 0) {
           foodReceived = body['body']['foods'];
+          _setFoodsOnShared();
         }
       } else {
         foodReceived = [];
-        // errorMessage = body['message'];
       }
       setState(() {});
     }
+    Session.firstAcessFood = false;
+    prefs.setString('firstacessfood', 'false');
   }
 
   String _regexDateTime(int index) {
@@ -336,6 +340,36 @@ class _FoodUserState extends State<FoodUser> {
 
     } else {
       return '00:00:00 de 06/05/2020';
+    }
+  }
+  
+  void _getFoodsOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    int counter = 0;
+    while (counter >= 0) {
+      String? foodString = prefs.getString('save.food.$counter');
+      var food = jsonDecode(foodString.toString());
+
+      if (food == null) {
+        counter = -1;
+      } else {
+        foodReceived.add(food);
+
+        counter ++;
+      }
+    }
+
+    setState(() {});
+  }
+
+  void _setFoodsOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    for (int counter=0; counter < foodReceived.length; counter++) {
+      String food = jsonEncode(foodReceived[counter]).toString();
+
+      await prefs.setString('save.food.$counter', food);
     }
   }
 }

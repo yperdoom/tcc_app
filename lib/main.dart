@@ -42,6 +42,10 @@ class _MainPage extends State<MainPage> {
     final String? token = prefs.getString('token');
     String? url = prefs.getString('url');
     String? env = prefs.getString('env');
+    String? firstAcessInfo = prefs.getString('firstacessinfo');
+    String? firstAcessHome = prefs.getString('firstacesshome');
+    String? firstAcessFood = prefs.getString('firstacessfood');
+    String? firstAcessUser = prefs.getString('firstacessuser');
 
     if (url != null) {
       Session.baseUrl = url.toString();
@@ -49,6 +53,35 @@ class _MainPage extends State<MainPage> {
 
     if (env != null) {
       Session.env = env.toString();
+    }
+
+    if (firstAcessInfo != null) {
+      if (firstAcessInfo.toString() == 'true') {
+        Session.firstAcessInfo = true;
+      }
+    } else {
+      Session.firstAcessInfo = true;
+    }
+    if (firstAcessHome != null) {
+      if (firstAcessHome.toString() == 'true') {
+        Session.firstAcessHome = true;
+      }
+    } else {
+      Session.firstAcessHome = true;
+    }
+    if (firstAcessFood != null) {
+      if (firstAcessFood.toString() == 'true') {
+        Session.firstAcessFood = true;
+      }
+    } else {
+      Session.firstAcessFood = true;
+    }
+    if (firstAcessUser != null) {
+      if (firstAcessUser.toString() == 'true') {
+        Session.firstAcessUser = true;
+      }
+    } else {
+      Session.firstAcessUser = true;
     }
 
     // await Future.delayed(const Duration(seconds: 2));

@@ -62,7 +62,8 @@ class _PersonalUserState extends State<PersonalUser> {
 
   @override
   void initState() {
-    _getUser();
+    Session.firstAcessUser ? _getUser() : _getUserOnShared();
+
     super.initState();
   }
 
@@ -784,7 +785,6 @@ class _PersonalUserState extends State<PersonalUser> {
           'Authorization': token
         };
 
-        print(userUpdate['client']);
         Object userToUpdate = jsonEncode({
           'client_id': userUpdate['client']['client_id'],
           'name': userUpdate['name'],
@@ -887,9 +887,33 @@ class _PersonalUserState extends State<PersonalUser> {
         userReceived = body['body'];
 
         userUpdate = userReceived;
+        _setUserOnShared();
       }
       
       setState(() {});
     }
+    Session.firstAcessUser = false;
+    prefs.setString('firstacessuser', 'false');
+  }
+
+  void _getUserOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    String? infoString = prefs.getString('save.user');
+    var user = jsonDecode(infoString.toString());
+
+    if (user != null) {
+      userReceived = user;
+    }
+
+    setState(() {});
+  }
+
+  void _setUserOnShared() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    String info = jsonEncode(userReceived).toString();
+
+    await prefs.setString('save.user', info);
   }
 }
