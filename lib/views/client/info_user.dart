@@ -127,7 +127,7 @@ class _InfoUserState extends State<InfoUser> {
                             backgroundColor: const Color(0xff1E4CFF),
                           ),
                           onPressed: () => {
-                            _getInfos()
+                            _getInfos(),
                           },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
@@ -204,7 +204,8 @@ class _InfoUserState extends State<InfoUser> {
                       children: [
                         Expanded(
                           child: Text(
-                              'Atualizado em: ${_regexDateTime(index)}'),
+                            'Atualizado em: ${_regexDateTime(index)}',
+                          ),
                         ),
                       ],
                     ),
@@ -327,13 +328,15 @@ class _InfoUserState extends State<InfoUser> {
 
   String _regexDateTime(int index) {
     if (infoReceived[index]['updated_at'] != null) {
-      DateTime dateTime = DateTime.parse(infoReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(
+        infoReceived[index]['updated_at'].toString(),
+      );
       String formattedDateTime = '';
 
-      formattedDateTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
 
       return formattedDateTime;
-
     } else {
       return '00:00:00 de 06/05/2020';
     }
@@ -341,18 +344,32 @@ class _InfoUserState extends State<InfoUser> {
 
   void _getInfosOnShared() async {
     final prefs = await SharedPreferences.getInstance();
+    int? infoLength = prefs.getInt('save.info.length');
 
-    int counter = 0;
-    while (counter >= 0) {
-      String? infoString = prefs.getString('save.info.$counter');
-      var info = jsonDecode(infoString.toString());
+    if (infoLength != null) {
+      for (int counter = 0; counter <= infoLength; counter++) {
+        String? infoString = prefs.getString('save.info.$counter');
+        var info = jsonDecode(infoString.toString());
 
-      if (info == null) {
-        counter = -1;
-      } else {
-        infoReceived.add(info);
+        if (info == null) {
+          await prefs.setInt('save.info.length', counter - 1);
+        } else {
+          infoReceived.add(info);
+        }
+      }
+    } else {
+      int counter = 0;
+      while (counter >= 0) {
+        String? infoString = prefs.getString('save.info.$counter');
+        var info = jsonDecode(infoString.toString());
 
-        counter ++;
+        if (info == null) {
+          counter = -1;
+        } else {
+          infoReceived.add(info);
+
+          counter++;
+        }
       }
     }
 
@@ -362,10 +379,19 @@ class _InfoUserState extends State<InfoUser> {
   void _setInfosOnShared() async {
     final prefs = await SharedPreferences.getInstance();
 
-    for (int counter=0; counter < infoReceived.length; counter++) {
-      String info = jsonEncode(infoReceived[counter]).toString();
+    await prefs.setInt(
+      'save.info.length',
+      infoReceived.length - 1,
+    );
+    for (int counter = 0; counter < infoReceived.length; counter++) {
+      String info = jsonEncode(
+        infoReceived[counter],
+      ).toString();
 
-      await prefs.setString('save.info.$counter', info);
+      await prefs.setString(
+        'save.info.$counter',
+        info,
+      );
     }
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:app_tcc/views/client/create_prescription.dart';
+import 'package:app_tcc/views/client/get_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../configs/colors.dart';
@@ -179,7 +181,18 @@ class _HomeUserState extends State<HomeUser> {
           itemCount: prescriptionsReceived.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: () => {},
+              onTap: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GetPrescription(),
+                    settings: RouteSettings(
+                      arguments: prescriptionsReceived[index],
+                    ),
+                  ),
+                ),
+              },
+              // onTap: () => showInfoDetails(index),
               child: Container(
                 margin: const EdgeInsets.only(
                   left: 12,
@@ -280,6 +293,475 @@ class _HomeUserState extends State<HomeUser> {
     prefs.setString('firstacesshome', 'false');
   }
 
+  Future<dynamic> showInfoDetails(var index) {
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          '${prescriptionsReceived[index]['name']}',
+                          style: const TextStyle(fontSize: 28),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Calorias recomendadas: ${prescriptionsReceived[index]['recommended_calorie']} kcal',
+                          style: const TextStyle(fontSize: 18),
+                          // maxLines: 10,
+                          minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Carboidratos recomendadas: ${prescriptionsReceived[index]['recommended_carbohydrate']} kcal',
+                          style: const TextStyle(fontSize: 18),
+                          // maxLines: 10,
+                          minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Proteinas recomendadas: ${prescriptionsReceived[index]['recommended_protein']} kcal',
+                          style: const TextStyle(fontSize: 18),
+                          // maxLines: 10,
+                          minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Lipídios recomendados: ${prescriptionsReceived[index]['recommended_lipid']} kcal',
+                          style: const TextStyle(fontSize: 18),
+                          // maxLines: 10,
+                          minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Receitas: ${prescriptionsReceived[index]['meal_amount']}',
+                          style: const TextStyle(fontSize: 18),
+                          // maxLines: 10,
+                          minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  _verifyToGetMeals(index),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Última vez atualizado em: ${_regexDateTime(index)}',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _verifyToGetMeals(int index) {
+    Widget linha = Column(
+      children: [
+        Row(
+          children: const [
+            Expanded(
+              child: AutoSizeText(
+                'Nenhuma receita para essa prescrição.',
+                style: TextStyle(fontSize: 18),
+                maxLines: 1,
+                minFontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+
+    if (prescriptionsReceived[index]['meals'].length == 1 &&
+        prescriptionsReceived[index]['meals'][0]['foods'].length == 1) {
+      linha = Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Receita 1: ${prescriptionsReceived[index]['meals'][0]['name']} - ${prescriptionsReceived[index]['meals'][0]['type']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Calorias: ${prescriptionsReceived[index]['meals'][0]['calorie']} de ${prescriptionsReceived[index]['meals'][0]['recommended_calorie']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Carboidratos: ${prescriptionsReceived[index]['meals'][0]['carbohydrate']} de ${prescriptionsReceived[index]['meals'][0]['recommended_carbohydrate']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Proteinas: ${prescriptionsReceived[index]['meals'][0]['protein']} de ${prescriptionsReceived[index]['meals'][0]['recommended_protein']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Lipídios: ${prescriptionsReceived[index]['meals'][0]['lipid']} de ${prescriptionsReceived[index]['meals'][0]['recommended_lipid']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Alimentos: ${prescriptionsReceived[index]['meals'][0]['foods'][0]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][0]['name']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    if (prescriptionsReceived[index]['meals'].length == 1 &&
+        prescriptionsReceived[index]['meals'][0]['foods'].length == 2) {
+      linha = Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Receita 1: ${prescriptionsReceived[index]['meals'][0]['name']} - ${prescriptionsReceived[index]['meals'][0]['type']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Calorias: ${prescriptionsReceived[index]['meals'][0]['calorie']} de ${prescriptionsReceived[index]['meals'][0]['recommended_calorie']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Carboidratos: ${prescriptionsReceived[index]['meals'][0]['carbohydrate']} de ${prescriptionsReceived[index]['meals'][0]['recommended_carbohydrate']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Proteinas: ${prescriptionsReceived[index]['meals'][0]['protein']} de ${prescriptionsReceived[index]['meals'][0]['recommended_protein']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Lipídios: ${prescriptionsReceived[index]['meals'][0]['lipid']} de ${prescriptionsReceived[index]['meals'][0]['recommended_lipid']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Alimentos: ${prescriptionsReceived[index]['meals'][0]['foods'][0]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][0]['name']} e ${prescriptionsReceived[index]['meals'][0]['foods'][1]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][1]['name']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 2,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    if (prescriptionsReceived[index]['meals'].length == 1 &&
+        prescriptionsReceived[index]['meals'][0]['foods'].length == 3) {
+      linha = Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Receita 1: ${prescriptionsReceived[index]['meals'][0]['name']} - ${prescriptionsReceived[index]['meals'][0]['type']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Calorias: ${prescriptionsReceived[index]['meals'][0]['calorie']} de ${prescriptionsReceived[index]['meals'][0]['recommended_calorie']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Carboidratos: ${prescriptionsReceived[index]['meals'][0]['carbohydrate']} de ${prescriptionsReceived[index]['meals'][0]['recommended_carbohydrate']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Proteinas: ${prescriptionsReceived[index]['meals'][0]['protein']} de ${prescriptionsReceived[index]['meals'][0]['recommended_protein']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Lipídios: ${prescriptionsReceived[index]['meals'][0]['lipid']} de ${prescriptionsReceived[index]['meals'][0]['recommended_lipid']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Alimentos: ${prescriptionsReceived[index]['meals'][0]['foods'][0]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][0]['name']}, ${prescriptionsReceived[index]['meals'][0]['foods'][1]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][1]['name']} e ${prescriptionsReceived[index]['meals'][0]['foods'][0]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][2]['name']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 2,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    if (prescriptionsReceived[index]['meals'].length == 1 &&
+        prescriptionsReceived[index]['meals'][0]['foods'].length == 4) {
+      linha = Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Receita 1: ${prescriptionsReceived[index]['meals'][0]['name']} - ${prescriptionsReceived[index]['meals'][0]['type']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Calorias: ${prescriptionsReceived[index]['meals'][0]['calorie']} de ${prescriptionsReceived[index]['meals'][0]['recommended_calorie']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Carboidratos: ${prescriptionsReceived[index]['meals'][0]['carbohydrate']} de ${prescriptionsReceived[index]['meals'][0]['recommended_carbohydrate']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Proteinas: ${prescriptionsReceived[index]['meals'][0]['protein']} de ${prescriptionsReceived[index]['meals'][0]['recommended_protein']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Lipídios: ${prescriptionsReceived[index]['meals'][0]['lipid']} de ${prescriptionsReceived[index]['meals'][0]['recommended_lipid']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  'Alimentos: ${prescriptionsReceived[index]['meals'][0]['foods'][0]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][0]['name']}, ${prescriptionsReceived[index]['meals'][0]['foods'][1]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][1]['name']}, ${prescriptionsReceived[index]['meals'][0]['foods'][2]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][2]['name']} e ${prescriptionsReceived[index]['meals'][0]['foods'][3]['weight']}g de ${prescriptionsReceived[index]['meals'][0]['foods'][3]['name']}',
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 2,
+                  minFontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    return linha;
+  }
+
   String _regexDateTime(int index) {
     if (prescriptionsReceived[index]['updated_at'] != null) {
       DateTime dateTime =
@@ -297,19 +779,35 @@ class _HomeUserState extends State<HomeUser> {
 
   void _getPrescriptionsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
+    int? prescriptionLength = prefs.getInt('save.prescription.length');
 
-    int counter = 0;
-    while (counter >= 0) {
-      String? prescriptionString =
-          prefs.getString('save.prescription.$counter');
-      var prescription = jsonDecode(prescriptionString.toString());
+    if (prescriptionLength != null) {
+      for (int counter = 0; counter <= prescriptionLength; counter++) {
+        String? prescriptionString =
+            prefs.getString('save.prescription.$counter');
+        var prescription = jsonDecode(prescriptionString.toString());
 
-      if (prescription == null) {
-        counter = -1;
-      } else {
-        prescriptionsReceived.add(prescription);
+        if (prescription == null) {
+          await prefs.setInt('save.prescription.length', counter - 1);
+        } else {
+          prescriptionsReceived.add(prescription);
+        }
+      }
+    } else {
+      int counter = 0;
+      while (counter >= 0) {
+        String? prescriptionString =
+            prefs.getString('save.prescription.$counter');
+        var prescription = jsonDecode(prescriptionString.toString());
 
-        counter++;
+        if (prescription == null) {
+          await prefs.setInt('save.prescription.length', counter - 1);
+          counter = -1;
+        } else {
+          prescriptionsReceived.add(prescription);
+
+          counter++;
+        }
       }
     }
 
@@ -319,9 +817,14 @@ class _HomeUserState extends State<HomeUser> {
   void _setPrescriptionsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setInt(
+      'save.prescription.length',
+      prescriptionsReceived.length - 1,
+    );
     for (int counter = 0; counter < prescriptionsReceived.length; counter++) {
-      String prescription =
-          jsonEncode(prescriptionsReceived[counter]).toString();
+      String prescription = jsonEncode(
+        prescriptionsReceived[counter],
+      ).toString();
 
       await prefs.setString('save.prescription.$counter', prescription);
     }

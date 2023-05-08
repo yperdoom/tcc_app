@@ -126,9 +126,7 @@ class _FoodUserState extends State<FoodUser> {
                             ),
                             backgroundColor: Cores.blueHeavy,
                           ),
-                          onPressed: () => {
-                                _getFoods()
-                          },
+                          onPressed: () => {_getFoods()},
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -214,7 +212,8 @@ class _FoodUserState extends State<FoodUser> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${foodReceived[index]['calorie']} Kcal em ${foodReceived[index]['weight']}g'),
+                        Text(
+                            '${foodReceived[index]['calorie']} Kcal em ${foodReceived[index]['weight']}g'),
                         Text('Atualizado em: ${_regexDateTime(index)}'),
                       ],
                     ),
@@ -331,32 +330,47 @@ class _FoodUserState extends State<FoodUser> {
 
   String _regexDateTime(int index) {
     if (foodReceived[index]['updated_at'] != null) {
-      DateTime dateTime = DateTime.parse(foodReceived[index]['updated_at'].toString());
+      DateTime dateTime =
+          DateTime.parse(foodReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      formattedDateTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
 
       return formattedDateTime;
-
     } else {
       return '00:00:00 de 06/05/2020';
     }
   }
-  
+
   void _getFoodsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
+    int? foodLength = prefs.getInt('save.food.length');
 
-    int counter = 0;
-    while (counter >= 0) {
-      String? foodString = prefs.getString('save.food.$counter');
-      var food = jsonDecode(foodString.toString());
+    if (foodLength != null) {
+      for (int counter = 0; counter <= foodLength; counter++) {
+        String? foodString = prefs.getString('save.food.$counter');
+        var food = jsonDecode(foodString.toString());
 
-      if (food == null) {
-        counter = -1;
-      } else {
-        foodReceived.add(food);
+        if (food == null) {
+          await prefs.setInt('save.food.length', counter - 1);
+        } else {
+          foodReceived.add(food);
+        }
+      }
+    } else {
+      int counter = 0;
+      while (counter >= 0) {
+        String? foodString = prefs.getString('save.food.$counter');
+        var food = jsonDecode(foodString.toString());
 
-        counter ++;
+        if (food == null) {
+          counter = -1;
+        } else {
+          foodReceived.add(food);
+
+          counter++;
+        }
       }
     }
 
@@ -366,8 +380,14 @@ class _FoodUserState extends State<FoodUser> {
   void _setFoodsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
 
-    for (int counter=0; counter < foodReceived.length; counter++) {
-      String food = jsonEncode(foodReceived[counter]).toString();
+    await prefs.setInt(
+      'save.food.length',
+      foodReceived.length - 1,
+    );
+    for (int counter = 0; counter < foodReceived.length; counter++) {
+      String food = jsonEncode(
+        foodReceived[counter],
+      ).toString();
 
       await prefs.setString('save.food.$counter', food);
     }

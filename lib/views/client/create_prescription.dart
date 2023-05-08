@@ -49,15 +49,26 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)?.settings.arguments;
-    prescriptionsReceived =
-        List<dynamic>.from(jsonDecode(jsonEncode(arguments)));
+    prescriptionsReceived = List<dynamic>.from(
+      jsonDecode(
+        jsonEncode(arguments),
+      ),
+    );
     final _foods = foodsSelected
-        .map((food) => MultiSelectItem<Food>(food, food.name.toString()))
+        .map(
+          (food) => MultiSelectItem<Food>(
+            food,
+            food.name.toString(),
+          ),
+        )
         .toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Adaptar refeição', style: TextStyle(fontSize: 18)),
+        title: const Text(
+          'Adaptar refeição',
+          style: TextStyle(fontSize: 18),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -82,7 +93,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                         border: const OutlineInputBorder(),
                       ),
                       onChanged: (value) {
-                        payloadToAdapter['name'] = 'Adaptação: $value';
+                        payloadToAdapter['name'] = value;
                       },
                       maxLength: 30,
                       keyboardType: TextInputType.name,
@@ -161,6 +172,17 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Expanded(
+                  child: AutoSizeText(
+                    'Selecione: $foodAmount alimento(s).',
+                    style: TextStyle(fontSize: 18),
+                    maxLines: 1,
+                    minFontSize: 12,
+                  ),
+                )
+              ]),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
@@ -294,22 +316,27 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
         "prescriptionId": payloadToAdapter['prescription_id'],
         "name": payloadToAdapter['name'],
         "type": payloadToAdapter['type'],
-        "user_id": Session.userId,
+        "userId": Session.userId,
       });
 
+      print(prescriptionToAdapter);
+
       http.Response response = await http.post(
-          Uri.parse('$baseUrl/prescription/adapter'),
-          headers: headers,
-          body: prescriptionToAdapter);
+        Uri.parse('$baseUrl/prescription/adapter'),
+        headers: headers,
+        body: prescriptionToAdapter,
+      );
       var body = await jsonDecode(response.body);
 
+      print(body);
+
       if (body['success'] == true) {
-        if (body['body']['count'] > 0) {
-          Navigator.pop(context);
-          popup(context, 'Adaptação feita com sucesso!');
-        }
+        Navigator.pop(context);
+        popup(context, false, 'Adaptação feita com sucesso!');
       } else {
         prescriptionsReceived = [];
+        popup(context, true,
+            'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
       }
     }
     Session.firstAcessHome = false;
@@ -369,7 +396,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     }
   }
 
-  void popup(BuildContext context, String message) async {
+  void popup(BuildContext context, bool error, String message) async {
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -380,14 +407,21 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
           children: <Widget>[
             Container(
               width: double.infinity,
-              height: 250,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Cores.redError),
+              height: 200,
+              decoration: error
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Cores.redError,
+                    )
+                  : BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
               padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-              child: Text(message,
-                  style: const TextStyle(fontSize: 24, color: Colors.white),
-                  textAlign: TextAlign.center),
+              child: Text(
+                message,
+                style: const TextStyle(fontSize: 24, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
