@@ -1,6 +1,6 @@
 
 class Session {
-  static String baseUrl = 'https://18.228.138.78:4030';
+  static String baseUrl = 'https://54.94.199.82:4030';
   static String env = 'prod';
   static bool darkMode = true;
   static String userId = '';
