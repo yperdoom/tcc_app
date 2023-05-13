@@ -522,7 +522,9 @@ class _PersonalUserState extends State<PersonalUser> {
                       Expanded(
                         child: DropdownButtonFormField<Object>(
                           decoration: InputDecoration(
-                            icon: isMale ? const Icon(Icons.male_outlined) : const Icon(Icons.female_outlined),
+                            icon: isMale
+                                ? const Icon(Icons.male_outlined)
+                                : const Icon(Icons.female_outlined),
                             label: const Text('Sexo'),
                             labelStyle: TextStyle(
                               color: Cores.white,
@@ -533,7 +535,8 @@ class _PersonalUserState extends State<PersonalUser> {
                           ),
                           isExpanded: true,
                           value: userReceived['client']['sex'],
-                          items: sexReceived.map<DropdownMenuItem<Object>>((sexo) {
+                          items:
+                              sexReceived.map<DropdownMenuItem<Object>>((sexo) {
                             return DropdownMenuItem(
                               value: sexo['value'],
                               child: Text('${sexo['name']}'),
@@ -611,7 +614,8 @@ class _PersonalUserState extends State<PersonalUser> {
                         width: 300,
                         child: CupertinoDatePicker(
                           mode: CupertinoDatePickerMode.date,
-                          initialDateTime: DateTime.parse(userReceived['birthday'].toString()),
+                          initialDateTime: DateTime.parse(
+                              userReceived['birthday'].toString()),
                           onDateTimeChanged: (newBirthdayDate) {
                             setState(() {
                               userUpdate['birthday'] = newBirthdayDate.toUtc();
@@ -706,7 +710,6 @@ class _PersonalUserState extends State<PersonalUser> {
       formattedBirthday = '${birthday.day}/${birthday.month}/${birthday.year}';
 
       return formattedBirthday;
-
     } else {
       return '08/08/2008';
     }
@@ -717,7 +720,8 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedPhone = '1234';
 
     if (phone.length == 11) {
-      formattedPhone = '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+      formattedPhone =
+          '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
     }
 
     return formattedPhone;
@@ -728,7 +732,8 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedDocument = '';
 
     if (document.length == 11) {
-      formattedDocument = '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
+      formattedDocument =
+          '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
     }
 
     return formattedDocument;
@@ -780,7 +785,7 @@ class _PersonalUserState extends State<PersonalUser> {
         Navigator.pop(context);
         setState(() {});
       } else {
-        Map<String,String> headers = <String, String>{
+        Map<String, String> headers = <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
         };
@@ -823,9 +828,8 @@ class _PersonalUserState extends State<PersonalUser> {
                     width: double.infinity,
                     height: 150,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Cores.blue
-                    ),
+                        borderRadius: BorderRadius.circular(15),
+                        color: Cores.blue),
                     padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
                     child: const Text(
                       'Usuário editado com sucesso!',
@@ -888,7 +892,7 @@ class _PersonalUserState extends State<PersonalUser> {
         userUpdate = userReceived;
         _setUserOnShared();
       }
-      
+
       setState(() {});
     }
     Session.firstAcessUser = false;

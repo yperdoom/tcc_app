@@ -84,8 +84,6 @@ class _MainPage extends State<MainPage> {
       Session.firstAcessUser = true;
     }
 
-    // await Future.delayed(const Duration(seconds: 2));
-
     if (token == null || token.isEmpty) {
       Navigator.pushReplacement(
         context,
