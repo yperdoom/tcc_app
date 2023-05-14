@@ -261,7 +261,7 @@ class _FoodUserState extends State<FoodUser> {
     );
   }
 
-    Future<dynamic> showFoodDetails(var index) {
+  Future<dynamic> showFoodDetails(var index) {
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -273,6 +273,19 @@ class _FoodUserState extends State<FoodUser> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Abaixo verá informações sobre o alimento selecionado:',
+                          style: TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -280,6 +293,15 @@ class _FoodUserState extends State<FoodUser> {
                         child: AutoSizeText(
                           '${foodReceived[index]['name']}',
                           style: const TextStyle(fontSize: 28),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: AutoSizeText(
+                          '${foodReceived[index]['type']}',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
                         ),
                       ),
                     ],
@@ -291,8 +313,73 @@ class _FoodUserState extends State<FoodUser> {
                         child: AutoSizeText(
                           '${foodReceived[index]['description']}',
                           style: const TextStyle(fontSize: 18),
-                          // maxLines: 10,
+                          maxLines: 1,
                           minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          _getMedidaBase(index),
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Calorias: ${foodReceived[index]['calorie']}kcal',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Carboidratos: ${foodReceived[index]['carbohydrate']}g',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Proteinas: ${foodReceived[index]['protein']}g',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Lipídios: ${foodReceived[index]['lipid']}g',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
                         ),
                       ),
                     ],
@@ -317,6 +404,21 @@ class _FoodUserState extends State<FoodUser> {
         ),
       ),
     );
+  }
+
+  String _getMedidaBase(int index) {
+    if (foodReceived[index]['weight'].isDefinedAndNotNull) {
+      return 'Peso base: ${foodReceived[index]['weight']}g';
+    }
+
+    if (foodReceived[index]['portion'].isDefinedAndNotNull) {
+      return 'Porções base: ${foodReceived[index]['portion']}';
+    }
+
+    if (foodReceived[index]['mililiter'].isDefinedAndNotNull) {
+      return 'Litragem base: ${foodReceived[index]['mililiter']}ml';
+    }
+    return 'Não foi possível identificar o tipo de quantificação base utilizada nesse alimento!';
   }
 
   void _getFoods() async {

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:app_tcc/views/client/create_prescription.dart';
 import 'package:app_tcc/views/client/get_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../configs/colors.dart';
@@ -110,7 +109,8 @@ class _HomeUserState extends State<HomeUser> {
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(Icons.search_rounded, color: Cores.white),
+                              prefixIcon: Icon(Icons.search_rounded,
+                                  color: Cores.white),
                               hintText: 'Pesquise suas receitas',
                               hintStyle: TextStyle(
                                 color: Cores.white,

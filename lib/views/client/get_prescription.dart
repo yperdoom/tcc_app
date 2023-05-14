@@ -4,10 +4,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
-import '../../configs/session.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class GetPrescription extends StatefulWidget {
   const GetPrescription({super.key});
