@@ -109,8 +109,10 @@ class _HomeUserState extends State<HomeUser> {
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(Icons.search_rounded,
-                                  color: Cores.white),
+                              prefixIcon: Icon(
+                                Icons.search_rounded,
+                                color: Cores.white,
+                              ),
                               hintText: 'Pesquise suas receitas',
                               hintStyle: TextStyle(
                                 color: Cores.white,
@@ -163,8 +165,9 @@ class _HomeUserState extends State<HomeUser> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const CreatePrescription(),
-                settings: RouteSettings(arguments: prescriptionsReceived)),
+              builder: (context) => const CreatePrescription(),
+              settings: RouteSettings(arguments: prescriptionsReceived),
+            ),
           )
         },
         backgroundColor: const Color(0xff1E4CFF),
@@ -294,14 +297,22 @@ class _HomeUserState extends State<HomeUser> {
       );
       var body = await jsonDecode(response.body);
 
+      print(body);
+
       if (body['success'] == true) {
         if (body['body']['count'] > 0) {
           prescriptionsReceived = body['body']['prescriptions'];
 
           _setPrescriptionsOnShared();
+        } else {
+          prescriptionsReceived = [];
+
+          _setPrescriptionsOnShared();
         }
       } else {
         prescriptionsReceived = [];
+
+        _setPrescriptionsOnShared();
       }
 
       setState(() {});

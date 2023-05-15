@@ -231,12 +231,6 @@ class _FoodUserState extends State<FoodUser> {
                             color: Cores.white,
                           ),
                         ),
-                        Text(
-                          'Atualizado em: ${_regexDateTime(index)}',
-                          style: TextStyle(
-                            color: Cores.white,
-                          ),
-                        ),
                       ],
                     ),
                   ],
@@ -273,19 +267,19 @@ class _FoodUserState extends State<FoodUser> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Row(
-                    children: [
+                  Row(
+                    children: const [
                       Expanded(
                         child: AutoSizeText(
                           'Abaixo verá informações sobre o alimento selecionado:',
                           style: TextStyle(fontSize: 18),
-                          maxLines: 1,
+                          maxLines: 2,
                           minFontSize: 14,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -306,7 +300,7 @@ class _FoodUserState extends State<FoodUser> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
@@ -319,25 +313,12 @@ class _FoodUserState extends State<FoodUser> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 25),
                   Row(
                     children: [
                       Expanded(
                         child: AutoSizeText(
-                          _getMedidaBase(index),
-                          style: const TextStyle(fontSize: 18),
-                          maxLines: 1,
-                          minFontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          'Calorias: ${foodReceived[index]['calorie']}kcal',
+                          'Calorias: ${foodReceived[index]['calorie']} Kcal',
                           style: const TextStyle(fontSize: 18),
                           maxLines: 1,
                           minFontSize: 14,
@@ -384,16 +365,39 @@ class _FoodUserState extends State<FoodUser> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
                         child: AutoSizeText(
-                          'Última vez atualizado em: ${_regexDateTime(index)}',
-                          style: const TextStyle(fontSize: 18),
+                          _getMedidaBase(index),
+                          style: const TextStyle(fontSize: 16),
                           maxLines: 1,
                           minFontSize: 12,
                         ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      AutoSizeText(
+                        'Última vez atualizado em:',
+                        style: TextStyle(fontSize: 18),
+                        maxLines: 1,
+                        minFontSize: 12,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AutoSizeText(
+                        _regexDateTime(index),
+                        style: const TextStyle(fontSize: 18),
+                        maxLines: 1,
+                        minFontSize: 12,
                       ),
                     ],
                   ),
@@ -407,15 +411,15 @@ class _FoodUserState extends State<FoodUser> {
   }
 
   String _getMedidaBase(int index) {
-    if (foodReceived[index]['weight'].isDefinedAndNotNull) {
+    if (foodReceived[index]['weight'] != null) {
       return 'Peso base: ${foodReceived[index]['weight']}g';
     }
 
-    if (foodReceived[index]['portion'].isDefinedAndNotNull) {
+    if (foodReceived[index]['portion'] != null) {
       return 'Porções base: ${foodReceived[index]['portion']}';
     }
 
-    if (foodReceived[index]['mililiter'].isDefinedAndNotNull) {
+    if (foodReceived[index]['mililiter'] != null) {
       return 'Litragem base: ${foodReceived[index]['mililiter']}ml';
     }
     return 'Não foi possível identificar o tipo de quantificação base utilizada nesse alimento!';
@@ -429,61 +433,7 @@ class _FoodUserState extends State<FoodUser> {
     }
 
     if (Session.env == 'local') {
-      const foods = [
-        {
-          "food_id": 1,
-          "name": "arroz",
-          "description":
-              "arroz branco cozido em temperatura média para testar o tamanho de palavras porque pode caber muitas palavras aqui e ainda ter espaço para mais palavras meu deus como tem muitas palavras",
-          "type": "grão",
-          "color": "branco",
-          "weight": 100,
-          "calorie": 129,
-          "protein": 2.5,
-          "lipid": 0.23,
-          "carbohydrate": 28.18,
-          "updated_at": '05/10/2020'
-        },
-        {
-          "food_id": 2,
-          "name": "feijão",
-          "description": "feijao branco cozido",
-          "type": "grão",
-          "color": "preto",
-          "weight": 100,
-          "calorie": 103,
-          "protein": 6.6,
-          "lipid": 0.5,
-          "carbohydrate": 14.6,
-          "updated_at": '05/10/2020'
-        },
-        {
-          "food_id": 3,
-          "name": "peito de frango",
-          "description": "peito de frango cozido",
-          "type": "carne",
-          "color": "branco",
-          "weight": 100,
-          "calorie": 165,
-          "protein": 31.02,
-          "lipid": 3.57,
-          "carbohydrate": 0,
-          "updated_at": '05/10/2028'
-        },
-        {
-          "food_id": 4,
-          "name": "Ovo",
-          "description": "cozido",
-          "type": "ovo",
-          "color": "branco",
-          "weight": 100,
-          "calorie": 165,
-          "protein": 31.02,
-          "lipid": 3.57,
-          "carbohydrate": 0,
-          "updated_at": '05/10/2028'
-        }
-      ];
+      const foods = [];
 
       foodReceived = foods;
     } else {
@@ -512,16 +462,16 @@ class _FoodUserState extends State<FoodUser> {
 
   String _regexDateTime(int index) {
     if (foodReceived[index]['updated_at'] != null) {
-      DateTime dateTime =
-          DateTime.parse(foodReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(foodReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      formattedDateTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
     } else {
-      return '00:00:00 de 06/05/2020';
+      return '06/05/2020 às 00:00:00';
     }
   }
 

@@ -62,6 +62,7 @@ class _PersonalUserState extends State<PersonalUser> {
 
   @override
   void initState() {
+    print(Session.firstAcessUser);
     Session.firstAcessUser ? _getUser() : _getUserOnShared();
 
     super.initState();
@@ -263,16 +264,7 @@ class _PersonalUserState extends State<PersonalUser> {
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () async {
-                                final prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.remove('token');
-                                await prefs.remove('scope');
-                                await prefs.remove('userid');
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainPage()),
-                                );
+                                _logout();
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
@@ -309,6 +301,20 @@ class _PersonalUserState extends State<PersonalUser> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  void _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('scope');
+    await prefs.remove('userid');
+    await prefs.remove('save.user');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainPage(),
       ),
     );
   }
@@ -477,7 +483,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                 ),
                                 onChanged: (value) {
                                   userUpdate['document'] = value;
-                                  if (value.length == 11) {
+                                  if (value.length == 11 || value.isEmpty) {
                                     errorDocument = false;
                                     Navigator.pop(context);
                                     _editUser();
@@ -501,7 +507,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                 ),
                                 onChanged: (value) {
                                   userUpdate['document'] = value;
-                                  if (value.length == 11) {
+                                  if (value.length == 11 || value.isEmpty) {
                                     errorDocument = false;
                                     Navigator.pop(context);
                                     _editUser();
@@ -740,10 +746,13 @@ class _PersonalUserState extends State<PersonalUser> {
   }
 
   void _saveUser() async {
+    if (userUpdate['document'] == null) { userUpdate['document'] = ''; }
+    print(userUpdate['document']);
+
     if (userUpdate['phone'] == null || userUpdate['phone'].length < 11) {
       errorPhone = true;
     }
-    if (userUpdate['document'] == null || userUpdate['document'].length < 11) {
+    if (userUpdate['document'].length > 0 && userUpdate['document'].length < 11) {
       errorDocument = true;
     }
     if (errorDocument == true || errorPhone == true) {
@@ -789,6 +798,8 @@ class _PersonalUserState extends State<PersonalUser> {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
         };
+
+        print(userUpdate);
 
         Object userToUpdate = jsonEncode({
           'client_id': userUpdate['client']['client_id'],
@@ -907,6 +918,8 @@ class _PersonalUserState extends State<PersonalUser> {
 
     if (user != null) {
       userReceived = user;
+    } else {
+      _getUser();
     }
 
     setState(() {});
@@ -915,8 +928,8 @@ class _PersonalUserState extends State<PersonalUser> {
   void _setUserOnShared() async {
     final prefs = await SharedPreferences.getInstance();
 
-    String info = jsonEncode(userReceived).toString();
+    String user = jsonEncode(userReceived).toString();
 
-    await prefs.setString('save.user', info);
+    await prefs.setString('save.user', user);
   }
 }
