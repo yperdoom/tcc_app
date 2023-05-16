@@ -319,8 +319,6 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
         "userId": Session.userId,
       });
 
-      print(prescriptionToAdapter);
-
       http.Response response = await http.post(
         Uri.parse('$baseUrl/prescription/adapter'),
         headers: headers,

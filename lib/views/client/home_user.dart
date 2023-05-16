@@ -21,6 +21,7 @@ class HomeUser extends StatefulWidget {
 
 class _HomeUserState extends State<HomeUser> {
   var prescriptionsReceived = [];
+  String search = '';
 
   @override
   void initState() {
@@ -120,6 +121,9 @@ class _HomeUserState extends State<HomeUser> {
                                 fontSize: 14,
                               ),
                             ),
+                            onChanged: (value) {
+                              search = value;
+                            },
                           ),
                         ),
                         TextButton(
@@ -133,7 +137,9 @@ class _HomeUserState extends State<HomeUser> {
                             ),
                             backgroundColor: const Color(0xff1E4CFF),
                           ),
-                          onPressed: () => {_getPrescriptions()},
+                          onPressed: () => {
+                            _getPrescriptions(),
+                          },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -289,7 +295,7 @@ class _HomeUserState extends State<HomeUser> {
       prescriptionsReceived = meals;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescriptions/${Session.userId}'),
+        Uri.parse('$baseUrl/prescriptions/${Session.userId}?search=$search'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
@@ -327,12 +333,15 @@ class _HomeUserState extends State<HomeUser> {
           DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      formattedDateTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate =
+          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
     } else {
-      return '00:00:00 de 06/05/2020';
+      return '06/05/2020 às 00:00:00';
     }
   }
 

@@ -14,14 +14,14 @@ import '../../main.dart';
 
 String baseUrl = Session.baseUrl;
 
-class PersonalUser extends StatefulWidget {
-  const PersonalUser({super.key});
+class PersonalManager extends StatefulWidget {
+  const PersonalManager({super.key});
 
   @override
-  State<PersonalUser> createState() => _PersonalUserState();
+  State<PersonalManager> createState() => _PersonalManagerState();
 }
 
-class _PersonalUserState extends State<PersonalUser> {
+class _PersonalManagerState extends State<PersonalManager> {
   var userReceived = {};
   var userUpdate = {};
   bool errorPhone = false;
@@ -263,16 +263,7 @@ class _PersonalUserState extends State<PersonalUser> {
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () async {
-                                final prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.remove('token');
-                                await prefs.remove('scope');
-                                await prefs.remove('userid');
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainPage()),
-                                );
+                                _logout();
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
@@ -309,6 +300,24 @@ class _PersonalUserState extends State<PersonalUser> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  void _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('scope');
+    await prefs.remove('userid');
+    await prefs.remove('save.user');
+    await prefs.remove('firstacesshome');
+    await prefs.remove('firstacessinfo');
+    await prefs.remove('firstacessfood');
+    await prefs.remove('firstacessuser');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainPage(),
       ),
     );
   }
@@ -477,7 +486,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                 ),
                                 onChanged: (value) {
                                   userUpdate['document'] = value;
-                                  if (value.length == 11) {
+                                  if (value.length == 11 || value.isEmpty) {
                                     errorDocument = false;
                                     Navigator.pop(context);
                                     _editUser();
@@ -501,7 +510,7 @@ class _PersonalUserState extends State<PersonalUser> {
                                 ),
                                 onChanged: (value) {
                                   userUpdate['document'] = value;
-                                  if (value.length == 11) {
+                                  if (value.length == 11 || value.isEmpty) {
                                     errorDocument = false;
                                     Navigator.pop(context);
                                     _editUser();
@@ -522,7 +531,9 @@ class _PersonalUserState extends State<PersonalUser> {
                       Expanded(
                         child: DropdownButtonFormField<Object>(
                           decoration: InputDecoration(
-                            icon: isMale ? const Icon(Icons.male_outlined) : const Icon(Icons.female_outlined),
+                            icon: isMale
+                                ? const Icon(Icons.male_outlined)
+                                : const Icon(Icons.female_outlined),
                             label: const Text('Sexo'),
                             labelStyle: TextStyle(
                               color: Cores.white,
@@ -533,7 +544,8 @@ class _PersonalUserState extends State<PersonalUser> {
                           ),
                           isExpanded: true,
                           value: userReceived['client']['sex'],
-                          items: sexReceived.map<DropdownMenuItem<Object>>((sexo) {
+                          items:
+                              sexReceived.map<DropdownMenuItem<Object>>((sexo) {
                             return DropdownMenuItem(
                               value: sexo['value'],
                               child: Text('${sexo['name']}'),
@@ -611,7 +623,8 @@ class _PersonalUserState extends State<PersonalUser> {
                         width: 300,
                         child: CupertinoDatePicker(
                           mode: CupertinoDatePickerMode.date,
-                          initialDateTime: DateTime.parse(userReceived['birthday'].toString()),
+                          initialDateTime: DateTime.parse(
+                              userReceived['birthday'].toString()),
                           onDateTimeChanged: (newBirthdayDate) {
                             setState(() {
                               userUpdate['birthday'] = newBirthdayDate.toUtc();
@@ -706,7 +719,6 @@ class _PersonalUserState extends State<PersonalUser> {
       formattedBirthday = '${birthday.day}/${birthday.month}/${birthday.year}';
 
       return formattedBirthday;
-
     } else {
       return '08/08/2008';
     }
@@ -717,7 +729,12 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedPhone = '1234';
 
     if (phone.length == 11) {
-      formattedPhone = '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+      String ddd = '${phone[0]}${phone[1]}';
+      String nineDig = phone[2];
+      String first = '${phone[3]}${phone[4]}${phone[5]}${phone[6]}';
+      String last = '${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+
+      formattedPhone = '($ddd)$nineDig $first-$last';
     }
 
     return formattedPhone;
@@ -728,19 +745,31 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedDocument = '';
 
     if (document.length == 11) {
-      formattedDocument = '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
+      String oneDigit = '${document[0]}${document[1]}${document[2]}';
+      String twoDigit = '${document[3]}${document[4]}${document[5]}';
+      String threeDigit = '${document[6]}${document[7]}${document[8]}';
+      String fourDigit = '${document[9]}${document[10]}';
+
+      formattedDocument = '$oneDigit.$twoDigit.$threeDigit-$fourDigit';
     }
 
     return formattedDocument;
   }
 
   void _saveUser() async {
+    if (userUpdate['document'] == null) {
+      userUpdate['document'] = '';
+    }
+
     if (userUpdate['phone'] == null || userUpdate['phone'].length < 11) {
       errorPhone = true;
     }
-    if (userUpdate['document'] == null || userUpdate['document'].length < 11) {
+
+    if (userUpdate['document'].length > 0 &&
+        userUpdate['document'].length < 11) {
       errorDocument = true;
     }
+
     if (errorDocument == true || errorPhone == true) {
       Navigator.pop(context);
       _editUser();
@@ -771,6 +800,7 @@ class _PersonalUserState extends State<PersonalUser> {
     } else {
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token').toString();
+
       if (Session.userId == '') {
         Session.userId = prefs.getString('userid').toString();
       }
@@ -780,7 +810,7 @@ class _PersonalUserState extends State<PersonalUser> {
         Navigator.pop(context);
         setState(() {});
       } else {
-        Map<String,String> headers = <String, String>{
+        Map<String, String> headers = <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
         };
@@ -801,7 +831,7 @@ class _PersonalUserState extends State<PersonalUser> {
         });
 
         http.Response response = await http.put(
-          Uri.parse('$baseUrl/user/client/${Session.userId}'),
+          Uri.parse('$baseUrl/user/manager/${Session.userId}'),
           headers: headers,
           body: userToUpdate,
         );
@@ -810,6 +840,11 @@ class _PersonalUserState extends State<PersonalUser> {
         print(body);
         if (body['success'] == true) {
           userReceived = body['body'];
+          userUpdate = userReceived;
+
+          _setUserOnShared();
+          setState(() {});
+
           Navigator.pop(context);
           showDialog(
             context: context,
@@ -823,9 +858,8 @@ class _PersonalUserState extends State<PersonalUser> {
                     width: double.infinity,
                     height: 150,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Cores.blue
-                    ),
+                        borderRadius: BorderRadius.circular(15),
+                        color: Cores.blue),
                     padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
                     child: const Text(
                       'Usuário editado com sucesso!',
@@ -888,7 +922,7 @@ class _PersonalUserState extends State<PersonalUser> {
         userUpdate = userReceived;
         _setUserOnShared();
       }
-      
+
       setState(() {});
     }
     Session.firstAcessUser = false;
@@ -903,6 +937,9 @@ class _PersonalUserState extends State<PersonalUser> {
 
     if (user != null) {
       userReceived = user;
+      userUpdate = userReceived;
+    } else {
+      _getUser();
     }
 
     setState(() {});
@@ -911,8 +948,8 @@ class _PersonalUserState extends State<PersonalUser> {
   void _setUserOnShared() async {
     final prefs = await SharedPreferences.getInstance();
 
-    String info = jsonEncode(userReceived).toString();
+    String user = jsonEncode(userReceived).toString();
 
-    await prefs.setString('save.user', info);
+    await prefs.setString('save.user', user);
   }
 }

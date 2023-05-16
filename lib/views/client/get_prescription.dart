@@ -246,12 +246,15 @@ class _GetPrescriptionState extends State<GetPrescription> {
       );
       String formattedDateTime = '';
 
-      formattedDateTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate =
+          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
     } else {
-      return '00:00:00 de 06/05/2020';
+      return '06/05/2020 às 00:00:00';
     }
   }
 }

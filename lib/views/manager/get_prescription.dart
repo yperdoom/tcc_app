@@ -4,10 +4,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
-import '../../configs/session.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class GetPrescription extends StatefulWidget {
   const GetPrescription({super.key});
@@ -249,12 +246,15 @@ class _GetPrescriptionState extends State<GetPrescription> {
       );
       String formattedDateTime = '';
 
-      formattedDateTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate =
+          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
     } else {
-      return '00:00:00 de 06/05/2020';
+      return '06/05/2020 às 00:00:00';
     }
   }
 }

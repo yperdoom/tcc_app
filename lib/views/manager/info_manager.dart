@@ -9,15 +9,16 @@ import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
-class InfoUser extends StatefulWidget {
-  const InfoUser({super.key});
+class InfoManager extends StatefulWidget {
+  const InfoManager({super.key});
 
   @override
-  State<InfoUser> createState() => _InfoUserState();
+  State<InfoManager> createState() => _InfoManagerState();
 }
 
-class _InfoUserState extends State<InfoUser> {
+class _InfoManagerState extends State<InfoManager> {
   var infoReceived = [];
+  String search = '';
 
   @override
   void initState() {
@@ -106,7 +107,10 @@ class _InfoUserState extends State<InfoUser> {
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(Icons.search_rounded,color: Cores.white),
+                              prefixIcon: Icon(
+                                Icons.search_rounded,
+                                color: Cores.white,
+                              ),
                               hintText: 'Pesquise por informações',
                               hintStyle: TextStyle(
                                 color: Cores.white,
@@ -119,7 +123,8 @@ class _InfoUserState extends State<InfoUser> {
                         TextButton(
                           style: TextButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
                             textStyle: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -251,7 +256,7 @@ class _InfoUserState extends State<InfoUser> {
       infoReceived = infos;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/infos'),
+        Uri.parse('$baseUrl/infos?search=$search'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
@@ -340,12 +345,15 @@ class _InfoUserState extends State<InfoUser> {
       );
       String formattedDateTime = '';
 
-      formattedDateTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate =
+          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
     } else {
-      return '00:00:00 de 06/05/2020';
+      return '06/05/2020 às 00:00:00';
     }
   }
 

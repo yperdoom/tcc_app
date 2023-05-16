@@ -12,11 +12,11 @@ import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
-class CreatePrescription extends StatefulWidget {
-  const CreatePrescription({super.key});
+class CreateClient extends StatefulWidget {
+  const CreateClient({super.key});
 
   @override
-  State<CreatePrescription> createState() => _CreatePrescriptionState();
+  State<CreateClient> createState() => _CreateClientState();
 }
 
 class Food {
@@ -31,7 +31,7 @@ class Food {
   });
 }
 
-class _CreatePrescriptionState extends State<CreatePrescription> {
+class _CreateClientState extends State<CreateClient> {
   var prescriptionsReceived = [];
   var payloadToAdapter = {};
   var mealsReceived = [];

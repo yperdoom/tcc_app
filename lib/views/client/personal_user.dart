@@ -726,8 +726,12 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedPhone = '1234';
 
     if (phone.length == 11) {
-      formattedPhone =
-          '(${phone[0]}${phone[1]})${phone[2]} ${phone[3]}${phone[4]}${phone[5]}${phone[6]}-${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+      String ddd = '${phone[0]}${phone[1]}';
+      String nineDig = phone[2];
+      String first = '${phone[3]}${phone[4]}${phone[5]}${phone[6]}';
+      String last = '${phone[7]}${phone[8]}${phone[9]}${phone[10]}';
+
+      formattedPhone = '($ddd)$nineDig $first-$last';
     }
 
     return formattedPhone;
@@ -738,23 +742,31 @@ class _PersonalUserState extends State<PersonalUser> {
     String formattedDocument = '';
 
     if (document.length == 11) {
-      formattedDocument =
-          '${document[0]}${document[1]}${document[2]}.${document[3]}${document[4]}${document[5]}.${document[6]}${document[7]}${document[8]}-${document[9]}${document[10]}';
+      String oneDigit = '${document[0]}${document[1]}${document[2]}';
+      String twoDigit = '${document[3]}${document[4]}${document[5]}';
+      String threeDigit = '${document[6]}${document[7]}${document[8]}';
+      String fourDigit = '${document[9]}${document[10]}';
+
+      formattedDocument = '$oneDigit.$twoDigit.$threeDigit-$fourDigit';
     }
 
     return formattedDocument;
   }
 
   void _saveUser() async {
-    if (userUpdate['document'] == null) { userUpdate['document'] = ''; }
-    print(userUpdate['document']);
+    if (userUpdate['document'] == null) {
+      userUpdate['document'] = '';
+    }
 
     if (userUpdate['phone'] == null || userUpdate['phone'].length < 11) {
       errorPhone = true;
     }
-    if (userUpdate['document'].length > 0 && userUpdate['document'].length < 11) {
+
+    if (userUpdate['document'].length > 0 &&
+        userUpdate['document'].length < 11) {
       errorDocument = true;
     }
+
     if (errorDocument == true || errorPhone == true) {
       Navigator.pop(context);
       _editUser();
@@ -785,6 +797,7 @@ class _PersonalUserState extends State<PersonalUser> {
     } else {
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('token').toString();
+
       if (Session.userId == '') {
         Session.userId = prefs.getString('userid').toString();
       }
@@ -798,8 +811,6 @@ class _PersonalUserState extends State<PersonalUser> {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
         };
-
-        print(userUpdate);
 
         Object userToUpdate = jsonEncode({
           'client_id': userUpdate['client']['client_id'],
@@ -826,6 +837,11 @@ class _PersonalUserState extends State<PersonalUser> {
         print(body);
         if (body['success'] == true) {
           userReceived = body['body'];
+          userUpdate = userReceived;
+
+          _setUserOnShared();
+          setState(() {});
+
           Navigator.pop(context);
           showDialog(
             context: context,
@@ -918,6 +934,7 @@ class _PersonalUserState extends State<PersonalUser> {
 
     if (user != null) {
       userReceived = user;
+      userUpdate = userReceived;
     } else {
       _getUser();
     }

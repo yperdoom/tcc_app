@@ -9,14 +9,14 @@ import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
-class FoodUser extends StatefulWidget {
-  const FoodUser({super.key});
+class FoodManager extends StatefulWidget {
+  const FoodManager({super.key});
 
   @override
-  State<FoodUser> createState() => _FoodUserState();
+  State<FoodManager> createState() => _FoodManagerState();
 }
 
-class _FoodUserState extends State<FoodUser> {
+class _FoodManagerState extends State<FoodManager> {
   var foodReceived = [];
 
   @override
@@ -231,12 +231,6 @@ class _FoodUserState extends State<FoodUser> {
                             color: Cores.white,
                           ),
                         ),
-                        Text(
-                          'Atualizado em: ${_regexDateTime(index)}',
-                          style: TextStyle(
-                            color: Cores.white,
-                          ),
-                        ),
                       ],
                     ),
                   ],
@@ -261,7 +255,7 @@ class _FoodUserState extends State<FoodUser> {
     );
   }
 
-    Future<dynamic> showFoodDetails(var index) {
+  Future<dynamic> showFoodDetails(var index) {
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -274,6 +268,19 @@ class _FoodUserState extends State<FoodUser> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
+                    children: const [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Abaixo verá informações sobre o alimento selecionado:',
+                          style: TextStyle(fontSize: 18),
+                          maxLines: 2,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
@@ -282,17 +289,13 @@ class _FoodUserState extends State<FoodUser> {
                           style: const TextStyle(fontSize: 28),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    children: [
+                      const SizedBox(width: 10),
                       Expanded(
                         child: AutoSizeText(
-                          '${foodReceived[index]['description']}',
+                          '${foodReceived[index]['type']}',
                           style: const TextStyle(fontSize: 18),
-                          // maxLines: 10,
-                          minFontSize: 18,
+                          maxLines: 1,
+                          minFontSize: 14,
                         ),
                       ),
                     ],
@@ -302,11 +305,99 @@ class _FoodUserState extends State<FoodUser> {
                     children: [
                       Expanded(
                         child: AutoSizeText(
-                          'Última vez atualizado em: ${_regexDateTime(index)}',
+                          '${foodReceived[index]['description']}',
                           style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 25),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Calorias: ${foodReceived[index]['calorie']} Kcal',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Carboidratos: ${foodReceived[index]['carbohydrate']}g',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Proteinas: ${foodReceived[index]['protein']}g',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          'Lipídios: ${foodReceived[index]['lipid']}g',
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          minFontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          _getMedidaBase(index),
+                          style: const TextStyle(fontSize: 16),
                           maxLines: 1,
                           minFontSize: 12,
                         ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      AutoSizeText(
+                        'Última vez atualizado em:',
+                        style: TextStyle(fontSize: 18),
+                        maxLines: 1,
+                        minFontSize: 12,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AutoSizeText(
+                        _regexDateTime(index),
+                        style: const TextStyle(fontSize: 18),
+                        maxLines: 1,
+                        minFontSize: 12,
                       ),
                     ],
                   ),
@@ -319,6 +410,21 @@ class _FoodUserState extends State<FoodUser> {
     );
   }
 
+  String _getMedidaBase(int index) {
+    if (foodReceived[index]['weight'] != null) {
+      return 'Peso base: ${foodReceived[index]['weight']}g';
+    }
+
+    if (foodReceived[index]['portion'] != null) {
+      return 'Porções base: ${foodReceived[index]['portion']}';
+    }
+
+    if (foodReceived[index]['mililiter'] != null) {
+      return 'Litragem base: ${foodReceived[index]['mililiter']}ml';
+    }
+    return 'Não foi possível identificar o tipo de quantificação base utilizada nesse alimento!';
+  }
+
   void _getFoods() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
@@ -327,61 +433,7 @@ class _FoodUserState extends State<FoodUser> {
     }
 
     if (Session.env == 'local') {
-      const foods = [
-        {
-          "food_id": 1,
-          "name": "arroz",
-          "description":
-              "arroz branco cozido em temperatura média para testar o tamanho de palavras porque pode caber muitas palavras aqui e ainda ter espaço para mais palavras meu deus como tem muitas palavras",
-          "type": "grão",
-          "color": "branco",
-          "weight": 100,
-          "calorie": 129,
-          "protein": 2.5,
-          "lipid": 0.23,
-          "carbohydrate": 28.18,
-          "updated_at": '05/10/2020'
-        },
-        {
-          "food_id": 2,
-          "name": "feijão",
-          "description": "feijao branco cozido",
-          "type": "grão",
-          "color": "preto",
-          "weight": 100,
-          "calorie": 103,
-          "protein": 6.6,
-          "lipid": 0.5,
-          "carbohydrate": 14.6,
-          "updated_at": '05/10/2020'
-        },
-        {
-          "food_id": 3,
-          "name": "peito de frango",
-          "description": "peito de frango cozido",
-          "type": "carne",
-          "color": "branco",
-          "weight": 100,
-          "calorie": 165,
-          "protein": 31.02,
-          "lipid": 3.57,
-          "carbohydrate": 0,
-          "updated_at": '05/10/2028'
-        },
-        {
-          "food_id": 4,
-          "name": "Ovo",
-          "description": "cozido",
-          "type": "ovo",
-          "color": "branco",
-          "weight": 100,
-          "calorie": 165,
-          "protein": 31.02,
-          "lipid": 3.57,
-          "carbohydrate": 0,
-          "updated_at": '05/10/2028'
-        }
-      ];
+      const foods = [];
 
       foodReceived = foods;
     } else {
@@ -410,16 +462,18 @@ class _FoodUserState extends State<FoodUser> {
 
   String _regexDateTime(int index) {
     if (foodReceived[index]['updated_at'] != null) {
-      DateTime dateTime =
-          DateTime.parse(foodReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(foodReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      formattedDateTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate =
+          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
     } else {
-      return '00:00:00 de 06/05/2020';
+      return '06/05/2020 às 00:00:00';
     }
   }
 

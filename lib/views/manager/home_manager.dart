@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:app_tcc/views/client/create_prescription.dart';
-import 'package:app_tcc/views/client/get_prescription.dart';
+import 'package:app_tcc/views/manager/create_client.dart';
+import 'package:app_tcc/views/manager/get_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../configs/colors.dart';
@@ -13,19 +12,20 @@ import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
-class HomeUser extends StatefulWidget {
-  const HomeUser({super.key});
+class HomeManager extends StatefulWidget {
+  const HomeManager({super.key});
 
   @override
-  State<HomeUser> createState() => _HomeUserState();
+  State<HomeManager> createState() => _HomeManagerState();
 }
 
-class _HomeUserState extends State<HomeUser> {
-  var prescriptionsReceived = [];
+class _HomeManagerState extends State<HomeManager> {
+  var clientsReceived = [];
+  String search = '';
 
   @override
   void initState() {
-    Session.firstAcessHome ? _getPrescriptions() : _getPrescriptionsOnShared();
+    Session.firstAcessHome ? _getClients() : _getClientsOnShared();
 
     super.initState();
   }
@@ -79,7 +79,7 @@ class _HomeUserState extends State<HomeUser> {
                     children: const [
                       Expanded(
                         child: Text(
-                          'Aqui voce encontra as receitas criadas por seu profissional e as receitas adaptadas por você.',
+                          'Aqui voce encontra todos os clientes cadastrados no sistema.',
                           style: TextStyle(
                             fontFamily: 'Urbanist',
                             color: Color(0xffBDD6D8),
@@ -110,14 +110,20 @@ class _HomeUserState extends State<HomeUser> {
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(Icons.search_rounded, color: Cores.white),
-                              hintText: 'Pesquise suas receitas',
+                              prefixIcon: Icon(
+                                Icons.search_rounded,
+                                color: Cores.white,
+                              ),
+                              hintText: 'Pesquise seus clientes',
                               hintStyle: TextStyle(
                                 color: Cores.white,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
                               ),
                             ),
+                            onChanged: (value) {
+                              search = value;
+                            },
                           ),
                         ),
                         TextButton(
@@ -131,7 +137,9 @@ class _HomeUserState extends State<HomeUser> {
                             ),
                             backgroundColor: const Color(0xff1E4CFF),
                           ),
-                          onPressed: () => {_getPrescriptions()},
+                          onPressed: () => {
+                            _getClients(),
+                          },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -163,8 +171,9 @@ class _HomeUserState extends State<HomeUser> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const CreatePrescription(),
-                settings: RouteSettings(arguments: prescriptionsReceived)),
+              builder: (context) => const CreateClient(),
+              settings: RouteSettings(arguments: clientsReceived),
+            ),
           )
         },
         backgroundColor: const Color(0xff1E4CFF),
@@ -174,11 +183,11 @@ class _HomeUserState extends State<HomeUser> {
   }
 
   Widget _findList() {
-    if (prescriptionsReceived.isNotEmpty) {
+    if (clientsReceived.isNotEmpty) {
       // retorna os cartões
       return Expanded(
         child: ListView.builder(
-          itemCount: prescriptionsReceived.length,
+          itemCount: clientsReceived.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () => {
@@ -187,7 +196,7 @@ class _HomeUserState extends State<HomeUser> {
                   MaterialPageRoute(
                     builder: (context) => const GetPrescription(),
                     settings: RouteSettings(
-                      arguments: prescriptionsReceived[index],
+                      arguments: clientsReceived[index],
                     ),
                   ),
                 ),
@@ -216,7 +225,7 @@ class _HomeUserState extends State<HomeUser> {
                       children: [
                         Expanded(
                           child: AutoSizeText(
-                            '${prescriptionsReceived[index]['name']}',
+                            '${clientsReceived[index]['name']}',
                             style: TextStyle(
                               fontSize: 24,
                               color: Cores.white,
@@ -226,7 +235,7 @@ class _HomeUserState extends State<HomeUser> {
                           ),
                         ),
                         Text(
-                          'Refeições: ${prescriptionsReceived[index]['meal_amount']}',
+                          'Refeições: ${clientsReceived[index]['meal_amount']}',
                           style: TextStyle(
                             color: Cores.white,
                           ),
@@ -238,7 +247,7 @@ class _HomeUserState extends State<HomeUser> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${prescriptionsReceived[index]['recommended_calorie']} Kcal',
+                          '${clientsReceived[index]['recommended_calorie']} Kcal',
                           style: TextStyle(
                             color: Cores.white,
                           ),
@@ -273,7 +282,7 @@ class _HomeUserState extends State<HomeUser> {
     );
   }
 
-  void _getPrescriptions() async {
+  void _getClients() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
     if (Session.userId == '') {
@@ -283,10 +292,10 @@ class _HomeUserState extends State<HomeUser> {
     if (Session.env == 'local') {
       const meals = [];
 
-      prescriptionsReceived = meals;
+      clientsReceived = meals;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescriptions/${Session.userId}'),
+        Uri.parse('$baseUrl/user/clients/${Session.userId}?search=$search'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token
@@ -296,12 +305,16 @@ class _HomeUserState extends State<HomeUser> {
 
       if (body['success'] == true) {
         if (body['body']['count'] > 0) {
-          prescriptionsReceived = body['body']['prescriptions'];
+          clientsReceived = body['body']['prescriptions'];
 
-          _setPrescriptionsOnShared();
+          _setClientsOnShared();
+        } else {
+          clientsReceived = [];
+          _setClientsOnShared();
         }
       } else {
-        prescriptionsReceived = [];
+        clientsReceived = [];
+        _setClientsOnShared();
       }
 
       setState(() {});
@@ -311,48 +324,49 @@ class _HomeUserState extends State<HomeUser> {
   }
 
   String _regexDateTime(int index) {
-    if (prescriptionsReceived[index]['updated_at'] != null) {
+    if (clientsReceived[index]['updated_at'] != null) {
       DateTime dateTime =
-          DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
+          DateTime.parse(clientsReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      formattedDateTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second} de ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate =
+          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
     } else {
-      return '00:00:00 de 06/05/2020';
+      return '06/05/2020 às 00:00:00';
     }
   }
 
-  void _getPrescriptionsOnShared() async {
+  void _getClientsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
-    int? prescriptionLength = prefs.getInt('save.prescription.length');
+    int? clientLength = prefs.getInt('save.client.length');
 
-    if (prescriptionLength != null) {
-      for (int counter = 0; counter <= prescriptionLength; counter++) {
-        String? prescriptionString =
-            prefs.getString('save.prescription.$counter');
-        var prescription = jsonDecode(prescriptionString.toString());
+    if (clientLength != null) {
+      for (int counter = 0; counter <= clientLength; counter++) {
+        String? clientString = prefs.getString('save.client.$counter');
+        var client = jsonDecode(clientString.toString());
 
-        if (prescription == null) {
-          await prefs.setInt('save.prescription.length', counter - 1);
+        if (client == null) {
+          await prefs.setInt('save.client.length', counter - 1);
         } else {
-          prescriptionsReceived.add(prescription);
+          clientsReceived.add(client);
         }
       }
     } else {
       int counter = 0;
       while (counter >= 0) {
-        String? prescriptionString =
-            prefs.getString('save.prescription.$counter');
-        var prescription = jsonDecode(prescriptionString.toString());
+        String? clientString = prefs.getString('save.client.$counter');
+        var client = jsonDecode(clientString.toString());
 
-        if (prescription == null) {
-          await prefs.setInt('save.prescription.length', counter - 1);
+        if (client == null) {
+          await prefs.setInt('save.client.length', counter - 1);
           counter = -1;
         } else {
-          prescriptionsReceived.add(prescription);
+          clientsReceived.add(client);
 
           counter++;
         }
@@ -362,19 +376,19 @@ class _HomeUserState extends State<HomeUser> {
     setState(() {});
   }
 
-  void _setPrescriptionsOnShared() async {
+  void _setClientsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt(
-      'save.prescription.length',
-      prescriptionsReceived.length - 1,
+      'save.client.length',
+      clientsReceived.length - 1,
     );
-    for (int counter = 0; counter < prescriptionsReceived.length; counter++) {
-      String prescription = jsonEncode(
-        prescriptionsReceived[counter],
+    for (int counter = 0; counter < clientsReceived.length; counter++) {
+      String client = jsonEncode(
+        clientsReceived[counter],
       ).toString();
 
-      await prefs.setString('save.prescription.$counter', prescription);
+      await prefs.setString('save.client.$counter', client);
     }
   }
 }
