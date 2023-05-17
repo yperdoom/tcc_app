@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_tcc/views/manager/create_client.dart';
-import 'package:app_tcc/views/manager/get_prescription.dart';
+import 'package:app_tcc/views/manager/get_client.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -194,7 +194,7 @@ class _HomeManagerState extends State<HomeManager> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const GetPrescription(),
+                    builder: (context) => const GetClient(),
                     settings: RouteSettings(
                       arguments: clientsReceived[index],
                     ),
@@ -235,7 +235,7 @@ class _HomeManagerState extends State<HomeManager> {
                           ),
                         ),
                         Text(
-                          'Refeições: ${clientsReceived[index]['meal_amount']}',
+                          'Gordura: ${clientsReceived[index]['fat_percentage']}%',
                           style: TextStyle(
                             color: Cores.white,
                           ),
@@ -247,7 +247,7 @@ class _HomeManagerState extends State<HomeManager> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${clientsReceived[index]['recommended_calorie']} Kcal',
+                          _regexAge(index),
                           style: TextStyle(
                             color: Cores.white,
                           ),
@@ -282,6 +282,22 @@ class _HomeManagerState extends State<HomeManager> {
     );
   }
 
+  String _regexAge(int index) {
+    if (clientsReceived[index]['birthday'] != null) {
+      DateTime birthday = DateTime.parse(clientsReceived[index]['birthday'].toString());
+      DateTime now = DateTime.now();
+
+      int year = now.year - birthday.year;
+
+      if (now.month < birthday.month) { year -= 1; }
+      if (now.month == birthday.month) { if (now.day < birthday.day) { year -= 1; }}
+
+      return '$year anos';
+    } else {
+      return 'XX';
+    }
+  }
+
   void _getClients() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
@@ -305,7 +321,7 @@ class _HomeManagerState extends State<HomeManager> {
 
       if (body['success'] == true) {
         if (body['body']['count'] > 0) {
-          clientsReceived = body['body']['prescriptions'];
+          clientsReceived = body['body']['clients'];
 
           _setClientsOnShared();
         } else {

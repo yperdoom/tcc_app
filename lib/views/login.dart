@@ -2,6 +2,7 @@
 
 import 'package:app_tcc/views/client_page.dart';
 import 'package:app_tcc/views/ip_select.dart';
+import 'package:app_tcc/views/manager_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../configs/colors.dart';
@@ -309,11 +310,15 @@ class _LoginPage extends State<LoginPage> {
 
     var body = await jsonDecode(response.body);
 
+    print(body);
+
     if (body['success'] == true) {
       if (body['scope'] == 'admin') {
         _toAdminLogin(body['token'], body['scope'], body['userId'].toString());
       } else if (body['scope'] == 'client') {
         _toClientLogin(body['token'], body['scope'], body['userId'].toString());
+      } else if (body['scope'] == 'manager') {
+        _toManagerLogin(body['token'], body['scope'], body['userId'].toString());
       } else {
         popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
       }
@@ -347,6 +352,19 @@ class _LoginPage extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ClientPage()),
+      );
+    });
+  }
+
+  void _toManagerLogin(String token, String scope, String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    await prefs.setString('scope', scope);
+    await prefs.setString('userid', userId);
+    setState(() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ManagerPage()),
       );
     });
   }
