@@ -157,25 +157,25 @@ class _LoginPage extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextButton(
-                            style: ButtonStyle(
-                              textStyle: MaterialStateProperty.all(
-                                const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            onPressed: _tryApp,
-                            child: Text(
-                              'Try',
-                              style: TextStyle(
-                                color: Cores.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
+                          // TextButton(
+                          //   style: ButtonStyle(
+                          //     textStyle: MaterialStateProperty.all(
+                          //       const TextStyle(
+                          //         fontSize: 16,
+                          //         fontWeight: FontWeight.w600,
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   onPressed: _tryApp,
+                          //   child: Text(
+                          //     'Try',
+                          //     style: TextStyle(
+                          //       color: Cores.white,
+                          //       fontSize: 18,
+                          //       fontWeight: FontWeight.w700,
+                          //     ),
+                          //   ),
+                          // ),
                           SizedBox(
                             width: 130,
                             height: 50,
@@ -240,19 +240,19 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  void _tryApp() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', 'j12hd9128djh12id3i2h923');
-    await prefs.setString('scope', 'trying');
-    await prefs.setString('env', 'local');
-    Session.env = 'local';
-    setState(() {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ClientPage()),
-      );
-    });
-  }
+  // void _tryApp() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('token', 'j12hd9128djh12id3i2h923');
+  //   await prefs.setString('scope', 'trying');
+  //   await prefs.setString('env', 'local');
+  //   Session.env = 'local';
+  //   setState(() {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const ClientPage()),
+  //     );
+  //   });
+  // }
 
   void _setEmail(String email) {
     emailTemporary = email;

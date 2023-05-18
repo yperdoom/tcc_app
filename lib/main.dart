@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:app_tcc/configs/colors.dart';
+import 'package:app_tcc/views/manager_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'views/login.dart';
@@ -106,14 +107,21 @@ class _MainPage extends State<MainPage> {
       );
     }
 
-    if (scope == 'manager') {}
+    if (scope == 'manager') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ManagerPage()),
+      );
+    }
 
-    if (scope == 'client' || scope == 'trying') {
+    if (scope == 'client') {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ClientPage()),
       );
     }
+
+    if (scope == 'trying') {}
   }
 
   @override
