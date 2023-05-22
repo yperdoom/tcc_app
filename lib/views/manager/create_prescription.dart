@@ -183,10 +183,12 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
   }
 
   void _savePrescription(var meals) {
+    // TO-DO
 
-    // prescriptionNutrients
-    // print(payloadToCreate); // oq eu vou mandar pra api pra salvar
-    // print(clientReceived); informaçòes do cliente
+    print(meals);
+    print(prescriptionNutrients);
+    print(payloadToCreate); // oq eu vou mandar pra api pra salvar
+    print(clientReceived); // informaçòes do cliente
     print(mealsToCreate); // oq eu vou trabalhar em cima pra mudar
   }
 
@@ -612,10 +614,10 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.only(
-          top: 80,
+          top: 100,
           right: 30,
           left: 30,
-          bottom: 100,
+          bottom: 150,
         ),
         child: Scaffold(
           body: Column(
