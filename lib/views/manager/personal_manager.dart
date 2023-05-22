@@ -323,13 +323,6 @@ class _PersonalManagerState extends State<PersonalManager> {
   }
 
   void _editUser() async {
-    bool isMale;
-    if (userReceived['client']['sex'] == 'male') {
-      isMale = true;
-    } else {
-      isMale = false;
-    }
-
     return showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -494,7 +487,8 @@ class _PersonalManagerState extends State<PersonalManager> {
                                 },
                                 maxLength: 11,
                                 controller: TextEditingController(
-                                    text: userReceived['document']),
+                                  text: userReceived['document'],
+                                ),
                                 keyboardType: TextInputType.number,
                               )
                             : TextField(
@@ -518,44 +512,10 @@ class _PersonalManagerState extends State<PersonalManager> {
                                 },
                                 maxLength: 11,
                                 controller: TextEditingController(
-                                    text: userReceived['document']),
+                                  text: userReceived['document'],
+                                ),
                                 keyboardType: TextInputType.number,
                               ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<Object>(
-                          decoration: InputDecoration(
-                            icon: isMale
-                                ? const Icon(Icons.male_outlined)
-                                : const Icon(Icons.female_outlined),
-                            label: const Text('Sexo'),
-                            labelStyle: TextStyle(
-                              color: Cores.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                            ),
-                            border: const OutlineInputBorder(),
-                          ),
-                          isExpanded: true,
-                          value: userReceived['client']['sex'],
-                          items:
-                              sexReceived.map<DropdownMenuItem<Object>>((sexo) {
-                            return DropdownMenuItem(
-                              value: sexo['value'],
-                              child: Text('${sexo['name']}'),
-                            );
-                          }).toList(),
-                          hint: const Text('Selecione um sexo'),
-                          onChanged: (newValue) {
-                            userUpdate['client']['sex'] = newValue;
-                          },
-                        ),
                       ),
                     ],
                   ),
@@ -751,22 +711,19 @@ class _PersonalManagerState extends State<PersonalManager> {
       String fourDigit = '${document[9]}${document[10]}';
 
       formattedDocument = '$oneDigit.$twoDigit.$threeDigit-$fourDigit';
+    } else {
+      formattedDocument = 'Padrão inválido';
     }
 
     return formattedDocument;
   }
 
   void _saveUser() async {
-    if (userUpdate['document'] == null) {
-      userUpdate['document'] = '';
-    }
-
     if (userUpdate['phone'] == null || userUpdate['phone'].length < 11) {
       errorPhone = true;
     }
 
-    if (userUpdate['document'].length > 0 &&
-        userUpdate['document'].length < 11) {
+    if (userUpdate['document'] == null || userUpdate['document'].length < 11) {
       errorDocument = true;
     }
 
@@ -785,13 +742,15 @@ class _PersonalManagerState extends State<PersonalManager> {
                 width: double.infinity,
                 height: 150,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Cores.redError),
+                  borderRadius: BorderRadius.circular(15),
+                  color: Cores.redError,
+                ),
                 padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
                 child: const Text(
-                    'Confira as informações inseridas e tente novamente',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                    textAlign: TextAlign.center),
+                  'Confira as informações inseridas e tente novamente',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
@@ -816,18 +775,13 @@ class _PersonalManagerState extends State<PersonalManager> {
         };
 
         Object userToUpdate = jsonEncode({
-          'client_id': userUpdate['client']['client_id'],
+          'manager_id': userUpdate['manager_id'],
           'name': userUpdate['name'],
           'phone': userUpdate['phone'],
           'document': userUpdate['document'],
-          'sex': userUpdate['client']['sex'],
           'city': userUpdate['city'],
           'state': userUpdate['state'],
           'birthday': _regexBirthday(),
-          'age': userUpdate['client']['age'],
-          'height': userUpdate['client']['height'],
-          'weight': userUpdate['client']['weight'],
-          'fat_percentage': userUpdate['client']['fat_percentage'],
         });
 
         http.Response response = await http.put(
@@ -907,7 +861,7 @@ class _PersonalManagerState extends State<PersonalManager> {
       userReceived = user;
     } else {
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/user/client/${Session.userId}'),
+        Uri.parse('$baseUrl/user/manager/${Session.userId}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': token

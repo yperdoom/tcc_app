@@ -289,8 +289,14 @@ class _HomeManagerState extends State<HomeManager> {
 
       int year = now.year - birthday.year;
 
-      if (now.month < birthday.month) { year -= 1; }
-      if (now.month == birthday.month) { if (now.day < birthday.day) { year -= 1; }}
+      if (now.month < birthday.month) {
+        year -= 1;
+      }
+      if (now.month == birthday.month) {
+        if (now.day < birthday.day) {
+          year -= 1;
+        }
+      }
 
       return '$year anos';
     } else {
@@ -341,14 +347,11 @@ class _HomeManagerState extends State<HomeManager> {
 
   String _regexDateTime(int index) {
     if (clientsReceived[index]['updated_at'] != null) {
-      DateTime dateTime =
-          DateTime.parse(clientsReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(clientsReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;

@@ -22,22 +22,49 @@ class CreatePrescription extends StatefulWidget {
 class Food {
   final int? food_id;
   final String? name;
+  final String? description;
   final bool? selected;
 
   Food({
     required this.food_id,
     required this.name,
+    required this.description,
     this.selected = false,
   });
 }
 
 class _CreatePrescriptionState extends State<CreatePrescription> {
-  var prescriptionsReceived = [];
-  var payloadToAdapter = {};
-  var mealsReceived = [];
+  var payloadToCreate = {};
+  var mealsToCreate = [];
+  var clientReceived = {};
+  var prescriptionNutrients = {};
+  var typesReceived = [
+    {
+      "code": 1,
+      "value": "Lanche"
+    },
+    {
+      "code": 2,
+      "value": "Café da manhã"
+    },
+    {
+      "code": 3,
+      "value": "Café da tarde"
+    },
+    {
+      "code": 4,
+      "value": "Almoço"
+    },
+    {
+      "code": 5,
+      "value": "Janta"
+    },
+  ];
   var foodsReceived = [];
   List<Food> foodsSelected = [];
   int foodAmount = 0;
+  bool mealAmountError = false;
+  late List<MultiSelectItem<Food>> _foods;
 
   @override
   void initState() {
@@ -49,12 +76,11 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)?.settings.arguments;
-    prescriptionsReceived = List<dynamic>.from(
-      jsonDecode(
-        jsonEncode(arguments),
-      ),
+    clientReceived = jsonDecode(
+      jsonEncode(arguments),
     );
-    final _foods = foodsSelected
+
+    _foods = foodsSelected
         .map(
           (food) => MultiSelectItem<Food>(
             food,
@@ -66,167 +92,582 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Adaptar refeição',
+          'Prescrever',
           style: TextStyle(fontSize: 18),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        icon: const Icon(Icons.person_outlined),
-                        label: const Text('Nome'),
-                        labelStyle: TextStyle(
-                          color: Cores.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                        border: const OutlineInputBorder(),
-                      ),
-                      onChanged: (value) {
-                        payloadToAdapter['name'] = value;
-                      },
-                      maxLength: 30,
-                      keyboardType: TextInputType.name,
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 100,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () => _onSave(),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: DropdownButtonFormField<Object>(
-                      decoration: InputDecoration(
-                        icon: const Icon(Icons.home_outlined),
-                        label: const Text('Prescrição'),
-                        labelStyle: TextStyle(
-                          color: Cores.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                        border: const OutlineInputBorder(),
-                      ),
-                      isExpanded: true,
-                      items: prescriptionsReceived
-                          .map<DropdownMenuItem<Object>>((prescription) {
-                        return DropdownMenuItem(
-                          value: prescription['_id'],
-                          child: Text(
-                              '${prescription['name']} - ${prescription['recommended_calorie']} kcal'),
-                        );
-                      }).toList(),
-                      hint: const AutoSizeText(
-                        'Selecione uma prescrição',
-                        minFontSize: 10,
-                      ),
-                      onChanged: (newValue) {
-                        _sendPrescription(newValue);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: DropdownButtonFormField<Object>(
-                      decoration: InputDecoration(
-                        icon: const Icon(Icons.home_outlined),
-                        label: const Text('Refeição'),
-                        labelStyle: TextStyle(
-                          color: Cores.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                        border: const OutlineInputBorder(),
-                      ),
-                      isExpanded: true,
-                      items:
-                          mealsReceived.map<DropdownMenuItem<Object>>((meal) {
-                        return DropdownMenuItem(
-                          value: meal['_id'],
-                          child: Text('${meal['name']} - ${meal['type']}'),
-                        );
-                      }).toList(),
-                      hint: const AutoSizeText(
-                        'Selecione uma refeição',
-                        minFontSize: 10,
-                      ),
-                      onChanged: (newValue) {
-                        _sendMeals(newValue);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Expanded(
-                  child: AutoSizeText(
-                    'Selecione: $foodAmount alimento(s).',
-                    style: TextStyle(fontSize: 18),
-                    maxLines: 1,
-                    minFontSize: 12,
-                  ),
-                )
-              ]),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: MultiSelectDialogField(
-                  items: _foods,
-                  title: const Text("Alimentos"),
-                  selectedColor: Cores.blue,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    border: Border.all(
-                      color: Cores.grey,
-                      width: 2,
-                    ),
-                  ),
-                  buttonIcon: Icon(
-                    Icons.pets,
-                    color: Cores.grey,
-                  ),
-                  unselectedColor: Cores.grey,
-                  itemsTextStyle: TextStyle(color: Cores.white),
-                  selectedItemsTextStyle: TextStyle(color: Cores.blueOpaque),
-                  buttonText: Text(
-                    "Alimentos selecionados",
-                    style: TextStyle(
+                  backgroundColor: MaterialStateProperty.all(Cores.blue),
+                  textStyle: MaterialStateProperty.all(
+                    TextStyle(
                       color: Cores.white,
                       fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  onConfirm: (results) {
-                    List foods = [];
-                    for (int i = 0; i < results.length; i++) {
-                      foods.add(results[i].food_id);
-                    }
-                    payloadToAdapter['foods'] = foods;
-                  },
                 ),
+                child: Text(
+                  'Salvar',
+                  style: TextStyle(
+                    color: Cores.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.person_outlined),
+                            label: const Text('Nome da prescrição'),
+                            labelStyle: TextStyle(
+                              color: Cores.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            payloadToCreate['name'] = value;
+                          },
+                          maxLength: 30,
+                          keyboardType: TextInputType.name,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _verifyMealAmount(),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ),
+          _getMeals(),
+        ],
+      ),
+    );
+  }
+
+  void _savePrescription(var meals) {
+
+    // prescriptionNutrients
+    // print(payloadToCreate); // oq eu vou mandar pra api pra salvar
+    // print(clientReceived); informaçòes do cliente
+    print(mealsToCreate); // oq eu vou trabalhar em cima pra mudar
+  }
+
+  Widget _getMeals() {
+    if (payloadToCreate['meal_amount'] != null) {
+      for (int i = 0; i < payloadToCreate['meal_amount']; i++) {
+        if (mealsToCreate.length < payloadToCreate['meal_amount']) {
+          mealsToCreate.add({});
+        }
+      }
+
+      // retorna os cartões
+      return Expanded(
+        child: ListView.builder(
+          itemCount: payloadToCreate['meal_amount'],
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 12,
+                  bottom: 10,
+                  right: 12,
+                ),
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  top: 5,
+                  bottom: 8,
+                  right: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Cores.blueDark,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Refeição ${index + 1}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              label: const Text('Nome'),
+                              labelStyle: TextStyle(
+                                color: Cores.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                              ),
+                              border: const OutlineInputBorder(),
+                            ),
+                            onChanged: (value) {
+                              mealsToCreate[index]['name'] = value;
+                            },
+                            maxLength: 30,
+                            keyboardType: TextInputType.name,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<Object>(
+                            decoration: InputDecoration(
+                              label: const Text('Tipo de refeição'),
+                              labelStyle: TextStyle(
+                                color: Cores.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                              ),
+                              border: const OutlineInputBorder(),
+                            ),
+                            isExpanded: true,
+                            items: typesReceived.map<DropdownMenuItem<Object>>((types) {
+                              return DropdownMenuItem(
+                                value: types['value'],
+                                child: Text('${types['value']}'),
+                              );
+                            }).toList(),
+                            hint: const Text('Selecione um tipo'),
+                            onChanged: (newValue) {
+                              mealsToCreate[index]['type'] = newValue;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: MultiSelectDialogField(
+                        items: _foods,
+                        title: const Text("Alimentos"),
+                        selectedColor: Cores.blue,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(5),
+                          ),
+                          border: Border.all(
+                            color: Cores.grey,
+                            width: 2,
+                          ),
+                        ),
+                        unselectedColor: Cores.grey,
+                        itemsTextStyle: TextStyle(color: Cores.white),
+                        selectedItemsTextStyle: TextStyle(
+                          color: Cores.blueOpaque,
+                        ),
+                        buttonText: Text(
+                          "Alimentos selecionados",
+                          style: TextStyle(
+                            color: Cores.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onConfirm: (results) {
+                          List foods = [];
+                          for (int i = 0; i < results.length; i++) {
+                            foods.add(results[i].food_id);
+                          }
+                          mealsToCreate[index]['foods'] = foods;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 300,
+                          height: 70,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              _selectFoods(index);
+                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                              ),
+                              backgroundColor: MaterialStateProperty.all(Cores.blue),
+                              textStyle: MaterialStateProperty.all(
+                                TextStyle(
+                                  color: Cores.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Selecionar proporção dos alimentos',
+                              style: TextStyle(
+                                color: Cores.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    // retorna mensagem que não tem nada
+    return Expanded(
+      child: Text(
+        'Não temos nada aqui no momento :(',
+        style: TextStyle(
+          color: Cores.white,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  void _selectFoods(int index) async {
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(10),
+        child: Scaffold(
+          body: Column(
+            children: [
+              _getFoods(index),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: 100,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          backgroundColor: MaterialStateProperty.all(Cores.blue),
+                          textStyle: MaterialStateProperty.all(
+                            TextStyle(
+                              color: Cores.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Salvar',
+                          style: TextStyle(
+                            color: Cores.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getFoods(int mealIndex) {
+    print(mealsToCreate[0]['nutrients']);
+    print(mealsToCreate[mealIndex]['foods']);
+    if (mealsToCreate[mealIndex]['foods'] != null) {
+      if (mealsToCreate[mealIndex]['nutrients'] == null) {
+        print('RECONHECEU QUE É NULO');
+        mealsToCreate[mealIndex]['nutrients'] = [];
+
+        for (int i = 0; i < mealsToCreate[mealIndex]['foods'].length; i++) {
+          mealsToCreate[mealIndex]['nutrients'].add(0);
+        }
+      }
+      mealsToCreate[mealIndex]['food_correspondent'] = [];
+
+      for (int i = 0; i < mealsToCreate[mealIndex]['foods'].length; i++) {
+        for (int j = 0; j < foodsReceived.length; j++) {
+          if (mealsToCreate[mealIndex]['foods'][i] == foodsReceived[j]['food_id']) {
+            mealsToCreate[mealIndex]['food_correspondent'].add(foodsReceived[j]);
+          }
+        }
+      }
+
+      print(mealsToCreate[0]['nutrients']);
+
+      Widget visual = Expanded(
+        child: ListView.builder(
+          itemCount: mealsToCreate[mealIndex]['foods'].length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 12,
+                  bottom: 10,
+                  top: 15,
+                  right: 12,
+                ),
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  top: 5,
+                  bottom: 8,
+                  right: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Cores.blueDark,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      '${mealsToCreate[mealIndex]['food_correspondent'][index]['description']}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              label: const Text('Quantidade deste alimento'),
+                              labelStyle: TextStyle(
+                                color: Cores.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                              ),
+                              border: const OutlineInputBorder(),
+                            ),
+                            controller: TextEditingController(text: mealsToCreate[mealIndex]['nutrients'][index].toString()),
+                            onChanged: (value) {
+                              mealsToCreate[mealIndex]['nutrients'][index] = value;
+                            },
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
+
+      return visual;
+    }
+
+    return Expanded(
+      child: Text(
+        'Nenhum alimento foi selecionado :(',
+        style: TextStyle(
+          color: Cores.white,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Object _calcNutriProportion(int index) {
+    var meal = {};
+
+    meal['foods'] = mealsToCreate[index]['foods'];
+    meal['food_amount'] = mealsToCreate[index]['foods'].length;
+
+    double calorie = 0;
+    double carbohydrate = 0;
+    double protein = 0;
+    double lipid = 0;
+    for (int fi = 0; fi < mealsToCreate[index]['foods'].length; fi++) {
+      double nutriOfFood = double.parse(mealsToCreate[index]['nutrients'][fi]);
+      int foodWeight = mealsToCreate[index]['food_correspondent'][fi]['weight'];
+      double percentage = (nutriOfFood * 100) / foodWeight;
+
+      double calorieOfFood = mealsToCreate[index]['food_correspondent'][fi]['calorie'];
+      calorie += calorieOfFood * (percentage / 100);
+
+      double carbohydrateOfFood = mealsToCreate[index]['food_correspondent'][fi]['carbohydrate'];
+      carbohydrate += carbohydrateOfFood * (percentage / 100);
+
+      double proteinOfFood = mealsToCreate[index]['food_correspondent'][fi]['protein'];
+      protein += proteinOfFood * (percentage / 100);
+
+      double lipidOfFood = mealsToCreate[index]['food_correspondent'][fi]['lipid'];
+      lipid += lipidOfFood * (percentage / 100);
+    }
+
+    meal['recommended_calorie'] = calorie;
+    meal['calorie'] = calorie;
+    meal['recommended_protein'] = protein;
+    meal['protein'] = protein;
+    meal['recommended_lipid'] = lipid;
+    meal['lipid'] = lipid;
+    meal['recommended_carbohydrate'] = carbohydrate;
+    meal['carbohydrate'] = carbohydrate;
+
+    return meal;
+  }
+
+  void _calcPrescripNutriProportion(var meals) {
+    double calorie = 0;
+    double carbohydrate = 0;
+    double protein = 0;
+    double lipid = 0;
+
+    for (int i = 0; i < meals.length; i++) {
+      calorie += meals[i]['calorie'];
+      carbohydrate += meals[i]['carbohydrate'];
+      protein += meals[i]['protein'];
+      lipid += meals[i]['lipid'];
+    }
+
+    prescriptionNutrients['recommended_calorie'] = calorie;
+    prescriptionNutrients['recommended_carbohydrate'] = carbohydrate;
+    prescriptionNutrients['recommended_protein'] = protein;
+    prescriptionNutrients['recommended_lipid'] = lipid;
+  }
+
+  AutoSizeText _autoText(String message) {
+    AutoSizeText autoText = AutoSizeText(
+      message,
+      style: TextStyle(
+        fontSize: 22,
+        color: Cores.white,
+      ),
+      maxLines: 1,
+      minFontSize: 16,
+      textAlign: TextAlign.center,
+    );
+
+    return autoText;
+  }
+
+  void _confirmatePopup(BuildContext context, var meals) async {
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.only(
+          top: 80,
+          right: 30,
+          left: 30,
+          bottom: 100,
+        ),
+        child: Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _autoText('Revise os valores prescritos:'),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _autoText('Calorias totais: ${prescriptionNutrients['recommended_calorie'].toStringAsFixed(2)}'),
+                    // 'Refeições: ${_prepareMealMessage(meals)}',
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _autoText('Carboidratos totais: ${prescriptionNutrients['recommended_carbohydrate'].toStringAsFixed(2)}'),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _autoText('Proteinas totais: ${prescriptionNutrients['recommended_protein'].toStringAsFixed(2)}'),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _autoText('Lipídios totais: ${prescriptionNutrients['recommended_lipid'].toStringAsFixed(2)}'),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(
-                    width: 120,
-                    height: 50,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ButtonStyle(
@@ -235,7 +676,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                             borderRadius: BorderRadius.circular(40),
                           ),
                         ),
-                        backgroundColor: MaterialStateProperty.all(Cores.blue),
+                        backgroundColor: MaterialStateProperty.all(Cores.redExit),
                         textStyle: MaterialStateProperty.all(
                           TextStyle(
                             color: Cores.white,
@@ -254,11 +695,10 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 120,
-                    height: 50,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                      onPressed: () => _adapter(),
+                      onPressed: () => _savePrescription(meals),
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(
@@ -275,7 +715,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                         ),
                       ),
                       child: Text(
-                        'Salvar',
+                        'Confirmar',
                         style: TextStyle(
                           color: Cores.white,
                           fontSize: 18,
@@ -293,73 +733,92 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     );
   }
 
-  void _adapter() async {
-    final prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token').toString();
-    if (Session.userId == '') {
-      Session.userId = prefs.getString('userid').toString();
-    }
+  // String _prepareMealMessage(var meals) {
+  //   if (meals != null || meals != []) {
+  //     String message = '';
+  //     for (int i = 0; i < meals.length; i++) {
+  //       if (meals[i] != null) {
+  //         message
+  //       }
+  //     }
+  //   }
+  //   return 'Não foram encontradas refeições';
+  // }
 
-    if (Session.env == 'local') {
-      const meals = [];
+  Widget _verifyMealAmount() {
+    Widget amountWidget;
 
-      prescriptionsReceived = meals;
-    } else {
-      Map<String, String> headers = <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': token
-      };
-
-      Object prescriptionToAdapter = jsonEncode({
-        "foods": payloadToAdapter['foods'],
-        "mealId": payloadToAdapter['meal_id'],
-        "prescriptionId": payloadToAdapter['prescription_id'],
-        "name": payloadToAdapter['name'],
-        "type": payloadToAdapter['type'],
-        "userId": Session.userId,
-      });
-
-      http.Response response = await http.post(
-        Uri.parse('$baseUrl/prescription/adapter'),
-        headers: headers,
-        body: prescriptionToAdapter,
+    if (mealAmountError == true) {
+      amountWidget = Expanded(
+        child: TextField(
+          decoration: InputDecoration(
+            icon: const Icon(Icons.person_outlined),
+            label: const Text('Quantidade de refeições'),
+            errorText: 'Você precisa informar um número válido',
+            labelStyle: TextStyle(
+              color: Cores.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+            ),
+            border: const OutlineInputBorder(),
+          ),
+          onChanged: (value) {
+            setState(() {
+              if (int.tryParse(value) is int) {
+                mealAmountError = false;
+                payloadToCreate['meal_amount'] = int.tryParse(value);
+              } else {
+                mealAmountError = true;
+              }
+            });
+          },
+          keyboardType: TextInputType.number,
+        ),
       );
-      var body = await jsonDecode(response.body);
-
-      print(body);
-
-      if (body['success'] == true) {
-        Navigator.pop(context);
-        popup(context, false, 'Adaptação feita com sucesso!');
-      } else {
-        prescriptionsReceived = [];
-        popup(context, true,
-            'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
-      }
+    } else {
+      amountWidget = Expanded(
+        child: TextField(
+          decoration: InputDecoration(
+            icon: const Icon(Icons.person_outlined),
+            label: const Text('Quantidade de refeições'),
+            labelStyle: TextStyle(
+              color: Cores.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+            ),
+            border: const OutlineInputBorder(),
+          ),
+          onChanged: (value) {
+            setState(() {
+              if (int.tryParse(value) is int) {
+                mealAmountError = false;
+                payloadToCreate['meal_amount'] = int.tryParse(value);
+              } else {
+                mealAmountError = true;
+              }
+            });
+          },
+          keyboardType: TextInputType.number,
+        ),
+      );
     }
-    Session.firstAcessHome = false;
-    prefs.setString('firstacesshome', 'false');
+
+    setState(() {});
+
+    return amountWidget;
   }
 
-  void _sendPrescription(newValue) {
-    for (int i = 0; i < prescriptionsReceived.length; i++) {
-      if (prescriptionsReceived[i]['_id'] == newValue) {
-        payloadToAdapter['prescription_id'] = prescriptionsReceived[i]['_id'];
-        mealsReceived = prescriptionsReceived[i]['meals'];
+  void _onSave() {
+    var meals = [];
+    for (int i = 0; i < mealsToCreate.length; i++) {
+      if (mealsToCreate[i] != null) {
+        meals.add(_calcNutriProportion(i));
       }
     }
-    setState(() {});
-  }
 
-  void _sendMeals(newValue) {
-    for (int i = 0; i < mealsReceived.length; i++) {
-      if (mealsReceived[i]['_id'] == newValue) {
-        payloadToAdapter['meal_id'] = mealsReceived[i]['_id'];
-        payloadToAdapter['type'] = mealsReceived[i]['type'];
-        foodAmount = mealsReceived[i]['food_amount'];
-      }
-    }
-    setState(() {});
+    _calcPrescripNutriProportion(meals);
+
+    _confirmatePopup(context, meals);
   }
 
   void _getFoodsOnShared() async {
@@ -388,7 +847,8 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
       foodsSelected.add(
         Food(
           food_id: foodsReceived[i]['food_id'],
-          name: foodsReceived[i]['name'],
+          name: foodsReceived[i]['description'],
+          description: foodsReceived[i]['description'],
         ),
       );
     }

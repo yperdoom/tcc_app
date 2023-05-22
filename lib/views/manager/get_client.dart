@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:app_tcc/views/client/create_prescription.dart';
+import 'package:app_tcc/views/manager/create_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -158,7 +158,7 @@ class _GetClientState extends State<GetClient> {
             context,
             MaterialPageRoute(
               builder: (context) => const CreatePrescription(),
-              // settings: RouteSettings(arguments: clientsReceived),
+              settings: RouteSettings(arguments: clientReceived),
             ),
           )
         },
@@ -225,8 +225,7 @@ class _GetClientState extends State<GetClient> {
                     children: [
                       Expanded(
                         child: AutoSizeText(
-                          _prepareFoodsToShow(
-                              prescriptionsReceived[index]['foods']),
+                          _prepareFoodsToShow(prescriptionsReceived[index]['foods']),
                           style: TextStyle(
                             fontSize: 24,
                             color: Cores.white,
@@ -276,10 +275,8 @@ class _GetClientState extends State<GetClient> {
       );
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
@@ -343,19 +340,15 @@ class _GetClientState extends State<GetClient> {
 
   void _getPrescriptionsOnShared() async {
     final prefs = await SharedPreferences.getInstance();
-    int? prescriptionLength =
-        prefs.getInt('save.${clientReceived['client_id']}.prescription.length');
+    int? prescriptionLength = prefs.getInt('save.${clientReceived['client_id']}.prescription.length');
 
     if (prescriptionLength != null) {
       for (int counter = 0; counter <= prescriptionLength; counter++) {
-        String? prescriptionString = prefs.getString(
-            'save.${clientReceived['client_id']}.prescription.$counter');
+        String? prescriptionString = prefs.getString('save.${clientReceived['client_id']}.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {
-          await prefs.setInt(
-              'save.${clientReceived['client_id']}.prescription.length',
-              counter - 1);
+          await prefs.setInt('save.${clientReceived['client_id']}.prescription.length', counter - 1);
         } else {
           prescriptionsReceived.add(prescription);
         }
@@ -363,14 +356,11 @@ class _GetClientState extends State<GetClient> {
     } else {
       int counter = 0;
       while (counter >= 0) {
-        String? prescriptionString = prefs.getString(
-            'save.${clientReceived['client_id']}.prescription.$counter');
+        String? prescriptionString = prefs.getString('save.${clientReceived['client_id']}.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {
-          await prefs.setInt(
-              'save.${clientReceived['client_id']}.prescription.length',
-              counter - 1);
+          await prefs.setInt('save.${clientReceived['client_id']}.prescription.length', counter - 1);
           counter = -1;
         } else {
           prescriptionsReceived.add(prescription);
@@ -395,9 +385,7 @@ class _GetClientState extends State<GetClient> {
         prescriptionsReceived[counter],
       ).toString();
 
-      await prefs.setString(
-          'save.${clientReceived['client_id']}.prescription.$counter',
-          prescription);
+      await prefs.setString('save.${clientReceived['client_id']}.prescription.$counter', prescription);
     }
   }
 }

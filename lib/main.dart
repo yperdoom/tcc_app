@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'APP TCC',
-      theme: ThemeData.light(),
+      // theme: ThemeData.light(),
+      theme: ThemeData.dark(),
       darkTheme: ThemeData.dark(),
       home: const MainPage(),
     );
