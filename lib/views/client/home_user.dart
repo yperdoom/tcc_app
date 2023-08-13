@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:app_tcc/components/row_title.dart';
 import 'package:app_tcc/views/client/create_prescription.dart';
 import 'package:app_tcc/views/client/get_prescription.dart';
+import 'package:app_tcc/components/hero_header_decoration.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../components/header_title.dart';
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:flutter/material.dart';
@@ -39,57 +42,12 @@ class _HomeUserState extends State<HomeUser> {
             tag: 'dash',
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment.bottomLeft,
-                  colors: <Color>[
-                    Cores.blueHeavy,
-                    Cores.blueLight,
-                  ],
-                  tileMode: TileMode.mirror,
-                ),
-              ),
+              decoration: heroHeaderDecoration(),
               child: Column(
                 children: [
                   const SizedBox(height: 50),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 12, bottom: 8),
-                        child: const Text(
-                          'Home',
-                          style: TextStyle(
-                            fontFamily: 'Urbanist',
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      Expanded(
-                        child: Text(
-                          'Aqui voce encontra as receitas criadas por seu profissional e as receitas adaptadas por você.',
-                          style: TextStyle(
-                            fontFamily: 'Urbanist',
-                            color: Color(0xffBDD6D8),
-                            fontWeight: FontWeight.w300,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  rowTitle('Home'),
+                  headerTitle('home'),
                   const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.symmetric(
