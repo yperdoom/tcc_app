@@ -1,6 +1,5 @@
+import 'package:app_tcc/components/text_style.dart';
 import 'package:flutter/material.dart';
-
-import '../configs/colors.dart';
 
 Widget rowTitle(String pageName) {
   return Row(
@@ -12,12 +11,7 @@ Widget rowTitle(String pageName) {
         padding: const EdgeInsets.only(top: 12, bottom: 8),
         child: Text(
           pageName,
-          style: TextStyle(
-            fontFamily: 'Urbanist',
-            color: Cores.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 24,
-          ),
+          style: textStyle(),
         ),
       ),
     ],
