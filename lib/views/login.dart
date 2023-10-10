@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:app_tcc/components/text_field_decoration.dart';
 import 'package:app_tcc/views/client_page.dart';
 import 'package:app_tcc/views/ip_select.dart';
 import 'package:app_tcc/views/manager_page.dart';
@@ -109,20 +110,7 @@ class _LoginPage extends State<LoginPage> {
                           const SizedBox(height: 15),
                           // Email set field
                           TextField(
-                            decoration: InputDecoration(
-                              label: const Text('Email'),
-                              labelStyle: TextStyle(
-                                color: Cores.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              border: const OutlineInputBorder(),
-                              hintText: 'Digite teu e-mail aqui...',
-                              hintStyle: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
-                            ),
+                            decoration: textFieldDecoration('Email'),
                             keyboardType: TextInputType.emailAddress,
                             onChanged: _setEmail,
                           ),
@@ -285,7 +273,8 @@ class _LoginPage extends State<LoginPage> {
       ),
     );
 
-    var response = await http.post(
+    var response = await http
+        .post(
       Uri.parse('$baseUrl/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -296,14 +285,15 @@ class _LoginPage extends State<LoginPage> {
           'password': passwordTemporary,
         },
       ),
-    ).timeout(const Duration(seconds: 4),
-    onTimeout: () {
+    )
+        .timeout(const Duration(seconds: 4), onTimeout: () {
       return http.Response('server_error', 400);
-  	});
+    });
 
     if (response.statusCode == 400) {
       Navigator.pop(context);
-      popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+      popupError(context,
+          'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
     }
 
     await Future.delayed(const Duration(seconds: 1));
@@ -318,9 +308,11 @@ class _LoginPage extends State<LoginPage> {
       } else if (body['scope'] == 'client') {
         _toClientLogin(body['token'], body['scope'], body['userId'].toString());
       } else if (body['scope'] == 'manager') {
-        _toManagerLogin(body['token'], body['scope'], body['userId'].toString());
+        _toManagerLogin(
+            body['token'], body['scope'], body['userId'].toString());
       } else {
-        popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+        popupError(context,
+            'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
       }
     } else {
       Navigator.pop(context);
@@ -383,11 +375,9 @@ void popupError(BuildContext context, String message) async {
             width: double.infinity,
             height: 250,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Cores.redError),
+                borderRadius: BorderRadius.circular(15), color: Cores.redError),
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-            child: Text(
-                message,
+            child: Text(message,
                 style: const TextStyle(fontSize: 24, color: Colors.white),
                 textAlign: TextAlign.center),
           ),
