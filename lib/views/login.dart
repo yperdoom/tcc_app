@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:app_tcc/components/text_field_decoration.dart';
+import 'package:app_tcc/interfaces/get_managers.dart';
 import 'package:app_tcc/views/client_page.dart';
+import 'package:app_tcc/views/create_account.dart';
 import 'package:app_tcc/views/ip_select.dart';
 import 'package:app_tcc/views/manager_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,25 +147,27 @@ class _LoginPage extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // TextButton(
-                          //   style: ButtonStyle(
-                          //     textStyle: MaterialStateProperty.all(
-                          //       const TextStyle(
-                          //         fontSize: 16,
-                          //         fontWeight: FontWeight.w600,
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   onPressed: _tryApp,
-                          //   child: Text(
-                          //     'Try',
-                          //     style: TextStyle(
-                          //       color: Cores.white,
-                          //       fontSize: 18,
-                          //       fontWeight: FontWeight.w700,
-                          //     ),
-                          //   ),
-                          // ),
+                          TextButton(
+                            style: ButtonStyle(
+                              textStyle: MaterialStateProperty.all(
+                                const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              _createAccount(context);
+                            },
+                            child: Text(
+                              'Criar conta',
+                              style: TextStyle(
+                                color: Cores.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             width: 130,
                             height: 50,
@@ -250,6 +254,20 @@ class _LoginPage extends State<LoginPage> {
     passwordTemporary = password;
   }
 
+  void _createAccount(BuildContext context) async {
+    var managers = await getManagers();
+
+    print(managers);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreateAccountPage(),
+        settings: RouteSettings(arguments: json.encode(managers)),
+      ),
+    );
+  }
+
   void _login(BuildContext context) async {
     if (env == 'dev') {
       if (emailTemporary == 'admin' && passwordTemporary == 'admin') {
@@ -292,8 +310,7 @@ class _LoginPage extends State<LoginPage> {
 
     if (response.statusCode == 400) {
       Navigator.pop(context);
-      popupError(context,
-          'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+      popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
     }
 
     await Future.delayed(const Duration(seconds: 1));
@@ -308,11 +325,9 @@ class _LoginPage extends State<LoginPage> {
       } else if (body['scope'] == 'client') {
         _toClientLogin(body['token'], body['scope'], body['userId'].toString());
       } else if (body['scope'] == 'manager') {
-        _toManagerLogin(
-            body['token'], body['scope'], body['userId'].toString());
+        _toManagerLogin(body['token'], body['scope'], body['userId'].toString());
       } else {
-        popupError(context,
-            'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+        popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
       }
     } else {
       Navigator.pop(context);
@@ -374,12 +389,9 @@ void popupError(BuildContext context, String message) async {
           Container(
             width: double.infinity,
             height: 250,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15), color: Cores.redError),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Cores.redError),
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-            child: Text(message,
-                style: const TextStyle(fontSize: 24, color: Colors.white),
-                textAlign: TextAlign.center),
+            child: Text(message, style: const TextStyle(fontSize: 24, color: Colors.white), textAlign: TextAlign.center),
           ),
         ],
       ),
