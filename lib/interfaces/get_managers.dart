@@ -4,13 +4,11 @@ import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
-Future<List<Object>> getManagers() async {
+Future<dynamic> getManagers() async {
   Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json; charset=UTF-8'
   };
   Uri url = Uri.parse('$baseUrl/user/managers');
-
-  print(url);
 
   http.Response response = await http.get(
     url,
@@ -18,7 +16,8 @@ Future<List<Object>> getManagers() async {
   );
   var body = await jsonDecode(response.body);
 
-  print(body);
-
+  if (body['success'] == true) {
+    return body['body']['managers'];
+  }
   return [];
 }

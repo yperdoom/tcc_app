@@ -12,7 +12,7 @@ class IpSelectPage extends StatefulWidget {
 }
 
 class _IpSelectPage extends State<IpSelectPage> {
-  final String urlProduction = 'http://18.231.39.76:4030';
+  final String urlProduction = 'http://15.228.204.129:4030';
   final String urlLocal = 'http://10.1.1.7:4030';
   final String urlLocalAmo = 'http://10.1.1.8:4030';
   String urlActualy = '';
