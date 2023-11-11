@@ -8,6 +8,7 @@ import 'package:app_tcc/views/ip_select.dart';
 import 'package:app_tcc/views/manager_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import '../components/popup_error.dart';
 import '../configs/colors.dart';
 import '../configs/session.dart';
 import 'admin.dart';
@@ -276,30 +277,31 @@ class _LoginPage extends State<LoginPage> {
       ),
     );
 
-    var response = await http
-        .post(
-      Uri.parse('$baseUrl/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+    Uri url = Uri.parse('$baseUrl/login');
+    Map<String, String>? headers = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    Object? data = jsonEncode(
+      <String, String>{
+        'email': emailTemporary,
+        'password': passwordTemporary,
       },
-      body: jsonEncode(
-        <String, String>{
-          'email': emailTemporary,
-          'password': passwordTemporary,
-        },
-      ),
-    )
-        .timeout(const Duration(seconds: 4), onTimeout: () {
+    );
+
+    print(url);
+    print(headers);
+    print(data);
+
+    var response = await http.post(url, headers: headers, body: data).timeout(const Duration(seconds: 10), onTimeout: () {
       return http.Response('server_error', 400);
     });
 
+    print(response);
+
     if (response.statusCode == 400) {
       Navigator.pop(context);
-      popupError(context,
-          'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+      popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060', 5);
     }
-
-    await Future.delayed(const Duration(seconds: 1));
 
     var body = await jsonDecode(response.body);
 
@@ -311,15 +313,13 @@ class _LoginPage extends State<LoginPage> {
       } else if (body['scope'] == 'client') {
         _toClientLogin(body['token'], body['scope'], body['userId'].toString());
       } else if (body['scope'] == 'manager') {
-        _toManagerLogin(
-            body['token'], body['scope'], body['userId'].toString());
+        _toManagerLogin(body['token'], body['scope'], body['userId'].toString());
       } else {
-        popupError(context,
-            'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
+        popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060', 5);
       }
     } else {
       Navigator.pop(context);
-      popupError(context, body['message']);
+      popupError(context, body['message'], 2);
       // popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060');
     }
   }
@@ -363,29 +363,4 @@ class _LoginPage extends State<LoginPage> {
       );
     });
   }
-}
-
-void popupError(BuildContext context, String message) async {
-  return showDialog(
-    context: context,
-    builder: (context) => Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(10),
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            height: 250,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15), color: Cores.redError),
-            padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-            child: Text(message,
-                style: const TextStyle(fontSize: 24, color: Colors.white),
-                textAlign: TextAlign.center),
-          ),
-        ],
-      ),
-    ),
-  );
 }

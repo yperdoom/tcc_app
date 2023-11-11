@@ -241,6 +241,7 @@ class _HomeUserState extends State<HomeUser> {
   }
 
   void _getPrescriptions() async {
+    print('get prescriptions');
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
     if (Session.userId == '') {
@@ -287,14 +288,11 @@ class _HomeUserState extends State<HomeUser> {
 
   String _regexDateTime(int index) {
     if (prescriptionsReceived[index]['updated_at'] != null) {
-      DateTime dateTime =
-          DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
@@ -309,8 +307,7 @@ class _HomeUserState extends State<HomeUser> {
 
     if (prescriptionLength != null) {
       for (int counter = 0; counter <= prescriptionLength; counter++) {
-        String? prescriptionString =
-            prefs.getString('save.prescription.$counter');
+        String? prescriptionString = prefs.getString('save.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {
@@ -322,8 +319,7 @@ class _HomeUserState extends State<HomeUser> {
     } else {
       int counter = 0;
       while (counter >= 0) {
-        String? prescriptionString =
-            prefs.getString('save.prescription.$counter');
+        String? prescriptionString = prefs.getString('save.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {
