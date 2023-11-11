@@ -4,13 +4,16 @@ import 'package:app_tcc/components/espaco.dart';
 import 'package:app_tcc/components/text_field_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../components/popup_error.dart';
 import '../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
+
 String baseUrl = Session.baseUrl;
-String basicToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImJhc2ljIiwiaWF0IjoxNjk5MjI1MjkxfQ.eDg4-z-pnTiKBR0vVz_9dBltMMIy1VxqkzGhlwXRp94';
+String basicToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImJhc2ljIiwiaWF0IjoxNjk5MjI1MjkxfQ.eDg4-z-pnTiKBR0vVz_9dBltMMIy1VxqkzGhlwXRp94';
 
 String email = '';
 String password = '';
@@ -26,8 +29,16 @@ String managerId = '';
 var managers = [];
 
 var sexReceived = [
-  {"code": 1, "value": "male", "name": "Masculino"},
-  {"code": 2, "value": "female", "name": "Feminino"},
+  {
+    "code": 1,
+    "value": "male",
+    "name": "Masculino"
+  },
+  {
+    "code": 2,
+    "value": "female",
+    "name": "Feminino"
+  },
 ];
 
 class CreateAccountPage extends StatefulWidget {
@@ -56,22 +67,27 @@ class _CreateAccountPage extends State<CreateAccountPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          if (email.length <= 5) {
+            email = '';
+          }
+          if (password.length <= 3) {
+            password = '';
+          }
           final data = {
-            'email': email,
-            'password': password,
-            'name': name,
-            'phone': phone,
-            'birthday': birthday.toString(),
-            'age': age,
-            'height': height,
-            'weight': weight,
-            'fat_percentage': fatPercentage,
-            'sex': sex,
-            'manager_id': managerId
+            "email": email,
+            "password": password,
+            "name": name,
+            "phone": phone,
+            "birthday": birthday.toString(),
+            "age": age,
+            "height": height,
+            "weight": weight,
+            "fat_percentage": fatPercentage,
+            "sex": sex,
+            "manager_id": managerId
           };
 
-          print(data);
-          _createAccountRequest(data);
+          _createAccountRequest(data, context);
         },
         backgroundColor: Cores.blue,
         child: const Icon(Icons.create),
@@ -108,7 +124,9 @@ Widget createAccountForm(BuildContext context) {
           decoration: textFieldDecoration('Celular'),
           keyboardType: TextInputType.phone,
           maxLength: 11,
-          onChanged: (String text) => {phone = text},
+          onChanged: (String text) => {
+            phone = text
+          },
         ),
         espaco(15),
         const Row(
@@ -141,19 +159,25 @@ Widget createAccountForm(BuildContext context) {
         TextField(
           decoration: textFieldDecoration('Altura'),
           keyboardType: TextInputType.number,
-          onChanged: (text) => {height = text},
+          onChanged: (text) => {
+            height = text
+          },
         ),
         espaco(15),
         TextField(
           decoration: textFieldDecoration('Peso'),
           keyboardType: TextInputType.number,
-          onChanged: (text) => {weight = text},
+          onChanged: (text) => {
+            weight = text
+          },
         ),
         espaco(15),
         TextField(
           decoration: textFieldDecoration('Porcentagem de gordura'),
           keyboardType: TextInputType.number,
-          onChanged: (text) => {fatPercentage = text},
+          onChanged: (text) => {
+            fatPercentage = text
+          },
         ),
         espaco(15),
         Row(
@@ -221,9 +245,8 @@ Widget createAccountForm(BuildContext context) {
   );
 }
 
-void _createAccountRequest(Object data) async {
+void _createAccountRequest(Object data, BuildContext context) async {
   Map<String, String> headers = <String, String>{
-    'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': basicToken
   };
   Uri url = Uri.parse('$baseUrl/user/client');
@@ -235,14 +258,26 @@ void _createAccountRequest(Object data) async {
   );
   var body = await jsonDecode(response.body);
 
-  print(data);
-
+  print(body);
   if (body['success'] == false) {
-    print('falha na cricao de cliente');
+    String errorMessage = 'Não foi possível criar esta conta de usuário\n\n Motivo: ${body['message']}';
+    popupError(context, errorMessage, 2);
+    print(body);
   }
 
-  // Navigator.pushReplacement(
-  //   context,
-  //   MaterialPageRoute(builder: (context) => const MainPage()),
-  // );
+  print(body['body']);
+
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setString('token', body['body']['token']);
+  prefs.setString('scope', body['body']['scope']);
+  prefs.setString('userid', body['body']['_id']);
+  prefs.setString('firstacessinfo', 'true');
+  prefs.setString('firstacesshome', 'true');
+  prefs.setString('firstacessfood', 'true');
+  prefs.setString('firstacessuser', 'true');
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => const MainPage()),
+  );
 }
