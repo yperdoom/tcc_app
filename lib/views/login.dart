@@ -260,7 +260,7 @@ class _LoginPage extends State<LoginPage> {
         _toAdminLogin('j12hd9128djh12id3i2h923', 'admin', '1');
       }
       if (emailTemporary == 'client' && passwordTemporary == 'client') {
-        _toClientLogin('j12hd9128djh12id3i2h923', 'client', '1');
+        _toClientLogin('j12hd9128djh12id3i2h923', 'client', '1', '1');
       }
     }
 
@@ -311,7 +311,7 @@ class _LoginPage extends State<LoginPage> {
       if (body['scope'] == 'admin') {
         _toAdminLogin(body['token'], body['scope'], body['userId'].toString());
       } else if (body['scope'] == 'client') {
-        _toClientLogin(body['token'], body['scope'], body['userId'].toString());
+        _toClientLogin(body['token'], body['scope'], body['userId'].toString(), body['managerId'].toString());
       } else if (body['scope'] == 'manager') {
         _toManagerLogin(body['token'], body['scope'], body['userId'].toString());
       } else {
@@ -338,12 +338,14 @@ class _LoginPage extends State<LoginPage> {
     });
   }
 
-  void _toClientLogin(String token, String scope, String userId) async {
+  void _toClientLogin(String token, String scope, String userId, String managerId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
     await prefs.setString('scope', scope);
     await prefs.setString('userid', userId);
+    await prefs.setString('managerid', managerId);
     Session.userId = userId;
+    Session.managerId = managerId;
     setState(() {
       Navigator.pushReplacement(
         context,

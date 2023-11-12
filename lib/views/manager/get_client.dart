@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:app_tcc/views/manager/create_prescription.dart';
+import 'package:app_tcc/views/prescription_views/create_manager_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -157,7 +157,7 @@ class _GetClientState extends State<GetClient> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CreatePrescription(),
+              builder: (context) => const CreateManagerPrescription(),
               settings: RouteSettings(arguments: clientReceived),
             ),
           )

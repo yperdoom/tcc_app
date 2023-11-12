@@ -12,11 +12,11 @@ import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
-class CreatePrescription extends StatefulWidget {
-  const CreatePrescription({super.key});
+class CreateClientPrescription extends StatefulWidget {
+  const CreateClientPrescription({super.key});
 
   @override
-  State<CreatePrescription> createState() => _CreatePrescriptionState();
+  State<CreateClientPrescription> createState() => _CreateClientPrescriptionState();
 }
 
 class Food {
@@ -33,19 +33,18 @@ class Food {
   });
 }
 
-class _CreatePrescriptionState extends State<CreatePrescription> {
+class _CreateClientPrescriptionState extends State<CreateClientPrescription> {
   var payloadToCreate = {};
   var mealsToCreate = [];
-  var clientReceived = {};
   var prescriptionNutrients = {};
   var typesReceived = [
     {
       "code": 1,
-      "value": "Lanche"
+      "value": "Café da manhã"
     },
     {
       "code": 2,
-      "value": "Café da manhã"
+      "value": "Almoço"
     },
     {
       "code": 3,
@@ -53,11 +52,11 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     },
     {
       "code": 4,
-      "value": "Almoço"
+      "value": "Janta"
     },
     {
       "code": 5,
-      "value": "Janta"
+      "value": "Lanche"
     },
   ];
   var foodsReceived = [];
@@ -75,11 +74,6 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments;
-    clientReceived = jsonDecode(
-      jsonEncode(arguments),
-    );
-
     _foods = foodsSelected
         .map(
           (food) => MultiSelectItem<Food>(
@@ -92,7 +86,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Prescrever',
+          'Criar prescrição diária',
           style: TextStyle(fontSize: 18),
         ),
         actions: <Widget>[
@@ -188,7 +182,6 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     print(meals);
     print(prescriptionNutrients);
     print(payloadToCreate); // oq eu vou mandar pra api pra salvar
-    print(clientReceived); // informaçòes do cliente
     print(mealsToCreate); // oq eu vou trabalhar em cima pra mudar
   }
 
