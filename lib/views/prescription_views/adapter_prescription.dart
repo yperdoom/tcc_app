@@ -12,15 +12,15 @@ import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
-class CreatePrescription extends StatefulWidget {
-  const CreatePrescription({super.key});
+class AdapterPrescription extends StatefulWidget {
+  const AdapterPrescription({super.key});
 
   @override
-  State<CreatePrescription> createState() => _CreatePrescriptionState();
+  State<AdapterPrescription> createState() => _AdapterPrescriptionState();
 }
 
 class Food {
-  final int? food_id;
+  final String? food_id;
   final String? name;
   final bool? selected;
 
@@ -31,7 +31,7 @@ class Food {
   });
 }
 
-class _CreatePrescriptionState extends State<CreatePrescription> {
+class _AdapterPrescriptionState extends State<AdapterPrescription> {
   var prescriptionsReceived = [];
   var payloadToAdapter = {};
   var mealsReceived = [];
@@ -118,12 +118,10 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                         border: const OutlineInputBorder(),
                       ),
                       isExpanded: true,
-                      items: prescriptionsReceived
-                          .map<DropdownMenuItem<Object>>((prescription) {
+                      items: prescriptionsReceived.map<DropdownMenuItem<Object>>((prescription) {
                         return DropdownMenuItem(
                           value: prescription['_id'],
-                          child: Text(
-                              '${prescription['name']} - ${prescription['recommended_calorie']} kcal'),
+                          child: Text('${prescription['name']} - ${prescription['recommended_calorie']} kcal'),
                         );
                       }).toList(),
                       hint: const AutoSizeText(
@@ -154,8 +152,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
                         border: const OutlineInputBorder(),
                       ),
                       isExpanded: true,
-                      items:
-                          mealsReceived.map<DropdownMenuItem<Object>>((meal) {
+                      items: mealsReceived.map<DropdownMenuItem<Object>>((meal) {
                         return DropdownMenuItem(
                           value: meal['_id'],
                           child: Text('${meal['name']} - ${meal['type']}'),
@@ -299,18 +296,20 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
     if (Session.userId == '') {
       Session.userId = prefs.getString('userid').toString();
     }
+    if (Session.managerId == '') {
+      Session.managerId = prefs.getString('managerid').toString();
+    }
 
     if (Session.env == 'local') {
       const meals = [];
 
       prescriptionsReceived = meals;
     } else {
+      Uri url = Uri.parse('$baseUrl/prescription/adapter');
       Map<String, String> headers = <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': token
       };
-      print(payloadToAdapter['prescription_id']);
-      print(payloadToAdapter['meal_id']);
 
       Object prescriptionToAdapter = jsonEncode({
         "foods": payloadToAdapter['foods'],
@@ -319,10 +318,13 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
         "name": payloadToAdapter['name'],
         "type": payloadToAdapter['type'],
         "userId": Session.userId,
+        "managerId": Session.managerId
       });
 
+      print(prescriptionToAdapter);
+
       http.Response response = await http.post(
-        Uri.parse('$baseUrl/prescription/adapter'),
+        url,
         headers: headers,
         body: prescriptionToAdapter,
       );
@@ -335,8 +337,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
         popup(context, false, 'Adaptação feita com sucesso!');
       } else {
         prescriptionsReceived = [];
-        popup(context, true,
-            'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
+        popup(context, true, 'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
       }
     }
     Session.firstAcessHome = false;
@@ -387,7 +388,6 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
 
   void _initSelectedFoods() {
     for (int i = 0; i < foodsReceived.length; i++) {
-      print(foodsReceived[i]);
       foodsSelected.add(
         Food(
           food_id: foodsReceived[i]['_id'],

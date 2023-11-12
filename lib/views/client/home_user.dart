@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:app_tcc/components/row_title.dart';
-import 'package:app_tcc/views/client/create_prescription.dart';
+import 'package:app_tcc/views/prescription_views/adapter_prescription.dart';
 import 'package:app_tcc/views/client/get_prescription.dart';
 import 'package:app_tcc/components/hero_header_decoration.dart';
+import 'package:app_tcc/views/prescription_views/create_client_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -125,14 +126,23 @@ class _HomeUserState extends State<HomeUser> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CreatePrescription(),
-              settings: RouteSettings(arguments: prescriptionsReceived),
-            ),
-          )
+        onPressed: () {
+          if (prescriptionsReceived.isEmpty) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CreateClientPrescription(),
+              ),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdapterPrescription(),
+                settings: RouteSettings(arguments: prescriptionsReceived),
+              ),
+            );
+          }
         },
         backgroundColor: const Color(0xff1E4CFF),
         child: const Icon(Icons.add),
@@ -256,8 +266,7 @@ class _HomeUserState extends State<HomeUser> {
 
       prescriptionsReceived = meals;
     } else {
-      Uri url =
-          Uri.parse('$baseUrl/prescriptions/${Session.userId}?search=$search');
+      Uri url = Uri.parse('$baseUrl/prescriptions/${Session.userId}?search=$search');
       Map<String, String>? headers = <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': token
@@ -295,14 +304,11 @@ class _HomeUserState extends State<HomeUser> {
 
   String _regexDateTime(int index) {
     if (prescriptionsReceived[index]['updated_at'] != null) {
-      DateTime dateTime =
-          DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
@@ -317,8 +323,7 @@ class _HomeUserState extends State<HomeUser> {
 
     if (prescriptionLength != null) {
       for (int counter = 0; counter <= prescriptionLength; counter++) {
-        String? prescriptionString =
-            prefs.getString('save.prescription.$counter');
+        String? prescriptionString = prefs.getString('save.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {
@@ -330,8 +335,7 @@ class _HomeUserState extends State<HomeUser> {
     } else {
       int counter = 0;
       while (counter >= 0) {
-        String? prescriptionString =
-            prefs.getString('save.prescription.$counter');
+        String? prescriptionString = prefs.getString('save.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {

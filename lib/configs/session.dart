@@ -3,6 +3,7 @@ class Session {
   static String env = 'prod';
   static bool darkMode = true;
   static String userId = '';
+  static String managerId = '';
   static bool firstAcessInfo = false;
   static bool firstAcessHome = false;
   static bool firstAcessFood = false;
