@@ -1,8 +1,8 @@
-import 'package:app_tcc/configs/colors.dart';
-import 'package:app_tcc/views/client/food_user.dart';
-import 'package:app_tcc/views/client/home_user.dart';
-import 'package:app_tcc/views/client/info_user.dart';
-import 'package:app_tcc/views/client/personal_user.dart';
+import 'package:Yan/configs/colors.dart';
+import 'package:Yan/views/client/food_user.dart';
+import 'package:Yan/views/client/home_user.dart';
+import 'package:Yan/views/client/info_user.dart';
+import 'package:Yan/views/client/personal_user.dart';
 import 'package:flutter/material.dart';
 
 class ClientPage extends StatefulWidget {

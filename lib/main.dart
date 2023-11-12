@@ -1,6 +1,6 @@
-import 'package:app_tcc/components/loading.dart';
-import 'package:app_tcc/configs/colors.dart';
-import 'package:app_tcc/components/verification_token.dart';
+import 'package:Yan/components/loading.dart';
+import 'package:Yan/configs/colors.dart';
+import 'package:Yan/components/verification_token.dart';
 import 'package:flutter/material.dart';
 
 void main() {

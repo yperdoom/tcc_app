@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:app_tcc/views/ip_select.dart';
+import 'package:Yan/views/ip_select.dart';
 
 import '../configs/colors.dart';
 import '../main.dart';
@@ -35,7 +35,8 @@ class _AdminPage extends State<AdminPage> {
                 setState(() {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const IpSelectPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const IpSelectPage()),
                   );
                 });
               },

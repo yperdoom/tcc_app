@@ -1,4 +1,4 @@
-import 'package:app_tcc/configs/colors.dart';
+import 'package:Yan/configs/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

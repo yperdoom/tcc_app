@@ -1,4 +1,4 @@
-package com.example.app_tcc
+package com.example.Yan
 
 import io.flutter.embedding.android.FlutterActivity
 
