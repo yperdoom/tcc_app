@@ -1,4 +1,4 @@
-import 'package:app_tcc/enumerators/header_text_pages.dart';
+import 'package:Yan/enumerators/header_text_pages.dart';
 import 'package:flutter/material.dart';
 
 Widget headerTitle(String page) {

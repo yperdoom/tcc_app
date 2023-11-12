@@ -1,4 +1,4 @@
-import 'package:app_tcc/components/text_style.dart';
+import 'package:Yan/components/text_style.dart';
 import 'package:flutter/material.dart';
 
 Widget rowTitle(String pageName) {

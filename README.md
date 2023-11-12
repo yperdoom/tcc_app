@@ -1,4 +1,4 @@
-# app_tcc
+# Yan
 
 Olá, este é um projeto em flutter para a contrução de um aplicativo para adaptação de dietas.
 

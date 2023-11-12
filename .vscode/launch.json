@@ -5,18 +5,18 @@
   "version": "0.5.2",
   "configurations": [
     {
-      "name": "app_tcc",
+      "name": "Yan",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "app_tcc (profile mode)",
+      "name": "Yan (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "app_tcc (release mode)",
+      "name": "Yan (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

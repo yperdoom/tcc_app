@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app_tcc/components/verification_first_acess.dart';
-import 'package:app_tcc/configs/session.dart';
-import 'package:app_tcc/enumerators/redirect_view_pages.dart';
+import 'package:Yan/components/verification_first_acess.dart';
+import 'package:Yan/configs/session.dart';
+import 'package:Yan/enumerators/redirect_view_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

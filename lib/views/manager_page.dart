@@ -1,8 +1,8 @@
-import 'package:app_tcc/configs/colors.dart';
-import 'package:app_tcc/views/manager/food_manager.dart';
-import 'package:app_tcc/views/manager/home_manager.dart';
-import 'package:app_tcc/views/manager/info_manager.dart';
-import 'package:app_tcc/views/manager/personal_manager.dart';
+import 'package:Yan/configs/colors.dart';
+import 'package:Yan/views/manager/food_manager.dart';
+import 'package:Yan/views/manager/home_manager.dart';
+import 'package:Yan/views/manager/info_manager.dart';
+import 'package:Yan/views/manager/personal_manager.dart';
 import 'package:flutter/material.dart';
 
 class ManagerPage extends StatefulWidget {

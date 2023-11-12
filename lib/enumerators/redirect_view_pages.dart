@@ -1,7 +1,7 @@
-import 'package:app_tcc/views/admin.dart';
-import 'package:app_tcc/views/client_page.dart';
-import 'package:app_tcc/views/login.dart';
-import 'package:app_tcc/views/manager_page.dart';
+import 'package:Yan/views/admin.dart';
+import 'package:Yan/views/client_page.dart';
+import 'package:Yan/views/login.dart';
+import 'package:Yan/views/manager_page.dart';
 import 'package:flutter/material.dart';
 
 Widget redirectViewPages(String? page) {
