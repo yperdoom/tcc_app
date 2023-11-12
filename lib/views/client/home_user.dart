@@ -242,10 +242,13 @@ class _HomeUserState extends State<HomeUser> {
 
   void _getPrescriptions() async {
     print('get prescriptions');
+    print('session userid :: ' + Session.userId);
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token').toString();
     if (Session.userId == '') {
       Session.userId = prefs.getString('userid').toString();
+
+      print('new session userid :: ' + Session.userId);
     }
 
     if (Session.env == 'local') {
@@ -253,16 +256,20 @@ class _HomeUserState extends State<HomeUser> {
 
       prescriptionsReceived = meals;
     } else {
+      Uri url =
+          Uri.parse('$baseUrl/prescriptions/${Session.userId}?search=$search');
+      Map<String, String>? headers = <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      };
+
+      print(url);
+
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/prescriptions/${Session.userId}?search=$search'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': token
-        },
+        url,
+        headers: headers,
       );
       var body = await jsonDecode(response.body);
-
-      print(body);
 
       if (body['success'] == true) {
         if (body['body']['count'] > 0) {
@@ -288,11 +295,14 @@ class _HomeUserState extends State<HomeUser> {
 
   String _regexDateTime(int index) {
     if (prescriptionsReceived[index]['updated_at'] != null) {
-      DateTime dateTime = DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
+      DateTime dateTime =
+          DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime =
+          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate =
+          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
@@ -307,7 +317,8 @@ class _HomeUserState extends State<HomeUser> {
 
     if (prescriptionLength != null) {
       for (int counter = 0; counter <= prescriptionLength; counter++) {
-        String? prescriptionString = prefs.getString('save.prescription.$counter');
+        String? prescriptionString =
+            prefs.getString('save.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {
@@ -319,7 +330,8 @@ class _HomeUserState extends State<HomeUser> {
     } else {
       int counter = 0;
       while (counter >= 0) {
-        String? prescriptionString = prefs.getString('save.prescription.$counter');
+        String? prescriptionString =
+            prefs.getString('save.prescription.$counter');
         var prescription = jsonDecode(prescriptionString.toString());
 
         if (prescription == null) {

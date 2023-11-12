@@ -27,141 +27,33 @@ class _PersonalUserState extends State<PersonalUser> {
   bool errorPhone = false;
   bool errorDocument = false;
   var statesReceived = [
-    {
-      "code": 1,
-      "value": "AC",
-      "name": "Acre"
-    },
-    {
-      "code": 2,
-      "value": "AL",
-      "name": "Alagoas"
-    },
-    {
-      "code": 3,
-      "value": "AP",
-      "name": "Amapá"
-    },
-    {
-      "code": 4,
-      "value": "AM",
-      "name": "Amazonas"
-    },
-    {
-      "code": 5,
-      "value": "BA",
-      "name": "Bahia"
-    },
-    {
-      "code": 6,
-      "value": "CE",
-      "name": "Ceará"
-    },
-    {
-      "code": 7,
-      "value": "DF",
-      "name": "Distrito Federal"
-    },
-    {
-      "code": 8,
-      "value": "ES",
-      "name": "Espírito Santo"
-    },
-    {
-      "code": 9,
-      "value": "GO",
-      "name": "Goiás"
-    },
-    {
-      "code": 10,
-      "value": "MA",
-      "name": "Maranhão"
-    },
-    {
-      "code": 11,
-      "value": "MT",
-      "name": "Mato Grosso"
-    },
-    {
-      "code": 12,
-      "value": "MS",
-      "name": "Mato Grosso do Sul"
-    },
-    {
-      "code": 13,
-      "value": "MG",
-      "name": "Minas Gerais"
-    },
-    {
-      "code": 14,
-      "value": "PA",
-      "name": "Pará"
-    },
-    {
-      "code": 15,
-      "value": "PB",
-      "name": "Paraíba"
-    },
-    {
-      "code": 16,
-      "value": "PR",
-      "name": "Paraná"
-    },
-    {
-      "code": 17,
-      "value": "PE",
-      "name": "Pernambuco"
-    },
-    {
-      "code": 18,
-      "value": "PI",
-      "name": "Piauí"
-    },
-    {
-      "code": 19,
-      "value": "RJ",
-      "name": "Rio de Janeiro"
-    },
-    {
-      "code": 20,
-      "value": "RN",
-      "name": "Rio Grande do Norte"
-    },
-    {
-      "code": 21,
-      "value": "RS",
-      "name": "Rio Grande do Sul"
-    },
-    {
-      "code": 22,
-      "value": "RO",
-      "name": "Rondônia"
-    },
-    {
-      "code": 23,
-      "value": "RR",
-      "name": "Roraima"
-    },
-    {
-      "code": 24,
-      "value": "SC",
-      "name": "Santa Catarina"
-    },
-    {
-      "code": 25,
-      "value": "SP",
-      "name": "São Paulo"
-    },
-    {
-      "code": 26,
-      "value": "SE",
-      "name": "Sergipe"
-    },
-    {
-      "code": 27,
-      "value": "TO",
-      "name": "Tocantins"
-    },
+    {"code": 1, "value": "AC", "name": "Acre"},
+    {"code": 2, "value": "AL", "name": "Alagoas"},
+    {"code": 3, "value": "AP", "name": "Amapá"},
+    {"code": 4, "value": "AM", "name": "Amazonas"},
+    {"code": 5, "value": "BA", "name": "Bahia"},
+    {"code": 6, "value": "CE", "name": "Ceará"},
+    {"code": 7, "value": "DF", "name": "Distrito Federal"},
+    {"code": 8, "value": "ES", "name": "Espírito Santo"},
+    {"code": 9, "value": "GO", "name": "Goiás"},
+    {"code": 10, "value": "MA", "name": "Maranhão"},
+    {"code": 11, "value": "MT", "name": "Mato Grosso"},
+    {"code": 12, "value": "MS", "name": "Mato Grosso do Sul"},
+    {"code": 13, "value": "MG", "name": "Minas Gerais"},
+    {"code": 14, "value": "PA", "name": "Pará"},
+    {"code": 15, "value": "PB", "name": "Paraíba"},
+    {"code": 16, "value": "PR", "name": "Paraná"},
+    {"code": 17, "value": "PE", "name": "Pernambuco"},
+    {"code": 18, "value": "PI", "name": "Piauí"},
+    {"code": 19, "value": "RJ", "name": "Rio de Janeiro"},
+    {"code": 20, "value": "RN", "name": "Rio Grande do Norte"},
+    {"code": 21, "value": "RS", "name": "Rio Grande do Sul"},
+    {"code": 22, "value": "RO", "name": "Rondônia"},
+    {"code": 23, "value": "RR", "name": "Roraima"},
+    {"code": 24, "value": "SC", "name": "Santa Catarina"},
+    {"code": 25, "value": "SP", "name": "São Paulo"},
+    {"code": 26, "value": "SE", "name": "Sergipe"},
+    {"code": 27, "value": "TO", "name": "Tocantins"},
   ];
   var sexReceived = [
     {"code": 1, "value": "male", "name": "Masculino"},
@@ -341,7 +233,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                     borderRadius: BorderRadius.circular(40),
                                   ),
                                 ),
-                                backgroundColor: MaterialStateProperty.all(Cores.blue),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Cores.blue),
                                 textStyle: MaterialStateProperty.all(
                                   TextStyle(
                                     color: Cores.white,
@@ -379,7 +272,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                     borderRadius: BorderRadius.circular(40),
                                   ),
                                 ),
-                                backgroundColor: MaterialStateProperty.all(Cores.redExit),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Cores.redExit),
                                 textStyle: MaterialStateProperty.all(
                                   TextStyle(
                                     color: Cores.white,
@@ -477,7 +371,8 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['name'] = value;
                           },
                           maxLength: 30,
-                          controller: TextEditingController(text: userReceived['name']),
+                          controller:
+                              TextEditingController(text: userReceived['name']),
                           keyboardType: TextInputType.name,
                         ),
                       ),
@@ -503,7 +398,8 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['email'] = value;
                           },
                           maxLength: 30,
-                          controller: TextEditingController(text: userReceived['email']),
+                          controller: TextEditingController(
+                              text: userReceived['email']),
                           keyboardType: TextInputType.emailAddress,
                         ),
                       ),
@@ -536,7 +432,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                   }
                                 },
                                 maxLength: 11,
-                                controller: TextEditingController(text: userReceived['phone']),
+                                controller: TextEditingController(
+                                    text: userReceived['phone']),
                                 keyboardType: TextInputType.phone,
                               )
                             : TextField(
@@ -559,7 +456,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                   }
                                 },
                                 maxLength: 11,
-                                controller: TextEditingController(text: userReceived['phone']),
+                                controller: TextEditingController(
+                                    text: userReceived['phone']),
                                 keyboardType: TextInputType.phone,
                               ),
                       ),
@@ -592,7 +490,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                   }
                                 },
                                 maxLength: 11,
-                                controller: TextEditingController(text: userReceived['document']),
+                                controller: TextEditingController(
+                                    text: userReceived['document']),
                                 keyboardType: TextInputType.number,
                               )
                             : TextField(
@@ -615,7 +514,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                   }
                                 },
                                 maxLength: 11,
-                                controller: TextEditingController(text: userReceived['document']),
+                                controller: TextEditingController(
+                                    text: userReceived['document']),
                                 keyboardType: TextInputType.number,
                               ),
                       ),
@@ -628,7 +528,9 @@ class _PersonalUserState extends State<PersonalUser> {
                       Expanded(
                         child: DropdownButtonFormField<Object>(
                           decoration: InputDecoration(
-                            icon: isMale ? const Icon(Icons.male_outlined) : const Icon(Icons.female_outlined),
+                            icon: isMale
+                                ? const Icon(Icons.male_outlined)
+                                : const Icon(Icons.female_outlined),
                             label: const Text('Sexo'),
                             labelStyle: TextStyle(
                               color: Cores.white,
@@ -639,7 +541,8 @@ class _PersonalUserState extends State<PersonalUser> {
                           ),
                           isExpanded: true,
                           value: userReceived['client']['sex'],
-                          items: sexReceived.map<DropdownMenuItem<Object>>((sexo) {
+                          items:
+                              sexReceived.map<DropdownMenuItem<Object>>((sexo) {
                             return DropdownMenuItem(
                               value: sexo['value'],
                               child: Text('${sexo['name']}'),
@@ -674,7 +577,8 @@ class _PersonalUserState extends State<PersonalUser> {
                             userUpdate['city'] = value;
                           },
                           maxLength: 30,
-                          controller: TextEditingController(text: userReceived['city']),
+                          controller:
+                              TextEditingController(text: userReceived['city']),
                           keyboardType: TextInputType.text,
                         ),
                       ),
@@ -692,7 +596,8 @@ class _PersonalUserState extends State<PersonalUser> {
                           ),
                           isExpanded: true,
                           value: userReceived['state'],
-                          items: statesReceived.map<DropdownMenuItem<Object>>((estado) {
+                          items: statesReceived
+                              .map<DropdownMenuItem<Object>>((estado) {
                             return DropdownMenuItem(
                               value: estado['value'],
                               child: Text('${estado['value']}'),
@@ -712,10 +617,11 @@ class _PersonalUserState extends State<PersonalUser> {
                     children: [
                       SizedBox(
                         height: 80,
-                        width: 300,
+                        width: 250,
                         child: CupertinoDatePicker(
                           mode: CupertinoDatePickerMode.date,
-                          initialDateTime: DateTime.parse(userReceived['birthday'].toString()),
+                          initialDateTime: DateTime.parse(
+                              userReceived['birthday'].toString()),
                           onDateTimeChanged: (newBirthdayDate) {
                             setState(() {
                               userUpdate['birthday'] = newBirthdayDate.toUtc();
@@ -740,7 +646,8 @@ class _PersonalUserState extends State<PersonalUser> {
                                 borderRadius: BorderRadius.circular(40),
                               ),
                             ),
-                            backgroundColor: MaterialStateProperty.all(Cores.blue),
+                            backgroundColor:
+                                MaterialStateProperty.all(Cores.blue),
                             textStyle: MaterialStateProperty.all(
                               TextStyle(
                                 color: Cores.white,
@@ -763,16 +670,15 @@ class _PersonalUserState extends State<PersonalUser> {
                         width: 120,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () => {
-                            _saveUser()
-                          },
+                          onPressed: () => {_saveUser()},
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(40),
                               ),
                             ),
-                            backgroundColor: MaterialStateProperty.all(Cores.blue),
+                            backgroundColor:
+                                MaterialStateProperty.all(Cores.blue),
                             textStyle: MaterialStateProperty.all(
                               TextStyle(
                                 color: Cores.white,
@@ -856,7 +762,8 @@ class _PersonalUserState extends State<PersonalUser> {
       errorPhone = true;
     }
 
-    if (userUpdate['document'].length > 0 && userUpdate['document'].length < 11) {
+    if (userUpdate['document'].length > 0 &&
+        userUpdate['document'].length < 11) {
       errorDocument = true;
     }
 
@@ -874,9 +781,14 @@ class _PersonalUserState extends State<PersonalUser> {
               Container(
                 width: double.infinity,
                 height: 150,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Cores.redError),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Cores.redError),
                 padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-                child: const Text('Confira as informações inseridas e tente novamente', style: TextStyle(fontSize: 24, color: Colors.white), textAlign: TextAlign.center),
+                child: const Text(
+                    'Confira as informações inseridas e tente novamente',
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                    textAlign: TextAlign.center),
               ),
             ],
           ),
@@ -942,7 +854,9 @@ class _PersonalUserState extends State<PersonalUser> {
                   Container(
                     width: double.infinity,
                     height: 150,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Cores.blue),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Cores.blue),
                     padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
                     child: const Text(
                       'Usuário editado com sucesso!',
