@@ -4,7 +4,7 @@ TextStyle textStyle({
   fontFamily = 'Urbanist',
   color = Colors.white,
   fontWeight = FontWeight.w600,
-  fontSize = 24,
+  fontSize = 24.0,
 }) {
   return TextStyle(
     fontFamily: fontFamily,

@@ -176,7 +176,7 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Expanded(
                   child: AutoSizeText(
-                    'Selecione: $foodAmount alimento(s).',
+                    'Selecione: ${foodAmount == 0 ? 'n' : foodAmount} alimento(s).',
                     style: TextStyle(fontSize: 18),
                     maxLines: 1,
                     minFontSize: 12,
@@ -309,6 +309,8 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': token
       };
+      print(payloadToAdapter['prescription_id']);
+      print(payloadToAdapter['meal_id']);
 
       Object prescriptionToAdapter = jsonEncode({
         "foods": payloadToAdapter['foods'],
@@ -385,10 +387,11 @@ class _CreatePrescriptionState extends State<CreatePrescription> {
 
   void _initSelectedFoods() {
     for (int i = 0; i < foodsReceived.length; i++) {
+      print(foodsReceived[i]);
       foodsSelected.add(
         Food(
-          food_id: foodsReceived[i]['food_id'],
-          name: foodsReceived[i]['name'],
+          food_id: foodsReceived[i]['_id'],
+          name: foodsReceived[i]['description'],
         ),
       );
     }

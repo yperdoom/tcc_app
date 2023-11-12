@@ -343,6 +343,7 @@ class _LoginPage extends State<LoginPage> {
     await prefs.setString('token', token);
     await prefs.setString('scope', scope);
     await prefs.setString('userid', userId);
+    Session.userId = userId;
     setState(() {
       Navigator.pushReplacement(
         context,
@@ -356,6 +357,7 @@ class _LoginPage extends State<LoginPage> {
     await prefs.setString('token', token);
     await prefs.setString('scope', scope);
     await prefs.setString('userid', userId);
+    Session.userId = userId;
     setState(() {
       Navigator.pushReplacement(
         context,
