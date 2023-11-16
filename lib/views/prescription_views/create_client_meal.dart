@@ -13,15 +13,15 @@ var meal = {};
 var foods = [];
 
 class Food {
-  final String? id;
+  final int? id;
+  final String? foodId;
   final String? name;
-  final String? description;
   final bool? selected;
 
   Food({
     required this.id,
+    required this.foodId,
     required this.name,
-    this.description,
     this.selected = false,
   });
 }
@@ -51,10 +51,14 @@ class _CreateClientMealState extends State<CreateClientMeal> {
       jsonEncode(arguments),
     );
 
+    print('OIOOOIOIOIOIOIOIOI');
     print(foods[0]);
 
     _foods = foods
-        .map((food) => MultiSelectItem<Food>(food.id, food.name.toString()))
+        .map((food) => MultiSelectItem<Food>(
+              Food(id: food['id'], foodId: food['foodId'], name: food['name']),
+              food.name.toString(),
+            ))
         .toList();
 
     return Scaffold(
@@ -108,11 +112,16 @@ class _CreateClientMealState extends State<CreateClientMeal> {
         counter = -1;
       } else {
         Food foodToSave = Food(
-          id: food['_id'],
+          id: counter + 1,
+          foodId: food['_id'],
           name: food['description'],
         );
 
-        foods.add({'id': foodToSave.id, 'name': foodToSave.name});
+        foods.add({
+          'id': foodToSave.id,
+          'foodId': foodToSave.foodId,
+          'name': foodToSave.name,
+        });
 
         counter++;
       }
@@ -143,7 +152,7 @@ Widget _form(BuildContext context) {
       const SizedBox(height: 10),
       _formFoodSelectCard(),
       const SizedBox(height: 10),
-      // _formFoodSelectedViewCard(context),
+      _formFoodSelectedViewCard(context),
     ],
   );
 }
@@ -179,7 +188,7 @@ Widget _formFoodSelectCard() {
       onConfirm: (results) {
         List foodsToSave = [];
         for (int i = 0; i < results.length; i++) {
-          foodsToSave.add(results[i].id);
+          foodsToSave.add(results[i].foodId);
         }
         meal['foods'] = foodsToSave;
       },
