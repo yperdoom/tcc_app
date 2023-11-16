@@ -18,6 +18,7 @@ class FoodUser extends StatefulWidget {
 
 class _FoodUserState extends State<FoodUser> {
   var foodReceived = [];
+  String search = '';
 
   @override
   void initState() {
@@ -103,11 +104,13 @@ class _FoodUserState extends State<FoodUser> {
                       children: [
                         Expanded(
                           child: TextField(
+                            onChanged: (value) => {
+                              search = value
+                            },
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(Icons.search_rounded,
-                                  color: Cores.white),
+                              prefixIcon: Icon(Icons.search_rounded, color: Cores.white),
                               hintText: 'Pesquise por alimentos',
                               hintStyle: TextStyle(
                                 color: Cores.white,
@@ -119,15 +122,16 @@ class _FoodUserState extends State<FoodUser> {
                         ),
                         TextButton(
                           style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                             textStyle: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
                             backgroundColor: Cores.blueHeavy,
                           ),
-                          onPressed: () => {_getFoods()},
+                          onPressed: () => {
+                            _getFoods()
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -178,9 +182,7 @@ class _FoodUserState extends State<FoodUser> {
                   bottom: 8,
                   right: 10,
                 ),
-                decoration: BoxDecoration(
-                    color: Cores.blueDark,
-                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                decoration: BoxDecoration(color: Cores.blueDark, borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
                     Row(
@@ -437,16 +439,25 @@ class _FoodUserState extends State<FoodUser> {
 
       foodReceived = foods;
     } else {
+      Uri url = Uri.parse('$baseUrl/foods');
+      if (search.length >= 2) {
+        print(search);
+        url = Uri.parse('$baseUrl/foods?find=$search');
+      }
+      Map<String, String>? headers = <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      };
+
       http.Response response = await http.get(
-        Uri.parse('$baseUrl/foods'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': token
-        },
+        url,
+        headers: headers,
       );
       var body = await jsonDecode(response.body);
 
+      print(body['success']);
       if (body['success'] == true) {
+        print(body['body']);
         if (body['body']['count'] > 0) {
           foodReceived = body['body']['foods'];
           _setFoodsOnShared();
@@ -462,14 +473,11 @@ class _FoodUserState extends State<FoodUser> {
 
   String _regexDateTime(int index) {
     if (foodReceived[index]['updated_at'] != null) {
-      DateTime dateTime =
-          DateTime.parse(foodReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(foodReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;
