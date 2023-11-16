@@ -12,8 +12,7 @@ class CreateClientPrescription extends StatefulWidget {
   const CreateClientPrescription({super.key});
 
   @override
-  State<CreateClientPrescription> createState() =>
-      _CreateClientPrescriptionState();
+  State<CreateClientPrescription> createState() => _CreateClientPrescriptionState();
 }
 
 class _CreateClientPrescriptionState extends State<CreateClientPrescription> {
@@ -173,15 +172,13 @@ class _CreateClientPrescriptionState extends State<CreateClientPrescription> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CreateClientMeal(),
-                                    settings:
-                                        RouteSettings(arguments: index + 1),
+                                    builder: (context) => const CreateClientMeal(),
+                                    settings: RouteSettings(arguments: index + 1),
                                   ),
                                 );
                               },
                               child: Text(
-                                'Criar conta',
+                                'Configurar receita',
                                 style: TextStyle(
                                   color: Cores.white,
                                   fontSize: 18,
