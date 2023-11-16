@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:Yan/views/prescription_views/create_client_meal.dart';
 import 'package:flutter/material.dart';
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
@@ -116,6 +117,7 @@ class _CreateClientPrescriptionState extends State<CreateClientPrescription> {
                           ),
                           onChanged: (value) {
                             prescription['meal_amount'] = int.parse(value);
+                            setState(() {});
                           },
                           maxLength: 30,
                           keyboardType: TextInputType.number,
@@ -123,10 +125,77 @@ class _CreateClientPrescriptionState extends State<CreateClientPrescription> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  Row(),
                 ],
               ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: prescription['meal_amount'] ?? 0,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      left: 12,
+                      bottom: 10,
+                      right: 12,
+                    ),
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      top: 5,
+                      bottom: 8,
+                      right: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Cores.blueDark,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              'Refeição ${index + 1}',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            TextButton(
+                              style: ButtonStyle(
+                                textStyle: MaterialStateProperty.all(
+                                  const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateClientMeal(),
+                                    settings:
+                                        RouteSettings(arguments: index + 1),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Criar conta',
+                                style: TextStyle(
+                                  color: Cores.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
