@@ -173,7 +173,7 @@ class _AdapterPrescriptionState extends State<AdapterPrescription> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Expanded(
                   child: AutoSizeText(
-                    'Selecione: ${foodAmount == 0 ? 'n' : foodAmount} alimento(s).',
+                    'Original: ${foodAmount == 0 ? 'n' : foodAmount} alimento(s).',
                     style: TextStyle(fontSize: 18),
                     maxLines: 1,
                     minFontSize: 12,
