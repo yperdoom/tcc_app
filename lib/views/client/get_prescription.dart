@@ -110,9 +110,7 @@ class _GetPrescriptionState extends State<GetPrescription> {
                       Expanded(
                         child: AutoSizeText(
                           // '${prescriptionReceived['is_adapted_prescription']}',
-                          prescriptionReceived['is_adapted_prescription']
-                              ? 'Essa prescrição foi adaptada.'
-                              : 'Essa prescrição foi prescrita por um profissional.',
+                          prescriptionReceived['is_adapted_prescription'] ? 'Essa prescrição foi adaptada.' : 'Essa prescrição foi prescrita por um profissional.',
                           style: const TextStyle(fontSize: 18),
                           maxLines: 1,
                           minFontSize: 12,
@@ -203,8 +201,7 @@ class _GetPrescriptionState extends State<GetPrescription> {
                         children: [
                           Expanded(
                             child: AutoSizeText(
-                              _prepareFoodsToShow(prescriptionReceived['meals']
-                                  [index]['foods']),
+                              _prepareFoodsToShow(prescriptionReceived['meals'][index]['foods']),
                               style: TextStyle(
                                 fontSize: 24,
                                 color: Cores.white,
@@ -246,10 +243,8 @@ class _GetPrescriptionState extends State<GetPrescription> {
       );
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}'; //:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;

@@ -340,14 +340,11 @@ class _InfoUserState extends State<InfoUser> {
 
   String _regexDateTime(int index) {
     if (infoReceived[index]['updated_at'] != null) {
-      DateTime dateTime =
-          DateTime.parse(infoReceived[index]['updated_at'].toString());
+      DateTime dateTime = DateTime.parse(infoReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;

@@ -118,12 +118,10 @@ class _CreateClientState extends State<CreateClient> {
                         border: const OutlineInputBorder(),
                       ),
                       isExpanded: true,
-                      items: prescriptionsReceived
-                          .map<DropdownMenuItem<Object>>((prescription) {
+                      items: prescriptionsReceived.map<DropdownMenuItem<Object>>((prescription) {
                         return DropdownMenuItem(
                           value: prescription['_id'],
-                          child: Text(
-                              '${prescription['name']} - ${prescription['recommended_calorie']} kcal'),
+                          child: Text('${prescription['name']} - ${prescription['recommended_calorie']} kcal'),
                         );
                       }).toList(),
                       hint: const AutoSizeText(
@@ -154,8 +152,7 @@ class _CreateClientState extends State<CreateClient> {
                         border: const OutlineInputBorder(),
                       ),
                       isExpanded: true,
-                      items:
-                          mealsReceived.map<DropdownMenuItem<Object>>((meal) {
+                      items: mealsReceived.map<DropdownMenuItem<Object>>((meal) {
                         return DropdownMenuItem(
                           value: meal['_id'],
                           child: Text('${meal['name']} - ${meal['type']}'),
@@ -333,8 +330,7 @@ class _CreateClientState extends State<CreateClient> {
         popup(context, false, 'Adaptação feita com sucesso!');
       } else {
         prescriptionsReceived = [];
-        popup(context, true,
-            'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
+        popup(context, true, 'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
       }
     }
     Session.firstAcessHome = false;

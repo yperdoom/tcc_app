@@ -13,8 +13,7 @@ import 'package:http/http.dart' as http;
 import '../main.dart';
 
 String baseUrl = Session.baseUrl;
-String basicToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImJhc2ljIiwiaWF0IjoxNjk5MjI1MjkxfQ.eDg4-z-pnTiKBR0vVz_9dBltMMIy1VxqkzGhlwXRp94';
+String basicToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImJhc2ljIiwiaWF0IjoxNjk5MjI1MjkxfQ.eDg4-z-pnTiKBR0vVz_9dBltMMIy1VxqkzGhlwXRp94';
 
 String email = '';
 String password = '';
@@ -30,8 +29,16 @@ String managerId = '';
 var managers = [];
 
 var sexReceived = [
-  {"code": 1, "value": "male", "name": "Masculino"},
-  {"code": 2, "value": "female", "name": "Feminino"},
+  {
+    "code": 1,
+    "value": "male",
+    "name": "Masculino"
+  },
+  {
+    "code": 2,
+    "value": "female",
+    "name": "Feminino"
+  },
 ];
 
 class CreateAccountPage extends StatefulWidget {
@@ -117,7 +124,9 @@ Widget createAccountForm(BuildContext context) {
           decoration: textFieldDecoration('Celular'),
           keyboardType: TextInputType.phone,
           maxLength: 11,
-          onChanged: (String text) => {phone = text},
+          onChanged: (String text) => {
+            phone = text
+          },
         ),
         espaco(15),
         const Row(
@@ -150,19 +159,25 @@ Widget createAccountForm(BuildContext context) {
         TextField(
           decoration: textFieldDecoration('Altura'),
           keyboardType: TextInputType.number,
-          onChanged: (text) => {height = text},
+          onChanged: (text) => {
+            height = text
+          },
         ),
         espaco(15),
         TextField(
           decoration: textFieldDecoration('Peso'),
           keyboardType: TextInputType.number,
-          onChanged: (text) => {weight = text},
+          onChanged: (text) => {
+            weight = text
+          },
         ),
         espaco(15),
         TextField(
           decoration: textFieldDecoration('Porcentagem de gordura'),
           keyboardType: TextInputType.number,
-          onChanged: (text) => {fatPercentage = text},
+          onChanged: (text) => {
+            fatPercentage = text
+          },
         ),
         espaco(15),
         Row(
@@ -231,7 +246,9 @@ Widget createAccountForm(BuildContext context) {
 }
 
 void _createAccountRequest(Object data, BuildContext context) async {
-  Map<String, String> headers = <String, String>{'Authorization': basicToken};
+  Map<String, String> headers = <String, String>{
+    'Authorization': basicToken
+  };
   Uri url = Uri.parse('$baseUrl/user/client');
 
   http.Response response = await http.post(
@@ -243,8 +260,7 @@ void _createAccountRequest(Object data, BuildContext context) async {
 
   print(body);
   if (body['success'] == false) {
-    String errorMessage =
-        'Não foi possível criar esta conta de usuário\n\n Motivo: ${body['message']}';
+    String errorMessage = 'Não foi possível criar esta conta de usuário\n\n Motivo: ${body['message']}';
     popupError(context, errorMessage, 2);
     print(body);
   }
