@@ -106,8 +106,7 @@ class _FoodManagerState extends State<FoodManager> {
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(Icons.search_rounded,
-                                  color: Cores.white),
+                              prefixIcon: Icon(Icons.search_rounded, color: Cores.white),
                               hintText: 'Pesquise por alimentos',
                               hintStyle: TextStyle(
                                 color: Cores.white,
@@ -119,15 +118,16 @@ class _FoodManagerState extends State<FoodManager> {
                         ),
                         TextButton(
                           style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                             textStyle: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                             ),
                             backgroundColor: Cores.blueHeavy,
                           ),
-                          onPressed: () => {_getFoods()},
+                          onPressed: () => {
+                            _getFoods()
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 15.0,
@@ -178,9 +178,7 @@ class _FoodManagerState extends State<FoodManager> {
                   bottom: 8,
                   right: 10,
                 ),
-                decoration: BoxDecoration(
-                    color: Cores.blueDark,
-                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                decoration: BoxDecoration(color: Cores.blueDark, borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
                     Row(
@@ -465,10 +463,8 @@ class _FoodManagerState extends State<FoodManager> {
       DateTime dateTime = DateTime.parse(foodReceived[index]['updated_at'].toString());
       String formattedDateTime = '';
 
-      String formattedTime =
-          '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
-      String formattedDate =
-          '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      String formattedTime = '${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
       formattedDateTime = '$formattedDate às $formattedTime';
 
       return formattedDateTime;

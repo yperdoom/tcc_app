@@ -292,9 +292,7 @@ class _LoginPage extends State<LoginPage> {
     print(headers);
     print(data);
 
-    var response = await http
-        .post(url, headers: headers, body: data)
-        .timeout(const Duration(seconds: 10), onTimeout: () {
+    var response = await http.post(url, headers: headers, body: data).timeout(const Duration(seconds: 10), onTimeout: () {
       return http.Response('server_error', 400);
     });
 
@@ -302,10 +300,7 @@ class _LoginPage extends State<LoginPage> {
 
     if (response.statusCode == 400) {
       Navigator.pop(context);
-      popupError(
-          context,
-          'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060',
-          5);
+      popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060', 5);
     }
 
     var body = await jsonDecode(response.body);
@@ -316,16 +311,11 @@ class _LoginPage extends State<LoginPage> {
       if (body['scope'] == 'admin') {
         _toAdminLogin(body['token'], body['scope'], body['userId'].toString());
       } else if (body['scope'] == 'client') {
-        _toClientLogin(body['token'], body['scope'], body['userId'].toString(),
-            body['managerId'].toString());
+        _toClientLogin(body['token'], body['scope'], body['userId'].toString(), body['managerId'].toString());
       } else if (body['scope'] == 'manager') {
-        _toManagerLogin(
-            body['token'], body['scope'], body['userId'].toString());
+        _toManagerLogin(body['token'], body['scope'], body['userId'].toString());
       } else {
-        popupError(
-            context,
-            'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060',
-            5);
+        popupError(context, 'Houve um erro ao efetuar login em sua conta, favor contatar o administrador do sistema para que possamos resolver seu problema: (54) 9 9658-2060', 5);
       }
     } else {
       Navigator.pop(context);
@@ -348,8 +338,7 @@ class _LoginPage extends State<LoginPage> {
     });
   }
 
-  void _toClientLogin(
-      String token, String scope, String userId, String managerId) async {
+  void _toClientLogin(String token, String scope, String userId, String managerId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
     await prefs.setString('scope', scope);
