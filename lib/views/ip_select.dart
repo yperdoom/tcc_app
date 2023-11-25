@@ -1,4 +1,5 @@
 import 'package:Yan/configs/colors.dart';
+import 'package:Yan/configs/envs.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,9 +13,8 @@ class IpSelectPage extends StatefulWidget {
 }
 
 class _IpSelectPage extends State<IpSelectPage> {
-  final String urlProduction = 'http://18.228.31.51:4030';
-  final String urlLocal = 'http://10.1.1.7:4030';
-  final String urlLocalAmo = 'http://10.1.1.8:4030';
+  final String urlProduction = Envs.prod;
+  final String urlLocal = Envs.local;
   String urlActualy = '';
   String urlDigitada = '';
   String ipSelect = '';
@@ -96,40 +96,6 @@ class _IpSelectPage extends State<IpSelectPage> {
                   ),
                   child: Text(
                     'Set to local',
-                    style: TextStyle(
-                      color: Cores.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              // Set to local amo env button
-              SizedBox(
-                width: 200,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () => setUrl(urlLocalAmo, true),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    ),
-                    backgroundColor: MaterialStateProperty.all(
-                      Cores.blue,
-                    ),
-                    textStyle: MaterialStateProperty.all(
-                      TextStyle(
-                        color: Cores.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    'Set to amo local',
                     style: TextStyle(
                       color: Cores.white,
                       fontSize: 18,
