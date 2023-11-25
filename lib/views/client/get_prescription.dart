@@ -2,6 +2,9 @@
 
 import 'dart:convert';
 
+import 'package:Yan/components/auto_sized_text.dart';
+import 'package:Yan/components/espaco.dart';
+import 'package:Yan/components/row_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import '../../configs/colors.dart';
@@ -56,68 +59,26 @@ class _GetPrescriptionState extends State<GetPrescription> {
                     ],
                   ),
                   const SizedBox(height: 30),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          'Calorias recomendadas: ${prescriptionReceived['recommended_calorie']} kcal',
-                          style: const TextStyle(fontSize: 18),
-                          // maxLines: 10,
-                          minFontSize: 18,
+                  prescriptionReceived['is_adapted_prescription']
+                      ? Column(
+                          children: [
+                            rowText('Calorias recomendadas: ${prescriptionReceived['recommended_calorie']} kcal'),
+                            rowText('Carboidratos recomendadas: ${prescriptionReceived['recommended_carbohydrate']} kcal'),
+                            rowText('Proteinas recomendadas: ${prescriptionReceived['recommended_protein']} kcal'),
+                            rowText('Lipídios recomendados: ${prescriptionReceived['recommended_lipid']} kcal'),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            rowText('Nutrientes recomendados || Nutrientes encontrados'),
+                            rowText('Calorias: ${prescriptionReceived['recommended_calorie']} kcal || ${prescriptionReceived['calorie']} kcal'),
+                            rowText('Carboidratos: ${prescriptionReceived['recommended_carbohydrate']} kcal || ${prescriptionReceived['carbohydrate']} kcal'),
+                            rowText('Proteinas: ${prescriptionReceived['recommended_protein']} kcal || ${prescriptionReceived['protein']} kcal'),
+                            rowText('Lipídios: ${prescriptionReceived['recommended_lipid']} kcal || ${prescriptionReceived['lipid']} kcal'),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          'Carboidratos recomendadas: ${prescriptionReceived['recommended_carbohydrate']} kcal',
-                          style: const TextStyle(fontSize: 18),
-                          // maxLines: 10,
-                          minFontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          'Proteinas recomendadas: ${prescriptionReceived['recommended_protein']} kcal',
-                          style: const TextStyle(fontSize: 18),
-                          // maxLines: 10,
-                          minFontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          'Lipídios recomendados: ${prescriptionReceived['recommended_lipid']} kcal',
-                          style: const TextStyle(fontSize: 18),
-                          // maxLines: 10,
-                          minFontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          // '${prescriptionReceived['is_adapted_prescription']}',
-                          prescriptionReceived['is_adapted_prescription'] ? 'Essa prescrição foi adaptada.' : 'Essa prescrição foi prescrita por um profissional.',
-                          style: const TextStyle(fontSize: 18),
-                          maxLines: 1,
-                          minFontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
+                  espaco(20),
+                  rowText(prescriptionReceived['is_adapted_prescription'] ? 'Essa prescrição foi adaptada.' : 'Essa prescrição foi prescrita por um profissional.'),
                   const SizedBox(height: 10),
                   Row(
                     children: [
