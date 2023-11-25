@@ -1,6 +1,8 @@
+import 'envs.dart';
+
 class Session {
-  static String baseUrl = 'http://18.228.31.51:4030';
-  static String env = 'prod';
+  static String baseUrl = Envs.prod;
+  static String env = Envs.env;
   static bool darkMode = true;
   static String userId = '';
   static String managerId = '';
