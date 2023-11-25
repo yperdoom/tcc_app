@@ -7,12 +7,13 @@ import 'package:Yan/components/hero_header_decoration.dart';
 import 'package:Yan/views/prescription_views/create_client_prescription.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../components/header_title.dart';
+import 'package:Yan/components/header_title.dart';
+import 'package:Yan/components/parse_double.dart';
+import 'package:Yan/components/regex_date_time.dart';
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:Yan/interfaces/get_prescriptions.dart';
 
 String baseUrl = Session.baseUrl;
 
@@ -29,7 +30,7 @@ class _HomeUserState extends State<HomeUser> {
 
   @override
   void initState() {
-    Session.firstAcessHome ? _getPrescriptions() : _getPrescriptionsOnShared();
+    Session.firstAcessHome ? getPrescriptions('') : _getPrescriptionsOnShared();
 
     super.initState();
   }
@@ -96,8 +97,9 @@ class _HomeUserState extends State<HomeUser> {
                             ),
                             backgroundColor: const Color(0xff1E4CFF),
                           ),
-                          onPressed: () => {
-                            _getPrescriptions(),
+                          onPressed: () async => {
+                            getPrescriptions(search),
+                            setState(() {})
                           },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
@@ -214,14 +216,21 @@ class _HomeUserState extends State<HomeUser> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        prescriptionsReceived[index]['is_adapted_prescription']
+                            ? Text(
+                                '${parseDouble(prescriptionsReceived[index]['meals'][0]['calorie'])} Kcal',
+                                style: TextStyle(
+                                  color: Cores.white,
+                                ),
+                              )
+                            : Text(
+                                '${parseDouble(prescriptionsReceived[index]['recommended_calorie'])} Kcal',
+                                style: TextStyle(
+                                  color: Cores.white,
+                                ),
+                              ),
                         Text(
-                          '${prescriptionsReceived[index]['recommended_calorie']} Kcal',
-                          style: TextStyle(
-                            color: Cores.white,
-                          ),
-                        ),
-                        Text(
-                          'Em: ${_regexDateTime(index)}',
+                          'Em: ${regexDateTime(prescriptionsReceived[index]['updated_at'])}',
                           style: TextStyle(
                             color: Cores.white,
                           ),
@@ -248,75 +257,6 @@ class _HomeUserState extends State<HomeUser> {
         ),
       ),
     );
-  }
-
-  void _getPrescriptions() async {
-    print('get prescriptions function in home_user');
-    print('session userid :: ${Session.userId}');
-    final prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token').toString();
-    if (Session.userId == '') {
-      Session.userId = prefs.getString('userid').toString();
-
-      print('new session userid :: ${Session.userId}');
-    }
-
-    if (Session.env == 'local') {
-      const meals = [];
-
-      prescriptionsReceived = meals;
-    } else {
-      Uri url = Uri.parse('$baseUrl/prescriptions/${Session.userId}?search=$search');
-      Map<String, String>? headers = <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': token
-      };
-
-      print('url :: $url');
-
-      http.Response response = await http.get(
-        url,
-        headers: headers,
-      );
-      var body = await jsonDecode(response.body);
-
-      print('response with ${body['success'] ? 'success and the body is ${body['body']['prescriptions']}' : 'not success'}');
-
-      if (body['success'] == true) {
-        if (body['body']['count'] > 0) {
-          prescriptionsReceived = body['body']['prescriptions'];
-
-          _setPrescriptionsOnShared();
-        } else {
-          prescriptionsReceived = [];
-
-          _setPrescriptionsOnShared();
-        }
-      } else {
-        prescriptionsReceived = [];
-
-        _setPrescriptionsOnShared();
-      }
-
-      setState(() {});
-    }
-    Session.firstAcessHome = false;
-    prefs.setString('firstacesshome', 'false');
-  }
-
-  String _regexDateTime(int index) {
-    if (prescriptionsReceived[index]['updated_at'] != null) {
-      DateTime dateTime = DateTime.parse(prescriptionsReceived[index]['updated_at'].toString());
-      String formattedDateTime = '';
-
-      String formattedTime = '${dateTime.hour}:${dateTime.minute}'; //:${dateTime.second}';
-      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-      formattedDateTime = '$formattedDate às $formattedTime';
-
-      return formattedDateTime;
-    } else {
-      return '06/05/2020 às 00:00:00';
-    }
   }
 
   void _getPrescriptionsOnShared() async {
@@ -350,23 +290,6 @@ class _HomeUserState extends State<HomeUser> {
         }
       }
     }
-
     setState(() {});
-  }
-
-  void _setPrescriptionsOnShared() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setInt(
-      'save.prescription.length',
-      prescriptionsReceived.length - 1,
-    );
-    for (int counter = 0; counter < prescriptionsReceived.length; counter++) {
-      String prescription = jsonEncode(
-        prescriptionsReceived[counter],
-      ).toString();
-
-      await prefs.setString('save.prescription.$counter', prescription);
-    }
   }
 }
