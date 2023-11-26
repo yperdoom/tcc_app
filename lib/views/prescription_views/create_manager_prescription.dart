@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../configs/colors.dart';
 import '../../configs/session.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:http/http.dart' as http;
 
 String baseUrl = Session.baseUrl;
 
