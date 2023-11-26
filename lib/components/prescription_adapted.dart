@@ -32,9 +32,12 @@ Widget prescriptionAdapted(var foods) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: autoSizedText('${foods[index]['name']}'),
+                    child: autoSizedText('${foods[index]['name']}', 18),
                   ),
-                  autoSizedText('${foods[index]['type']}')
+                  Text(
+                    '${foods[index]['type']}',
+                    style: const TextStyle(fontSize: 12),
+                  )
                 ],
               ),
               const SizedBox(height: 8),
@@ -42,9 +45,10 @@ Widget prescriptionAdapted(var foods) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: autoSizedText('${foods[index]['description']}'),
+                    child: autoSizedText('${foods[index]['description']}', 14),
                   ),
-                  autoSizedText('Necessário consumir: ${foods[index]['weight']}g'),
+                  autoSizedText('Necessário consumir: ', 12),
+                  autoSizedText('${foods[index]['weight']}g', 18),
                 ],
               ),
             ],

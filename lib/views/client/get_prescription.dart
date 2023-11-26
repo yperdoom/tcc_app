@@ -89,7 +89,7 @@ class _GetPrescriptionState extends State<GetPrescription> {
                       : Row(
                           children: [
                             Expanded(
-                              child: autoSizedText('Receitas: ${prescriptionReceived['meal_amount']}'),
+                              child: autoSizedText('Receitas: ${prescriptionReceived['meal_amount']}', 18),
                             ),
                           ],
                         ),
@@ -97,7 +97,7 @@ class _GetPrescriptionState extends State<GetPrescription> {
                   Row(
                     children: [
                       Expanded(
-                        child: autoSizedText('Última vez atualizado em: ${regexDateTime(prescriptionReceived['updated_at'])}'),
+                        child: autoSizedText('Última vez atualizado em: ${regexDateTime(prescriptionReceived['updated_at'])}', 18),
                       ),
                     ],
                   ),

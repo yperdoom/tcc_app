@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-Widget autoSizedText(String text) {
+Widget autoSizedText(String text, double fontSize) {
   return AutoSizeText(
     text,
-    style: const TextStyle(fontSize: 18),
+    style: TextStyle(fontSize: fontSize),
     // maxLines: 10,
     minFontSize: 12,
   );
