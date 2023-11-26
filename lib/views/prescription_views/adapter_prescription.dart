@@ -1,14 +1,19 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:Yan/interfaces/get_prescriptions.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../configs/colors.dart';
-import '../../configs/session.dart';
+import 'package:Yan/class/food.dart';
+import 'package:Yan/configs/colors.dart';
+import 'package:Yan/configs/session.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:Yan/interfaces/get_foods.dart';
 
 String baseUrl = Session.baseUrl;
 
@@ -19,28 +24,18 @@ class AdapterPrescription extends StatefulWidget {
   State<AdapterPrescription> createState() => _AdapterPrescriptionState();
 }
 
-class Food {
-  final String? food_id;
-  final String? name;
-  final bool? selected;
-
-  Food({
-    required this.food_id,
-    required this.name,
-    this.selected = false,
-  });
-}
-
 class _AdapterPrescriptionState extends State<AdapterPrescription> {
   var prescriptionsReceived = [];
   var payloadToAdapter = {};
   var mealsReceived = [];
   var foodsReceived = [];
+  List<Food> initialFoods = [];
   List<Food> foodsSelected = [];
   int foodAmount = 0;
 
   @override
   void initState() {
+    getFoods('');
     _getFoodsOnShared();
 
     super.initState();
@@ -164,6 +159,15 @@ class _AdapterPrescriptionState extends State<AdapterPrescription> {
                       ),
                       onChanged: (newValue) {
                         _sendMeals(newValue);
+                        var meal = {};
+                        for (int i = 0; i < mealsReceived.length; i++) {
+                          print(mealsReceived[i]['_id']);
+                          if (mealsReceived[i]['_id'].toString() == newValue.toString()) {
+                            meal = mealsReceived[i];
+                          }
+                        }
+
+                        // initialFoods = calcInitialFoodValue(meal['foods']);
                       },
                     ),
                   ),
@@ -208,6 +212,7 @@ class _AdapterPrescriptionState extends State<AdapterPrescription> {
                       fontSize: 16,
                     ),
                   ),
+                  initialValue: initialFoods,
                   onConfirm: (results) {
                     List foods = [];
                     for (int i = 0; i < results.length; i++) {
@@ -335,6 +340,10 @@ class _AdapterPrescriptionState extends State<AdapterPrescription> {
       if (body['success'] == true) {
         Navigator.pop(context);
         popup(context, false, 'Adaptação feita com sucesso!');
+        sleep(const Duration(seconds: 1));
+        Navigator.pop(context);
+        getPrescriptions('');
+        setState(() {});
       } else {
         prescriptionsReceived = [];
         popup(context, true, 'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
