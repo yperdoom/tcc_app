@@ -4,10 +4,14 @@ import 'dart:convert';
 
 import 'package:Yan/components/auto_sized_text.dart';
 import 'package:Yan/components/espaco.dart';
+import 'package:Yan/components/prescription_created.dart';
 import 'package:Yan/components/row_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import '../../configs/colors.dart';
+import 'package:Yan/components/parse_double.dart';
+import 'package:Yan/components/prescription_adapted.dart';
+import 'package:Yan/components/regex_date_time.dart';
+import 'package:Yan/configs/colors.dart';
 
 class GetPrescription extends StatefulWidget {
   const GetPrescription({super.key});
@@ -62,46 +66,38 @@ class _GetPrescriptionState extends State<GetPrescription> {
                   prescriptionReceived['is_adapted_prescription']
                       ? Column(
                           children: [
-                            rowText('Calorias recomendadas: ${prescriptionReceived['recommended_calorie']} kcal'),
-                            rowText('Carboidratos recomendadas: ${prescriptionReceived['recommended_carbohydrate']} kcal'),
-                            rowText('Proteinas recomendadas: ${prescriptionReceived['recommended_protein']} kcal'),
-                            rowText('Lipídios recomendados: ${prescriptionReceived['recommended_lipid']} kcal'),
+                            rowText('Nutrientes recomendados || Nutrientes encontrados'),
+                            rowText('Calorias: ${parseDouble(prescriptionReceived['recommended_calorie'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['calorie'])} kcal'),
+                            rowText('Carboidratos: ${parseDouble(prescriptionReceived['recommended_carbohydrate'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['carbohydrate'])} kcal'),
+                            rowText('Proteinas: ${parseDouble(prescriptionReceived['recommended_protein'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['protein'])} kcal'),
+                            rowText('Lipídios: ${parseDouble(prescriptionReceived['recommended_lipid'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['lipid'])} kcal'),
                           ],
                         )
                       : Column(
                           children: [
-                            rowText('Nutrientes recomendados || Nutrientes encontrados'),
-                            rowText('Calorias: ${prescriptionReceived['recommended_calorie']} kcal || ${prescriptionReceived['calorie']} kcal'),
-                            rowText('Carboidratos: ${prescriptionReceived['recommended_carbohydrate']} kcal || ${prescriptionReceived['carbohydrate']} kcal'),
-                            rowText('Proteinas: ${prescriptionReceived['recommended_protein']} kcal || ${prescriptionReceived['protein']} kcal'),
-                            rowText('Lipídios: ${prescriptionReceived['recommended_lipid']} kcal || ${prescriptionReceived['lipid']} kcal'),
+                            rowText('Calorias recomendadas: ${parseDouble(prescriptionReceived['recommended_calorie'])} kcal'),
+                            rowText('Carboidratos recomendadas: ${parseDouble(prescriptionReceived['recommended_carbohydrate'])} kcal'),
+                            rowText('Proteinas recomendadas: ${parseDouble(prescriptionReceived['recommended_protein'])} kcal'),
+                            rowText('Lipídios recomendados: ${parseDouble(prescriptionReceived['recommended_lipid'])} kcal'),
                           ],
                         ),
                   espaco(20),
                   rowText(prescriptionReceived['is_adapted_prescription'] ? 'Essa prescrição foi adaptada.' : 'Essa prescrição foi prescrita por um profissional.'),
                   const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          'Receitas: ${prescriptionReceived['meal_amount']}',
-                          style: const TextStyle(fontSize: 18),
-                          // maxLines: 10,
-                          minFontSize: 18,
+                  prescriptionReceived['is_adapted_prescription']
+                      ? espaco(0)
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: autoSizedText('Receitas: ${prescriptionReceived['meal_amount']}'),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
-                        child: AutoSizeText(
-                          'Última vez atualizado em: ${_regexDateTime(prescriptionReceived['updated_at'])}',
-                          style: const TextStyle(fontSize: 18),
-                          maxLines: 1,
-                          minFontSize: 12,
-                        ),
+                        child: autoSizedText('Última vez atualizado em: ${regexDateTime(prescriptionReceived['updated_at'])}'),
                       ),
                     ],
                   ),
@@ -109,108 +105,9 @@ class _GetPrescriptionState extends State<GetPrescription> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: prescriptionReceived['meals'].length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(
-                    left: 12,
-                    bottom: 10,
-                    right: 12,
-                  ),
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    top: 5,
-                    bottom: 8,
-                    right: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Cores.blueDark,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: AutoSizeText(
-                              '${prescriptionReceived['meals'][index]['name']}',
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Cores.white,
-                              ),
-                              maxLines: 1,
-                              minFontSize: 18,
-                            ),
-                          ),
-                          Text(
-                            '${prescriptionReceived['meals'][index]['type']}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Cores.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: AutoSizeText(
-                              _prepareFoodsToShow(prescriptionReceived['meals'][index]['foods']),
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Cores.white,
-                              ),
-                              maxLines: 2,
-                              minFontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+          prescriptionReceived['is_adapted_prescription'] ? prescriptionAdapted(prescriptionReceived['meals'][0]['foods']) : prescriptionCreated(prescriptionReceived['meals']),
         ],
       ),
     );
-  }
-
-  String _prepareFoodsToShow(foods) {
-    String message = '';
-
-    if (foods.isNotEmpty && foods.length > 0) {
-      message = 'Alimentos:';
-      for (int i = 0; i < foods.length; i++) {
-        message = '$message ${foods[i]['weight']}g de ${foods[i]['name']}';
-      }
-    }
-
-    return message.isNotEmpty ? message : 'Nenhum alimento encontrado';
-  }
-
-  String _regexDateTime(date) {
-    if (date != null) {
-      DateTime dateTime = DateTime.parse(
-        date.toString(),
-      );
-      String formattedDateTime = '';
-
-      String formattedTime = '${dateTime.hour}:${dateTime.minute}'; //:${dateTime.second}';
-      String formattedDate = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-      formattedDateTime = '$formattedDate às $formattedTime';
-
-      return formattedDateTime;
-    } else {
-      return '06/05/2020 às 00:00:00';
-    }
   }
 }
