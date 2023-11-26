@@ -159,15 +159,7 @@ class _AdapterPrescriptionState extends State<AdapterPrescription> {
                       ),
                       onChanged: (newValue) {
                         _sendMeals(newValue);
-                        var meal = {};
-                        for (int i = 0; i < mealsReceived.length; i++) {
-                          print(mealsReceived[i]['_id']);
-                          if (mealsReceived[i]['_id'].toString() == newValue.toString()) {
-                            meal = mealsReceived[i];
-                          }
-                        }
-
-                        // initialFoods = calcInitialFoodValue(meal['foods']);
+                        // initialFoods = // calcInitialFoodValue(meal['foods']);
                       },
                     ),
                   ),
