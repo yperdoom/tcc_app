@@ -316,11 +316,14 @@ class _IpSelectPage extends State<IpSelectPage> {
   }
 
   getUrl() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final String? url = prefs.getString('url');
+    final prefs = await SharedPreferences.getInstance();
+    final String? url = prefs.getString('url');
 
-    urlActualy = Session.baseUrl;
-    print('url :: ${urlActualy}');
+    if (url == null) {
+      urlActualy = Session.baseUrl;
+    }
+    print('url :: ${url}');
+    print('url atual :: ${urlActualy}');
 
     setState(() {});
   }
