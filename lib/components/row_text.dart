@@ -6,7 +6,7 @@ Widget rowText(String text) {
   return Row(
     children: [
       Expanded(
-        child: autoSizedText(text, 18),
+        child: autoSizedText(text, 18, 1),
       ),
     ],
   );

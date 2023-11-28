@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:Yan/components/auto_sized_text.dart';
+import 'package:Yan/components/data_table_foods.dart';
 import 'package:Yan/components/espaco.dart';
 import 'package:Yan/components/prescription_created.dart';
 import 'package:Yan/components/row_text.dart';
@@ -62,17 +63,9 @@ class _GetPrescriptionState extends State<GetPrescription> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
                   prescriptionReceived['is_adapted_prescription']
-                      ? Column(
-                          children: [
-                            rowText('Nutrientes recomendados || Nutrientes encontrados'),
-                            rowText('Calorias: ${parseDouble(prescriptionReceived['recommended_calorie'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['calorie'])} kcal'),
-                            rowText('Carboidratos: ${parseDouble(prescriptionReceived['recommended_carbohydrate'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['carbohydrate'])} kcal'),
-                            rowText('Proteinas: ${parseDouble(prescriptionReceived['recommended_protein'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['protein'])} kcal'),
-                            rowText('Lipídios: ${parseDouble(prescriptionReceived['recommended_lipid'])} kcal || ${parseDouble(prescriptionReceived['meals'][0]['lipid'])} kcal'),
-                          ],
-                        )
+                      ? dataTableFoods(prescriptionReceived)
                       : Column(
                           children: [
                             rowText('Calorias recomendadas: ${parseDouble(prescriptionReceived['recommended_calorie'])} kcal'),
@@ -89,7 +82,7 @@ class _GetPrescriptionState extends State<GetPrescription> {
                       : Row(
                           children: [
                             Expanded(
-                              child: autoSizedText('Receitas: ${prescriptionReceived['meal_amount']}', 18),
+                              child: autoSizedText('Receitas: ${prescriptionReceived['meal_amount']}', 18, 1),
                             ),
                           ],
                         ),
@@ -97,7 +90,7 @@ class _GetPrescriptionState extends State<GetPrescription> {
                   Row(
                     children: [
                       Expanded(
-                        child: autoSizedText('Última vez atualizado em: ${regexDateTime(prescriptionReceived['updated_at'])}', 18),
+                        child: autoSizedText('Última vez atualizado em: ${regexDateTime(prescriptionReceived['updated_at'])}', 18, 2),
                       ),
                     ],
                   ),
