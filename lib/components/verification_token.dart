@@ -10,7 +10,7 @@ void verificationToken(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();
   final String? token = prefs.getString('token');
   String? url = prefs.getString('url');
-  String? env = prefs.getString('env');
+  // String? env = prefs.getString('env');
 
   await verificationFirstAcess(prefs);
 
@@ -18,9 +18,9 @@ void verificationToken(BuildContext context) async {
     Session.baseUrl = url.toString();
   }
 
-  if (env != null) {
-    Session.env = env.toString();
-  }
+  // if (env != null) {
+  //   Session.env = env.toString();
+  // }
 
   if (token == null || token.isEmpty) {
     Navigator.pushReplacement(

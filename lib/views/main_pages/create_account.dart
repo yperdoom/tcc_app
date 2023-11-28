@@ -5,12 +5,12 @@ import 'package:Yan/components/text_field_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../components/popup_error.dart';
-import '../configs/colors.dart';
-import '../../configs/session.dart';
+import '../../components/popup_error.dart';
+import '../../configs/colors.dart';
+import '../../../configs/session.dart';
 import 'package:http/http.dart' as http;
 
-import '../main.dart';
+import '../../main.dart';
 
 String baseUrl = Session.baseUrl;
 String basicToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImJhc2ljIiwiaWF0IjoxNjk5MjI1MjkxfQ.eDg4-z-pnTiKBR0vVz_9dBltMMIy1VxqkzGhlwXRp94';

@@ -2,16 +2,16 @@
 
 import 'package:Yan/components/text_field_decoration.dart';
 import 'package:Yan/interfaces/get_managers.dart';
-import 'package:Yan/views/client_page.dart';
-import 'package:Yan/views/create_account.dart';
-import 'package:Yan/views/ip_select.dart';
-import 'package:Yan/views/manager_page.dart';
+import 'package:Yan/views/main_pages/client_page.dart';
+import 'package:Yan/views/main_pages/create_account.dart';
+import 'package:Yan/views/main_pages/ip_select.dart';
+import 'package:Yan/views/main_pages/manager_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import '../components/popup_error.dart';
-import '../configs/colors.dart';
-import '../configs/session.dart';
-import 'admin.dart';
+import '../../components/popup_error.dart';
+import '../../configs/colors.dart';
+import '../../configs/session.dart';
+import 'admin_page.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 

@@ -1,9 +1,10 @@
 import 'package:Yan/configs/colors.dart';
 import 'package:Yan/configs/envs.dart';
+import 'package:Yan/configs/session.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class IpSelectPage extends StatefulWidget {
   const IpSelectPage({super.key});
@@ -22,8 +23,8 @@ class _IpSelectPage extends State<IpSelectPage> {
 
   @override
   void initState() {
-    super.initState();
     getUrl();
+    super.initState();
   }
 
   @override
@@ -315,9 +316,12 @@ class _IpSelectPage extends State<IpSelectPage> {
   }
 
   getUrl() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? url = prefs.getString('url');
-    urlActualy = url.toString();
+    // final prefs = await SharedPreferences.getInstance();
+    // final String? url = prefs.getString('url');
+
+    urlActualy = Session.baseUrl;
+    print('url :: ${urlActualy}');
+
     setState(() {});
   }
 }
