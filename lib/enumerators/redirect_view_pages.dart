@@ -1,7 +1,7 @@
-import 'package:Yan/views/admin.dart';
-import 'package:Yan/views/client_page.dart';
-import 'package:Yan/views/login.dart';
-import 'package:Yan/views/manager_page.dart';
+import 'package:Yan/views/main_pages/admin_page.dart';
+import 'package:Yan/views/main_pages/client_page.dart';
+import 'package:Yan/views/main_pages/login_page.dart';
+import 'package:Yan/views/main_pages/manager_page.dart';
 import 'package:flutter/material.dart';
 
 Widget redirectViewPages(String? page) {

@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:Yan/views/ip_select.dart';
+import 'package:Yan/views/main_pages/ip_select.dart';
 
-import '../configs/colors.dart';
-import '../main.dart';
+import '../../configs/colors.dart';
+import '../../main.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
