@@ -65,7 +65,7 @@ class _GetPrescriptionState extends State<GetPrescription> {
                   ),
                   const SizedBox(height: 20),
                   prescriptionReceived['is_adapted_prescription']
-                      ? dataTableFoods(prescriptionReceived)
+                      ? Container(child: dataTableFoods(prescriptionReceived))
                       : Column(
                           children: [
                             rowText('Calorias recomendadas: ${parseDouble(prescriptionReceived['recommended_calorie'])} kcal'),
