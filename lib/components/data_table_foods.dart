@@ -17,10 +17,10 @@ Widget dataTableFoods(var prescriptionReceived) {
   double newLipid = prescriptionReceived['meals'][0]['lipid'];
   double newTotal = newCalorie + newCarbo + newProtein + newLipid;
 
-  double firstRowSize = 14;
-  double firstColSize = 14;
+  double firstRowSize = 10;
+  double firstColSize = 10;
   FontWeight firstColFont = FontWeight.w800;
-  double moreColSize = 16;
+  double moreColSize = 14;
   FontWeight moreColFont = FontWeight.w800;
 
   var rows = [
@@ -35,7 +35,7 @@ Widget dataTableFoods(var prescriptionReceived) {
       celula(parseDouble(newCarbo), moreColSize, moreColFont)
     ],
     <DataCell>[
-      celula('Calorias', firstColSize, firstColFont),
+      celula('Proteinas', firstColSize, firstColFont),
       celula(parseDouble(oldProtein), moreColSize, moreColFont),
       celula(parseDouble(newProtein), moreColSize, moreColFont)
     ],
