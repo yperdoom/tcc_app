@@ -1,8 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'dart:io';
-
+// import 'dart:io';
 import 'package:Yan/components/auto_sized_text.dart';
 import 'package:Yan/components/data_table_foods.dart';
 import 'package:Yan/components/espaco.dart';
@@ -15,8 +14,8 @@ import 'package:Yan/configs/colors.dart';
 import 'package:Yan/configs/session.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:shared_preferences/shared_preferences.dart';
 
 String baseUrl = Session.baseUrl;
 
@@ -107,67 +106,67 @@ class _GetPrescriptionState extends State<GetPrescription> {
           prescriptionReceived['is_adapted_prescription'] ? prescriptionAdapted(prescriptionReceived['meals'][0]['foods']) : prescriptionCreated(prescriptionReceived['meals']),
         ],
       ),
-      floatingActionButton: prescriptionReceived['is_adapted_prescription']
-          ? FloatingActionButton(
-              onPressed: () async {
-                // final prefs = await SharedPreferences.getInstance();
-                // var token = prefs.getString('token').toString();
-                // if (Session.userId == '') {
-                //   Session.userId = prefs.getString('userid').toString();
-                // }
-                // if (Session.managerId == '') {
-                //   Session.managerId = prefs.getString('managerid').toString();
-                // }
+      // floatingActionButton: prescriptionReceived['is_adapted_prescription']
+      //     ? FloatingActionButton(
+      //         onPressed: () async {
+      // final prefs = await SharedPreferences.getInstance();
+      // var token = prefs.getString('token').toString();
+      // if (Session.userId == '') {
+      //   Session.userId = prefs.getString('userid').toString();
+      // }
+      // if (Session.managerId == '') {
+      //   Session.managerId = prefs.getString('managerid').toString();
+      // }
 
-                // Uri url = Uri.parse('$baseUrl/prescription/readapter');
-                // Map<String, String> headers = <String, String>{
-                //   'Content-Type': 'application/json; charset=UTF-8',
-                //   'Authorization': token
-                // };
+      // Uri url = Uri.parse('$baseUrl/prescription/readapter');
+      // Map<String, String> headers = <String, String>{
+      //   'Content-Type': 'application/json; charset=UTF-8',
+      //   'Authorization': token
+      // };
 
-                // Object prescriptionToAdapter = jsonEncode({
-                //   "foods": prescriptionReceived['meals'][0]['foods'],
-                //   "mealId": prescriptionReceived['meals'][0]['_id'],
-                //   "prescriptionId": prescriptionReceived['_id'],
-                //   "name": prescriptionReceived['meals'][0]['name'],
-                //   "type": prescriptionReceived['meals'][0]['type'],
-                //   "userId": Session.userId,
-                //   "managerId": Session.managerId
-                // });
+      // Object prescriptionToAdapter = jsonEncode({
+      //   "foods": prescriptionReceived['meals'][0]['foods'],
+      //   "mealId": prescriptionReceived['meals'][0]['_id'],
+      //   "prescriptionId": prescriptionReceived['_id'],
+      //   "name": prescriptionReceived['meals'][0]['name'],
+      //   "type": prescriptionReceived['meals'][0]['type'],
+      //   "userId": Session.userId,
+      //   "managerId": Session.managerId
+      // });
 
-                // print('prescriptionToAdapter');
-                // print(prescriptionToAdapter);
+      // print('prescriptionToAdapter');
+      // print(prescriptionToAdapter);
 
-                // http.Response response = await http.put(
-                //   url,
-                //   headers: headers,
-                //   body: prescriptionToAdapter,
-                // );
-                // var body = await jsonDecode(response.body);
+      // http.Response response = await http.put(
+      //   url,
+      //   headers: headers,
+      //   body: prescriptionToAdapter,
+      // );
+      // var body = await jsonDecode(response.body);
 
-                // print(body);
+      // print(body);
 
-                // if (body['success'] == true) {
-                //   Navigator.pop(context);
-                //   popup(context, false, 'Adaptação refeita com sucesso!');
-                //   sleep(const Duration(seconds: 1));
-                //   Navigator.pop(context);
-                //   Navigator.pop(context);
-                //   setState(() {});
-                // } else {
-                //   popup(context, true, 'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
-                // }
-              },
-              backgroundColor: Cores.blue,
-              child: const Icon(Icons.replay_outlined),
-            )
-          : FloatingActionButton(
-              onPressed: () async {
-                Navigator.pop(context);
-              },
-              backgroundColor: Cores.blue,
-              child: const Icon(Icons.navigation),
-            ),
+      // if (body['success'] == true) {
+      //   Navigator.pop(context);
+      //   popup(context, false, 'Adaptação refeita com sucesso!');
+      //   sleep(const Duration(seconds: 1));
+      //   Navigator.pop(context);
+      //   Navigator.pop(context);
+      //   setState(() {});
+      // } else {
+      //   popup(context, true, 'Houve um erro ao criar essa adaptação!\n ${body['message'].toString()}!');
+      // }
+      //     },
+      //     backgroundColor: Cores.blue,
+      //     child: const Icon(Icons.replay_outlined),
+      //   )
+      // : FloatingActionButton(
+      //     onPressed: () async {
+      //       Navigator.pop(context);
+      //     },
+      //     backgroundColor: Cores.blue,
+      //     child: const Icon(Icons.navigation),
+      //   ),
     );
   }
 
